@@ -100,7 +100,7 @@ export function HeroSection() {
                     </p>
                   </div>
                   <span className="text-[0.68rem] px-2 py-1 rounded-full bg-[rgba(0,44,95,0.08)] text-[#e5e7eb] border border-[rgba(148,163,184,0.5)]">
-                    {currentCar.fuelType === "ELÉCTRICO" ? "Eco Ready" : currentCar.fuelType}
+                    {currentCar.fuelType}
                   </span>
                 </div>
 
@@ -137,22 +137,12 @@ export function HeroSection() {
                       <span>Combustible:</span>
                       <strong className="text-[#e5e7eb]">{currentCar.fuelType}</strong>
                     </div>
-                  </div>
-                </div>
-
-                {/* Card Footer */}
-                <div className="mt-3 flex items-center justify-between text-[0.7rem] text-[#cbd5e1] relative z-10">
-                  <div>
-                    <div className="text-[0.9rem] font-semibold text-[#f9fafb]">Desde</div>
-                    <div className="text-base font-semibold text-white">${currentCar.priceUSD.toLocaleString("en-US")}</div>
-                  </div>
-                  <div className="flex gap-2">
-                    <span className="px-2 py-1 rounded-full border border-[rgba(148,163,184,0.5)] text-[0.65rem]">
-                      {currentCar.fuelType}
-                    </span>
-                    <span className="px-2 py-1 rounded-full border border-[rgba(148,163,184,0.5)] text-[0.65rem]">
-                      {currentCar.category}
-                    </span>
+                    <div className="pt-2">
+                      <div className="text-[0.9rem] font-semibold text-[#f9fafb]">Desde</div>
+                      <div className="text-base font-semibold text-white">
+                        ${currentCar.priceUSD.toLocaleString("en-US")}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
