@@ -63,8 +63,8 @@ export function SidebarFilters({
   };
 
   return (
-    <div className="w-full bg-white rounded-lg border p-6 sticky top-6">
-    <div className="border-b Bold border-gray-200 mb-6">AGREGAR BUSCADOR DE TEXTO</div>
+    <div className="w-full bg-white rounded-lg border p-6 sticky top-24">
+    <div className="border-b Bold border-gray-200 mb-6">(AGREGAR BUSCADOR DE TEXTO)</div>
       <h2 className="text-lg font-semibold mb-6 text-[#002C5F]">Filtros</h2>
       <Accordion type="multiple" defaultValue={["fuel", "price", "year"]} className="w-full">
         <AccordionItem value="fuel" className="border-b border-gray-200">

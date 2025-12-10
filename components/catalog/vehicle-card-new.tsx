@@ -36,19 +36,20 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
 
       {/* Top badges */}
       <div className="flex items-center justify-between gap-2 text-[0.7rem] text-[#6b7280] relative z-10">
-        <span className="px-2.5 py-1 rounded-full border border-[rgba(0,44,95,0.4)] uppercase tracking-[0.16em] text-[0.62rem] text-[#002C5F] bg-[rgba(0,44,95,0.04)]">
+        {/* <span className="px-2.5 py-1 rounded-full border border-[rgba(0,44,95,0.4)] uppercase tracking-[0.16em] text-[0.62rem] text-[#002C5F] bg-[rgba(0,44,95,0.04)]">
           Hyundai
-        </span>
-        <span className="px-2 py-1 rounded-full bg-[#e6e1df] border border-[rgba(148,163,184,0.4)] text-[0.65rem] text-[#1c1b1b]">
-          {car.year}
-        </span>
+        </span> */}
+      <span className="ml-auto px-2 py-1 rounded-full bg-[#e6e1df] border border-[rgba(148,163,184,0.4)] text-[0.65rem] text-[#1c1b1b]">
+        {car.year}
+      </span>
+
       </div>
 
       {/* Image */}
       <div className="rounded-xl bg-gradient-to-br from-[#f9fafb] to-[#e5e7eb] aspect-video flex items-center justify-center overflow-hidden relative">
-        <div className="absolute left-3 bottom-2.5 text-[0.6rem] px-2 py-1 rounded-full bg-[rgba(255,255,255,0.9)] border border-[rgba(148,163,184,0.5)] text-[#6b7280] z-10">
+        {/* <div className="absolute left-3 bottom-2.5 text-[0.6rem] px-2 py-1 rounded-full bg-[rgba(255,255,255,0.9)] border border-[rgba(148,163,184,0.5)] text-[#6b7280] z-10">
           Imagen referencial
-        </div>
+        </div> */}
         {currentImage ? (
           <Image
             key={currentImage}
@@ -90,7 +91,7 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
             ${car.priceUSD.toLocaleString("en-US")}
           </div>
           <span className="text-[0.7rem] text-[#6b7280]">
-            S/ {car.pricePEN.toLocaleString("en-US")} aprox.
+            ó S/ {car.pricePEN.toLocaleString("en-US")}
           </span>
         </div>
         <button className="text-[0.75rem] px-3.5 py-2 rounded-full border border-[rgba(0,44,95,0.4)] inline-flex items-center gap-1.5 bg-white text-[#002C5F] hover:bg-[rgba(0,44,95,0.06)] transition-colors">

@@ -11,7 +11,7 @@ export function ContactSection() {
     message: "",
   });
 
-  const salesEmail = "ventas@hyundai.pe"; // CAMBIAR POR EL CORREO REAL
+  const salesEmail = "fabiodonascimentos@gmail.com"; // CAMBIAR POR EL CORREO REAL
   const handleWhatsAppClick = () => {
     const { name, message, phone, email } = formData;
 
@@ -20,7 +20,7 @@ export function ContactSection() {
       return;
     }
 
-    const whatsappNumber = "51999000000"; // CAMBIAR POR EL NÚMERO REAL
+    const whatsappNumber = "51944532822"; // CAMBIAR POR EL NÚMERO REAL
 
     const text = `Hola, soy ${name}.\nEstoy interesado en: ${message}.\n\n${
       phone ? `Teléfono / WhatsApp: ${phone}\n` : ""
@@ -100,13 +100,13 @@ export function ContactSection() {
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 text-[#002C5F] mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="text-[#002C5F] font-medium">WhatsApp:</span> +51 999 000 000
+                  <span className="text-[#002C5F] font-medium">WhatsApp:</span> +51 944 532 822
                 </div>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 text-[#002C5F] mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="text-[#002C5F] font-medium">Correo:</span> ventas@hyundai.pe
+                  <span className="text-[#002C5F] font-medium">Correo:</span> fabiodonascimento@gmail.com
                 </div>
               </li>
               <li className="flex items-start gap-2">

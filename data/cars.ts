@@ -11,7 +11,7 @@ export const cars: Car[] = [
     priceUSD: 54990,
     pricePEN: 186966,
     image: "/images/PALISADE_HYB-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/PALISADE_HYB-2026-LATERAL.png",
   },
   {
     id: "2",
@@ -22,7 +22,7 @@ export const cars: Car[] = [
     priceUSD: 40990,
     pricePEN: 139366,
     image: "/images/TUCSON_HYB-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/TUCSON_HYB-2026-LATERAL.png",
   },
   {
     id: "3",
@@ -33,7 +33,7 @@ export const cars: Car[] = [
     priceUSD: 54990,
     pricePEN: 186966,
     image: "/images/SANTAFE_HYB-2025.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/SANTAFE_HYB-2025-LATERAL.png",
   },
   // HATCHBACK
   {
@@ -45,7 +45,7 @@ export const cars: Car[] = [
     priceUSD: 10890,
     pricePEN: 37026,
     image: "/images/GRANDI10_HTC-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/GRANDI10_HTC-2026-LATERAL.png",
   },
   {
     id: "5",
@@ -56,7 +56,7 @@ export const cars: Car[] = [
     priceUSD: 15590,
     pricePEN: 53006,
     image: "/images/I20_HTCH-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/I20_HTCH-2026-LATERAL.png",
   },
   // SEDÁN
   {
@@ -68,7 +68,7 @@ export const cars: Car[] = [
     priceUSD: 12790,
     pricePEN: 43486,
     image: "/images/GRANDI10_SDN-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/GRANDI10_SDN-2026-LATERAL.png",
   },
   {
     id: "7",
@@ -79,7 +79,7 @@ export const cars: Car[] = [
     priceUSD: 16290,
     pricePEN: 55386,
     image: "/images/ACCENT-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/ACCENT-2026-LATERAL.png",
   },
   // SUV
   {
@@ -91,7 +91,7 @@ export const cars: Car[] = [
     priceUSD: 54990,
     pricePEN: 186966,
     image: "/images/PALISADE_HYB-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/PALISADE_HYB-2026-LATERAL.png",
   },
   {
     id: "9",
@@ -102,7 +102,7 @@ export const cars: Car[] = [
     priceUSD: 17490,
     pricePEN: 59466,
     image: "/images/VENUE-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/VENUE-2026-LATERAL.png",
   },
   {
     id: "10",
@@ -113,7 +113,7 @@ export const cars: Car[] = [
     priceUSD: 19990,
     pricePEN: 67966,
     image: "/images/CRETA-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/CRETA-2026-LATERAL.png",
   },
   {
     id: "11",
@@ -124,7 +124,7 @@ export const cars: Car[] = [
     priceUSD: 24990,
     pricePEN: 84966,
     image: "/images/CRETA_GRAND-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/CRETA_GRAND-2026-LATERAL.png",
   },
   {
     id: "12",
@@ -135,7 +135,7 @@ export const cars: Car[] = [
     priceUSD: 25590,
     pricePEN: 87006,
     image: "/images/TUCSON-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/TUCSON-2026-LATERAL.png",
   },
   {
     id: "13",
@@ -146,7 +146,7 @@ export const cars: Car[] = [
     priceUSD: 40990,
     pricePEN: 139366,
     image: "/images/TUCSON_HYB-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/TUCSON_HYB-2026-LATERAL.png",
   },
   {
     id: "14",
@@ -157,7 +157,7 @@ export const cars: Car[] = [
     priceUSD: 37990,
     pricePEN: 129166,
     image: "/images/SANTAFE-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/SANTAFE-2026-LATERAL.png",
   },
   {
     id: "15",
@@ -168,7 +168,7 @@ export const cars: Car[] = [
     priceUSD: 54990,
     pricePEN: 186966,
     image: "/images/SANTAFE_HYB-2025.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/SANTAFE_HYB-2025-LATERAL.png",
   },
   // UTILITARIOS
   {
@@ -180,7 +180,7 @@ export const cars: Car[] = [
     priceUSD: 31990,
     pricePEN: 108766,
     image: "/images/STARIA_CRG-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/STARIA_CRG-2026-LATERAL.png",
   },
   {
     id: "17",
@@ -191,7 +191,7 @@ export const cars: Car[] = [
     priceUSD: 39990,
     pricePEN: 135966,
     image: "/images/STARIA_MBS-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/STARIA_MBS-2026-LATERAL.png",
   },
   {
     id: "18",
@@ -202,7 +202,7 @@ export const cars: Car[] = [
     priceUSD: 19790,
     pricePEN: 67286,
     image: "/images/H100-2026.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/H100-2026-LATERAL.png",
   },
   // COMERCIALES
   {
@@ -214,7 +214,7 @@ export const cars: Car[] = [
     priceUSD: 27490,
     pricePEN: 93466,
     image: "/images/HD35-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/HD35-2024-LATERAL.png",
   },
   {
     id: "20",
@@ -225,7 +225,7 @@ export const cars: Car[] = [
     priceUSD: 31790,
     pricePEN: 108086,
     image: "/images/EX6-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/EX6-2024-LATERAL.png",
   },
   {
     id: "21",
@@ -236,7 +236,7 @@ export const cars: Car[] = [
     priceUSD: 35290,
     pricePEN: 119986,
     image: "/images/EX8-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/EX8-2024-LATERAL.png",
   },
   {
     id: "22",
@@ -247,7 +247,7 @@ export const cars: Car[] = [
     priceUSD: 39790,
     pricePEN: 135286,
     image: "/images/EX10-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/EX10-2024-LATERAL.png",
   },
   {
     id: "23",
@@ -258,7 +258,7 @@ export const cars: Car[] = [
     priceUSD: 45990,
     pricePEN: 156366,
     image: "/images/EX11-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/EX11-2024-LATERAL.png",
   },
   {
     id: "24",
@@ -269,7 +269,7 @@ export const cars: Car[] = [
     priceUSD: 78990,
     pricePEN: 268566,
     image: "/images/PAVISE-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/PAVISE-2024-LATERAL.png",
   },
   {
     id: "25",
@@ -280,7 +280,7 @@ export const cars: Car[] = [
     priceUSD: 67490,
     pricePEN: 229466,
     image: "/images/SOLATI_H350-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/SOLATI_H350-2024-LATERAL.png",
   },
   {
     id: "26",
@@ -291,7 +291,7 @@ export const cars: Car[] = [
     priceUSD: 74990,
     pricePEN: 254966,
     image: "/images/COUNTRY_BUS-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/COUNTRY_BUS-2024-LATERAL.png",
   },
   {
     id: "27",
@@ -302,7 +302,7 @@ export const cars: Car[] = [
     priceUSD: 42990,
     pricePEN: 146166,
     image: "/images/BX8-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/BX8-2024-LATERAL.png",
   },
   {
     id: "28",
@@ -313,6 +313,6 @@ export const cars: Car[] = [
     priceUSD: 49490,
     pricePEN: 168266,
     image: "/images/BX11-2024.png",
-    imageFrontal: "/images/frontal/corvette-ejemplo-frontal2.png",
+    imageFrontal: "/images/frontal/BX11-2024-LATERAL.png",
   },
 ];

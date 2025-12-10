@@ -44,7 +44,7 @@ export function HeroSection() {
             <p className="text-base text-[#6b7280] max-w-lg mb-6">
               Explora nuestro catálogo completo de vehículos Hyundai: SUV, Sedán, Hatchback,
               Utilitarios y Comerciales. Encuentra el modelo perfecto para ti con opciones de
-              financiamiento desde 0% inicial.
+              financiamiento flexibles.
             </p>
 
             <div className="flex flex-wrap gap-3 mb-7">
@@ -54,9 +54,9 @@ export function HeroSection() {
               <div className="px-3 py-1 rounded-full border border-[rgba(0,44,95,0.2)] bg-white text-[0.72rem] text-[#6b7280]">
                 <strong className="text-[#002C5F]">Gasolina · Diésel · Híbridos</strong>
               </div>
-              <div className="px-3 py-1 rounded-full border border-[rgba(0,44,95,0.2)] bg-white text-[0.72rem] text-[#6b7280]">
+              {/* <div className="px-3 py-1 rounded-full border border-[rgba(0,44,95,0.2)] bg-white text-[0.72rem] text-[#6b7280]">
                 <strong className="text-[#002C5F]">Financiamiento</strong> desde 0%
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-wrap gap-3 items-center">
