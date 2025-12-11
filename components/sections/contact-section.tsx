@@ -55,7 +55,7 @@ export function ContactSection() {
   };
 
   return (
-    <section className="py-10" id="contacto">
+    <section className="py-10 scroll-mt-24 lg:scroll-mt-15" id="contacto">
       <div className="container-custom">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 mb-6">
           <div>
@@ -67,9 +67,9 @@ export function ContactSection() {
               videollamada.
             </p>
           </div>
-          <span className="px-3 py-1 rounded-full text-[0.7rem] border border-[rgba(0,44,95,0.2)] text-[#6b7280] bg-white">
+          {/* <span className="px-3 py-1 rounded-full text-[0.7rem] border border-[rgba(0,44,95,0.2)] text-[#6b7280] bg-white">
             CTA final · cierre de venta
-          </span>
+          </span> */}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6">
@@ -195,7 +195,7 @@ export function ContactSection() {
               <div className="flex gap-2 mt-2">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-3 rounded-full bg-gradient-to-br from-[#002C5F] to-[#0957a5] text-white font-medium shadow-[0_18px_35px_rgba(0,44,95,0.35)] hover:shadow-[0_20px_40px_rgba(0,44,95,0.45)] hover:-translate-y-px transition-all text-center"
+                  className="flex-1 px-4 py-3 rounded-full bg-gradient-to-br from-[#002C5F] to-[#0957a5] text-white font-medium shadow-[0_18px_35px_rgba(0,44,95,0.35)] hover:shadow-[0_20px_40px_rgba(0,44,95,0.45)] hover:-translate-y-px transition-all text-center cursor-pointer"
                 >
                   Enviar por correo
                 </button>
@@ -203,7 +203,7 @@ export function ContactSection() {
                 <button
                   type="button"
                   onClick={handleWhatsAppClick}
-                  className="flex-1 px-4 py-3 rounded-full bg-[#22c55e] text-white font-medium shadow-[0_18px_35px_rgba(34,197,94,0.35)] hover:shadow-[0_20px_40px_rgba(34,197,94,0.45)] hover:-translate-y-px transition-all text-center"
+                  className="flex-1 px-4 py-3 rounded-full bg-[#22c55e] text-white font-medium shadow-[0_18px_35px_rgba(34,197,94,0.35)] hover:shadow-[0_20px_40px_rgba(34,197,94,0.45)] hover:-translate-y-px transition-all text-center cursor-pointer"
                 >
                   WhatsApp
                 </button>

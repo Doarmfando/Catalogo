@@ -3,172 +3,168 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown } from "lucide-react";
 import { cars } from "@/data/cars";
+
+const SLIDE_DURATION = 4500; // ms
+const TICK = 50; // ms
 
 export function HeroSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Seleccionar solo 5 autos para el slider
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0); // 0–1
   const featuredCars = cars.slice(0, 5);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % featuredCars.length);
-    }, 4000); // Cambia cada 4 segundos
-
-    return () => clearInterval(interval);
-  }, [featuredCars.length]);
 
   const currentCar = featuredCars[currentIndex];
 
+  // Autoplay con progreso lineal
+  useEffect(() => {
+    if (isPaused || featuredCars.length === 0) return;
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const next = prev + TICK / SLIDE_DURATION;
+
+        if (next >= 1) {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % featuredCars.length);
+          return 0;
+        }
+
+        return next;
+      });
+    }, TICK);
+
+    return () => clearInterval(interval);
+  }, [isPaused, featuredCars.length]);
+
+  useEffect(() => {
+    setProgress(0);
+  }, [currentIndex]);
+
+  const promoText = `Combina diseño, confort y tecnología Hyundai para tus próximas rutas.`;
+
+  const handleBulletClick = (index: number) => {
+    if (index === currentIndex) {
+      setIsPaused((prev) => !prev);
+    } else {
+      setCurrentIndex(index);
+      setIsPaused(false);
+    }
+  };
+
   return (
-    <section className="py-14 lg:py-20" id="inicio">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
-          {/* Left Content */}
-          <div>
-            <p className="text-[0.8rem] tracking-[0.25em] uppercase text-[#002C5F] mb-3 flex items-center gap-3">
-              <span className="w-10 h-px bg-gradient-to-r from-[#002C5F] to-transparent rounded-full"></span>
-              Catálogo 2025-2026
+    <section
+      id="inicio"
+      className="relative overflow-hidden bg-[#020617] text-white py-14 lg:py-20"
+    >
+      {/* Glows de fondo con paleta Hyundai */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,44,95,0.7),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(0,170,210,0.6),transparent_55%)] opacity-80" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#020617]/90 via-[#020617]/70 to-[#020617]" />
+
+      <div className="container-custom relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[480px]">
+          {/* LADO IZQUIERDO · TEXTO PROMO */}
+          <div className="max-w-xl">
+            <p className="text-[0.75rem] tracking-[0.28em] uppercase text-slate-200 mb-4 flex items-center gap-3">
+              <span className="w-10 h-px bg-gradient-to-r from-[#00AAD2] to-transparent rounded-full" />
+              Catálogo 2025-2026 · Hyundai Perú
             </p>
 
-            <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-4 text-[#002C5F]">
-              Encuentra el{" "}
-              <span className="bg-gradient-to-br from-[#002C5F] to-[#1c1b1b] bg-clip-text text-transparent">
-                vehículo ideal
-              </span>{" "}
-              para tu próxima ruta.
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-3 text-[#E5F3FF]">
+              {currentCar.name}
             </h1>
 
-            <p className="text-base text-[#6b7280] max-w-lg mb-6">
-              Explora nuestro catálogo completo de vehículos Hyundai: SUV, Sedán, Hatchback,
-              Utilitarios y Comerciales. Encuentra el modelo perfecto para ti con opciones de
-              financiamiento flexibles.
+            <p className="text-sm sm:text-base text-slate-200 mb-6">
+              {promoText}
             </p>
 
-            <div className="flex flex-wrap gap-3 mb-7">
-              <div className="px-3 py-1 rounded-full border border-[rgba(0,44,95,0.2)] bg-white text-[0.72rem] text-[#6b7280]">
-                <strong className="text-[#002C5F]">+40</strong> modelos disponibles
-              </div>
-              <div className="px-3 py-1 rounded-full border border-[rgba(0,44,95,0.2)] bg-white text-[0.72rem] text-[#6b7280]">
-                <strong className="text-[#002C5F]">Gasolina · Diésel · Híbridos</strong>
-              </div>
-              {/* <div className="px-3 py-1 rounded-full border border-[rgba(0,44,95,0.2)] bg-white text-[0.72rem] text-[#6b7280]">
-                <strong className="text-[#002C5F]">Financiamiento</strong> desde 0%
-              </div> */}
-            </div>
-
-            <div className="flex flex-wrap gap-3 items-center">
+            <div className="flex flex-wrap gap-3 mb-4">
+              {/* Primary: azul Hyundai */}
               <Link
                 href="#modelos"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-br from-[#002C5F] to-[#0957a5] text-white font-medium shadow-[0_18px_35px_rgba(0,44,95,0.35)] hover:shadow-[0_20px_40px_rgba(0,44,95,0.45)] hover:-translate-y-px transition-all duration-200"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#002C5F] hover:bg-[#0957a5] text-sm sm:text-base font-semibold shadow-[0_18px_40px_rgba(0,44,95,0.6)] hover:-translate-y-[1px] transition-all"
               >
-                Ver catálogo completo
-                <ArrowDown className="w-4 h-4" />
+                Ver Catálogo Completo
               </Link>
+
+              {/* Secundario: borde cian */}
               <Link
                 href="#contacto"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[rgba(0,44,95,0.4)] text-[#002C5F] hover:bg-[rgba(0,44,95,0.06)] transition-all duration-200"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[rgba(0,170,210,0.8)] text-sm sm:text-base font-medium text-[#E5F3FF] hover:bg-[rgba(0,170,210,0.18)] hover:-translate-y-[1px] transition-all"
               >
-                Hablar con un asesor
+                Quiero cotizar
               </Link>
             </div>
-
-            <p className="text-[0.7rem] text-[#6b7280] mt-5">
-              Catálogo oficial de <span className="text-[#002C5F] font-medium">Hyundai Perú</span> ·
-              Concesionarios autorizados
-            </p>
           </div>
 
-          {/* Right Visual - Featured Car Card Slider */}
-          <aside className="rounded-[1.3rem] bg-gradient-to-br from-[#002C5F] via-[#0b1120] to-[#020617] p-px shadow-[0_18px_40px_rgba(0,0,0,0.12)] relative">
-            <div className="rounded-[1.3rem] bg-gradient-to-br from-[#1f2937] to-[#020617] p-5 relative overflow-hidden">
-              <div className="rounded-xl bg-gradient-to-br from-[#020617] to-[#1e293b] border border-[rgba(148,163,184,0.35)] p-4 relative overflow-hidden transition-all duration-500">
-                {/* Glow effect */}
-                <div className="absolute inset-x-[-40%] top-0 h-[120%] bg-[radial-gradient(circle_at_10%_0,rgba(56,189,248,0.3),transparent_55%)] opacity-70 pointer-events-none"></div>
+          {/* LADO DERECHO · IMAGEN PROMOCIONAL */}
+          <div className="relative">
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.9),transparent_70%)] opacity-80" />
 
-                {/* Card Header */}
-                <div className="flex items-center justify-between mb-2 relative z-10">
-                  <div>
-                    <h3 className="text-sm font-semibold text-[#e5e7eb]">{currentCar.category} · {currentCar.name}</h3>
-                    <p className="text-[0.65rem] text-[#cbd5e1] mt-1">
-                      Catálogo destacado
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full border border-[rgba(148,163,184,0.5)] ml-2 bg-[rgba(15,23,42,0.95)]">
-                        {currentCar.year}
-                      </span>
-                    </p>
-                  </div>
-                  <span className="text-[0.68rem] px-2 py-1 rounded-full bg-[rgba(0,44,95,0.08)] text-[#e5e7eb] border border-[rgba(148,163,184,0.5)]">
-                    {currentCar.fuelType}
-                  </span>
-                </div>
-
-                {/* Car Image */}
-                <div className="mt-3 grid grid-cols-[1.3fr_1fr] gap-3 items-center relative z-10">
-                  <div className="aspect-video rounded-lg bg-gradient-to-br from-[rgba(248,250,252,0.9)] to-[#020617] flex items-center justify-center p-3 overflow-hidden relative">
-                    <div className="absolute inset-x-[10%] bottom-[7%] h-[26%] bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.65),transparent_65%)] opacity-90"></div>
-                    {currentCar.image ? (
-                      <Image
-                        key={currentCar.id}
-                        src={currentCar.image}
-                        alt={currentCar.name}
-                        width={300}
-                        height={200}
-                        className="w-full h-full object-contain relative z-10 transition-opacity duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[0.7rem] text-[#cbd5e1]">
-                        Sin imagen
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="text-[0.7rem] text-[#cbd5e1] space-y-1.5">
-                    <div className="flex justify-between">
-                      <span>Año:</span>
-                      <strong className="text-[#e5e7eb]">{currentCar.year}</strong>
+            <div className="relative max-w-xl mx-auto">
+              <div className="rounded-[1.6rem]">
+                <div className="relative aspect-[16/9] flex items-center justify-center">
+                  {currentCar.image ? (
+                    <Image
+                      key={currentCar.id}
+                      src={currentCar.image}
+                      alt={currentCar.name}
+                      width={900}
+                      height={520}
+                      priority
+                      className="w-full h-full object-contain drop-shadow-[0_26px_40px_rgba(15,23,42,0.85)]"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-sm text-slate-300">
+                      Imagen no disponible
                     </div>
-                    <div className="flex justify-between">
-                      <span>Categoría:</span>
-                      <strong className="text-[#e5e7eb]">{currentCar.category}</strong>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Combustible:</span>
-                      <strong className="text-[#e5e7eb]">{currentCar.fuelType}</strong>
-                    </div>
-                    <div className="pt-2">
-                      <div className="text-[0.9rem] font-semibold text-[#f9fafb]">Desde</div>
-                      <div className="text-base font-semibold text-white">
-                        ${currentCar.priceUSD.toLocaleString("en-US")}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom ribbon with indicators */}
-              <div className="mt-3 flex items-center justify-center gap-3 text-[0.68rem] text-[#cbd5e1]">
-                <span className="text-[0.65rem]">Catálogo destacado</span>
-                <div className="flex gap-2 items-center">
-                  {featuredCars.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentIndex(index)}
-                      className={`h-8 rounded-md transition-all font-medium ${
-                        index === currentIndex
-                          ? "bg-[#22c55e] text-white px-3 shadow-lg"
-                          : "bg-[rgba(148,163,184,0.2)] text-[#cbd5e1] px-2.5 hover:bg-[rgba(148,163,184,0.3)]"
-                      }`}
-                      aria-label={`Ver vehículo ${index + 1}`}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
-          </aside>
+          </div>
+        </div>
+
+        {/* Lista de modelos + bullets debajo, centrados */}
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <p className="text-[0.7rem] sm:text-xs uppercase tracking-[0.25em] text-slate-200 text-center">
+            {featuredCars.map((car, i) =>
+              i === featuredCars.length - 1 ? car.name : `${car.name}  |  `
+            )}
+          </p>
+
+          {/* Bullets con animación simple (scale) y colores del proyecto */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(0,44,95,0.5)] bg-[rgba(15,23,42,0.96)] px-4 py-2 shadow-[0_14px_35px_rgba(15,23,42,0.9)]">
+            <div className="flex items-center gap-2">
+              {featuredCars.map((car, index) => {
+                const isActive = index === currentIndex;
+                const scale = isActive ? 0.2 + 1 * progress : 0.2;
+
+                return (
+                  <button
+                    key={car.id}
+                    onClick={() => handleBulletClick(index)}
+                    className="relative h-6 w-6 flex items-center justify-center"
+                    aria-label={`Ver vehículo ${index + 1}`}
+                  >
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(148,163,184,0.6)]">
+                      <span
+                        className={`h-4 w-4 rounded-full transition-transform duration-75 ${
+                          isActive
+                            ? isPaused
+                              ? "bg-amber-300"
+                              : "bg-[#00AAD2]"
+                            : "bg-slate-200/90"
+                        }`}
+                        style={{
+                          transform: `scale(${scale})`,
+                        }}
+                      />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>
