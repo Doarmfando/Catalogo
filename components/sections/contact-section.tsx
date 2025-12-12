@@ -11,7 +11,7 @@ export function ContactSection() {
     message: "",
   });
 
-  const salesEmail = "fabiodonascimentos@gmail.com"; // CAMBIAR POR EL CORREO REAL
+  const salesEmail = "fabiodonascimentosif@gmail.com"; // CAMBIAR POR EL CORREO REAL
   const handleWhatsAppClick = () => {
     const { name, message, phone, email } = formData;
 
@@ -106,7 +106,7 @@ export function ContactSection() {
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 text-[#002C5F] mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="text-[#002C5F] font-medium">Correo:</span> fabiodonascimento@gmail.com
+                  <span className="text-[#002C5F] font-medium">Correo:</span> fabiodonascimentosif@gmail.com
                 </div>
               </li>
               <li className="flex items-start gap-2">
