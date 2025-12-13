@@ -26,7 +26,7 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
 
   return (
     <article
-      className="bg-white rounded-[1.1rem] border border-[rgba(0,44,95,0.14)] p-3.5 flex flex-col gap-2.5 shadow-[0_18px_40px_rgba(0,0,0,0.12)] transition-all duration-[180ms] hover:-translate-y-1 hover:border-[rgba(0,44,95,0.5)] hover:shadow-[0_18px_40px_rgba(0,44,95,0.28)] hover:bg-white cursor-pointer relative overflow-hidden group"
+      className="bg-white rounded-[1.1rem] border border-[rgba(0,44,95,0.14)] p-3.5 flex flex-col gap-2.5 shadow-[0_18px_40px_rgba(0,0,0,0.12)] transition-all duration-[180ms] hover:-translate-y-1 hover:border-[rgba(0,44,95,0.5)] hover:shadow-[0_18px_40px_rgba(0,44,95,0.28)] hover:bg-white relative overflow-hidden group"
       aria-label={`${car.name} · ${car.category} · ${car.fuelType}`}
       onMouseEnter={() => setShowFrontal(true)}
       onMouseLeave={() => setShowFrontal(false)}
@@ -39,9 +39,14 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
         {/* <span className="px-2.5 py-1 rounded-full border border-[rgba(0,44,95,0.4)] uppercase tracking-[0.16em] text-[0.62rem] text-[#002C5F] bg-[rgba(0,44,95,0.04)]">
           Hyundai
         </span> */}
-      <span className="ml-auto px-2 py-1 rounded-full bg-[#e6e1df] border border-[rgba(148,163,184,0.4)] text-[0.65rem] text-[#1c1b1b]">
-        {car.year}
-      </span>
+<span
+  className="ml-auto inline-flex items-center justify-center px-2.5 py-0.5 rounded-full 
+             border border-[#E5E7EB] bg-[#F9FAFB] 
+             text-[0.7rem] font-medium text-[#4B5563]"
+>
+  {car.year}
+</span>
+
 
       </div>
 
@@ -86,7 +91,7 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
       {/* Footer */}
       <div className="mt-2 flex items-center justify-between text-[0.78rem] relative z-10">
         <div className="flex flex-col">
-          <span className="text-[0.7rem] text-[#6b7280]">Precio referencial</span>
+          <span className="text-[0.7rem] text-[#6b7280]">DESDE:</span>
           <div className="text-base font-semibold text-[#002C5F]">
             ${car.priceUSD.toLocaleString("en-US")}
           </div>
@@ -94,10 +99,17 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
             ó S/ {car.pricePEN.toLocaleString("en-US")}
           </span>
         </div>
-        <button className="text-[0.75rem] px-3.5 py-2 rounded-full border border-[rgba(0,44,95,0.4)] inline-flex items-center gap-1.5 bg-white text-[#002C5F] hover:bg-[rgba(0,44,95,0.06)] transition-colors">
-          Cotizar
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+          <button
+            className="relative text-[0.75rem] inline-flex items-center gap-1.5
+                      px-0 py-1 font-semibold text-[#002C5F]
+                      border-b border-[#002C5F]/70
+                      hover:border-b-[2px] hover:border-[#002C5F]
+                      hover:text-[#001a3a] transition-all cursor-pointer"
+          >
+            <span>Cotizar</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+
       </div>
     </article>
   );

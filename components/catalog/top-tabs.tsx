@@ -30,7 +30,7 @@ export function TopTabs({ selectedCategory, onCategoryChange }: TopTabsProps) {
           <TabsTrigger
             key={category}
             value={category}
-            className="bg-transparent border-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-[#00AAD2] rounded-none pb-3 px-0 font-medium text-base text-gray-600 data-[state=active]:text-[#002C5F] hover:text-[#002C5F] transition-colors"
+            className="bg-transparent border-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-[#00AAD2] rounded-none pb-3 px-0 font-medium text-base text-gray-600 data-[state=active]:text-[#002C5F] hover:text-[#002C5F] transition-colors cursor-pointer"
           >
             {category}
           </TabsTrigger>

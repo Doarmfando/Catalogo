@@ -82,7 +82,7 @@ export default function CatalogPage() {
         <HeroSection />
 
         {/* Catalog Section */}
-        <section className="py-10" id="modelos">
+        <section className="py-10 scroll-mt-24 lg:scroll-mt-10" id="modelos">
           <div className="container-custom">
             {/* Tabs */}
             <div className="mb-8">

@@ -9,7 +9,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-20 backdrop-blur-[16px] bg-[rgba(246,243,242,0.98)] border-b border-[rgba(0,44,95,0.16)]">
+    <header className="sticky top-0 z-20 backdrop-blur-[16px] bg-[#FFFFFF] border-b border-[rgba(0,44,95,0.16)]">
       <div className="container-custom">
         <div className="flex items-center justify-between py-3 gap-4">
           {/* Logo */}

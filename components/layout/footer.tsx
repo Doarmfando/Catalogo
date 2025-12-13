@@ -1,29 +1,55 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Facebook, Instagram, Linkedin, Mail, Phone, Youtube } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+
+  const socialLinks = [
+    {
+      icon: Facebook,
+      label: "Facebook",
+      href: "https://www.facebook.com/hyundaiASMChimbote",
+    },
+    {
+      icon: Instagram,
+      label: "Instagram",
+      href: "https://www.instagram.com/hyundai.chimbote/",
+    },
+    {
+      icon: Youtube,
+      label: "YouTube",
+      href: "https://www.youtube.com/tu-canal-hyundai",
+    },
+  ];
 
   return (
     <footer className="bg-[#1c1b1b] text-white mt-16">
       <div className="container mx-auto px-4 py-12 space-y-10">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           <div className="space-y-4">
-            <h3 className="text-lg font-bold tracking-wide">HYUNDAI</h3>
+            {/* Si quieres puedes dejar el texto HYUNDAI o quitarlo */}
+            <Image
+              src="/images/logo_white.png" // pon aquí tu logo en /public
+              alt="Hyundai"
+              width={110}
+              height={30}
+              className="h-6 w-auto"
+            />
+
+
+            
             <p className="text-sm text-gray-300 leading-relaxed">
               Encuentra el vehiculo perfecto para ti. Innovacion, diseño y confianza en cada modelo.
             </p>
             <div className="flex items-center gap-3">
-              {[
-                { icon: Facebook, label: "Facebook" },
-                { icon: Instagram, label: "Instagram" },
-                { icon: Youtube, label: "YouTube" },
-                { icon: Linkedin, label: "LinkedIn" },
-              ].map(({ icon: Icon, label }) => (
+              {socialLinks.map(({ icon: Icon, label, href }) => (
                 <Link
                   key={label}
-                  href="#"
+                  href={href}
                   aria-label={label}
+                  target="_blank"
+                  rel="noreferrer"
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
                 >
                   <Icon className="h-5 w-5" />
@@ -79,8 +105,14 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Franja inferior con logo + copyright + links */}
         <div className="border-t border-white/10 pt-6 text-xs text-gray-400 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <span>© {currentYear} Hyundai Peru. Todos los derechos reservados.</span>
+
+          <div className="flex items-center gap-3">
+
+            <span>© {currentYear} Hyundai Peru. Todos los derechos reservados.</span>
+          </div>
+
           <div className="flex gap-4 text-xs text-gray-400">
             <Link href="#" className="hover:text-white">Privacidad</Link>
             <Link href="#" className="hover:text-white">Terminos</Link>
