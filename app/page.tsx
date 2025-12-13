@@ -18,9 +18,20 @@ export default function CatalogPage() {
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<FuelType[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const filteredCars = useMemo(() => {
     return cars.filter((car) => {
+      // Filter by search query
+      if (searchQuery.trim() !== "") {
+        const query = searchQuery.toLowerCase();
+        const matchesName = car.name.toLowerCase().includes(query);
+        const matchesSubtitle = car.subtitle?.toLowerCase().includes(query);
+        if (!matchesName && !matchesSubtitle) {
+          return false;
+        }
+      }
+
       // Filter by category
       if (selectedCategory !== "Todos") {
         if (selectedCategory === "ECOLÓGICOS" && car.fuelType !== "ELÉCTRICO") {
@@ -51,12 +62,13 @@ export default function CatalogPage() {
 
       return true;
     });
-  }, [selectedCategory, selectedFuelTypes, selectedPriceRanges, selectedYears]);
+  }, [selectedCategory, selectedFuelTypes, selectedPriceRanges, selectedYears, searchQuery]);
 
   const handleClearFilters = () => {
     setSelectedFuelTypes([]);
     setSelectedPriceRanges([]);
     setSelectedYears([]);
+    setSearchQuery("");
   };
 
   return (
@@ -91,9 +103,11 @@ export default function CatalogPage() {
                   selectedFuelTypes={selectedFuelTypes}
                   selectedPriceRanges={selectedPriceRanges}
                   selectedYears={selectedYears}
+                  searchQuery={searchQuery}
                   onFuelTypeChange={setSelectedFuelTypes}
                   onPriceRangeChange={setSelectedPriceRanges}
                   onYearChange={setSelectedYears}
+                  onSearchChange={setSearchQuery}
                   onClearFilters={handleClearFilters}
                 />
               </aside>

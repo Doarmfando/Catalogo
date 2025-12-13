@@ -124,7 +124,7 @@ export function ContactSection() {
               <div className="flex flex-col gap-1">
                 <label
                   htmlFor="name"
-                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#6b7280]"
+                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#002C5F] font-semibold"
                 >
                   Nombre completo
                 </label>
@@ -135,14 +135,14 @@ export function ContactSection() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Ej. Juan Pérez"
                   required
-                  className="rounded-xl border border-[rgba(0,44,95,0.3)] bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:shadow-[0_0_0_1px_rgba(0,44,95,0.5)] transition-all placeholder:text-[rgba(148,163,184,0.8)]"
+                  className="rounded-xl border-2 border-[#002C5F]/30 bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:ring-2 focus:ring-[#002C5F]/20 transition-all placeholder:text-[rgba(148,163,184,0.8)]"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <label
                   htmlFor="email"
-                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#6b7280]"
+                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#002C5F] font-semibold"
                 >
                   Correo
                 </label>
@@ -153,14 +153,14 @@ export function ContactSection() {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="tucorreo@ejemplo.com"
                   required
-                  className="rounded-xl border border-[rgba(0,44,95,0.3)] bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:shadow-[0_0_0_1px_rgba(0,44,95,0.5)] transition-all placeholder:text-[rgba(148,163,184,0.8)]"
+                  className="rounded-xl border-2 border-[#002C5F]/30 bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:ring-2 focus:ring-[#002C5F]/20 transition-all placeholder:text-[rgba(148,163,184,0.8)]"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <label
                   htmlFor="phone"
-                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#6b7280]"
+                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#002C5F] font-semibold"
                 >
                   Teléfono / WhatsApp
                 </label>
@@ -170,14 +170,14 @@ export function ContactSection() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="+51 9xx xxx xxx"
-                  className="rounded-xl border border-[rgba(0,44,95,0.3)] bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:shadow-[0_0_0_1px_rgba(0,44,95,0.5)] transition-all placeholder:text-[rgba(148,163,184,0.8)]"
+                  className="rounded-xl border-2 border-[#002C5F]/30 bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:ring-2 focus:ring-[#002C5F]/20 transition-all placeholder:text-[rgba(148,163,184,0.8)]"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <label
                   htmlFor="message"
-                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#6b7280]"
+                  className="text-[0.7rem] uppercase tracking-[0.16em] text-[#002C5F] font-semibold"
                 >
                   ¿Qué modelo te interesa?
                 </label>
@@ -188,7 +188,7 @@ export function ContactSection() {
                   placeholder="Ej. Hyundai Tucson híbrida, presupuesto aproximado…"
                   required
                   rows={4}
-                  className="rounded-xl border border-[rgba(0,44,95,0.3)] bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:shadow-[0_0_0_1px_rgba(0,44,95,0.5)] transition-all placeholder:text-[rgba(148,163,184,0.8)] resize-none"
+                  className="rounded-xl border-2 border-[#002C5F]/30 bg-white text-[#1c1b1b] px-3 py-2 text-[0.82rem] outline-none focus:border-[#002C5F] focus:ring-2 focus:ring-[#002C5F]/20 transition-all placeholder:text-[rgba(148,163,184,0.8)] resize-none"
                 />
               </div>
 

@@ -9,14 +9,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { FuelType } from "@/types/car";
+import { Search } from "lucide-react";
 
 interface SidebarFiltersProps {
   selectedFuelTypes: FuelType[];
   selectedPriceRanges: string[];
   selectedYears: number[];
+  searchQuery: string;
   onFuelTypeChange: (fuelTypes: FuelType[]) => void;
   onPriceRangeChange: (ranges: string[]) => void;
   onYearChange: (years: number[]) => void;
+  onSearchChange: (query: string) => void;
   onClearFilters: () => void;
 }
 
@@ -36,9 +39,11 @@ export function SidebarFilters({
   selectedFuelTypes,
   selectedPriceRanges,
   selectedYears,
+  searchQuery,
   onFuelTypeChange,
   onPriceRangeChange,
   onYearChange,
+  onSearchChange,
   onClearFilters,
 }: SidebarFiltersProps) {
   const handleFuelTypeToggle = (fuelType: FuelType) => {
@@ -64,7 +69,24 @@ export function SidebarFilters({
 
   return (
     <div className="w-full bg-white rounded-lg border p-6 sticky top-24">
-    <div className="border-b Bold border-gray-200 mb-6">(AGREGAR BUSCADOR DE TEXTO)</div>
+      {/* Search Input */}
+      <div className="mb-6">
+        <label htmlFor="searchFilter" className="text-lg font-semibold text-[#002C5F] mb-2 block">
+          Buscar modelo
+        </label>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#002C5F]/60" />
+          <input
+            type="text"
+            id="searchFilter"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Ej. Tucson, Creta..."
+            className="w-full rounded-lg bg-white border-2 border-[#002C5F]/30 text-[#1c1b1b] pl-10 pr-3 py-2.5 text-sm outline-none focus:border-[#002C5F] focus:ring-2 focus:ring-[#002C5F]/20 transition-all placeholder:text-[#6b7280]/60"
+          />
+        </div>
+      </div>
+
       <h2 className="text-lg font-semibold mb-6 text-[#002C5F]">Filtros</h2>
       <Accordion type="multiple" defaultValue={["fuel", "price", "year"]} className="w-full">
         <AccordionItem value="fuel" className="border-b border-gray-200">
@@ -82,7 +104,7 @@ export function SidebarFilters({
                   />
                   <Label
                     htmlFor={`fuel-${fuelType}`}
-                    className="text-sm font-normal cursor-pointer"
+                    className="text-sm font-medium cursor-pointer text-[#1c1b1b]"
                   >
                     {fuelType}
                   </Label>
@@ -107,7 +129,7 @@ export function SidebarFilters({
                   />
                   <Label
                     htmlFor={`price-${range.value}`}
-                    className="text-sm font-normal cursor-pointer"
+                    className="text-sm font-medium cursor-pointer text-[#1c1b1b]"
                   >
                     {range.label}
                   </Label>
@@ -132,7 +154,7 @@ export function SidebarFilters({
                   />
                   <Label
                     htmlFor={`year-${year}`}
-                    className="text-sm font-normal cursor-pointer"
+                    className="text-sm font-medium cursor-pointer text-[#1c1b1b]"
                   >
                     {year}
                   </Label>
