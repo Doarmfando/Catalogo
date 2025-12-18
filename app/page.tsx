@@ -26,8 +26,7 @@ export default function CatalogPage() {
       if (searchQuery.trim() !== "") {
         const query = searchQuery.toLowerCase();
         const matchesName = car.name.toLowerCase().includes(query);
-        const matchesSubtitle = car.subtitle?.toLowerCase().includes(query);
-        if (!matchesName && !matchesSubtitle) {
+        if (!matchesName) {
           return false;
         }
       }
