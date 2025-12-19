@@ -40,6 +40,11 @@ const categoryInfo: Record<CarCategory, { title: string; subtitle: string; descr
     subtitle: "Comerciales",
     description: "Descubre nuestra línea de modelos de vehículos comerciales, desde camiones hasta buses en venta. Encuentra el modelo perfecto para tu negocio, cotiza en línea y descubre el precio de camiones y buses en Perú.",
   },
+    "PICK-UP": {
+    title: "Pick-ups",
+    subtitle: "Potencia y Versatilidad",
+    description: "Modelos pick-up para trabajo, aventura y desempeño en todo terreno.",
+  },
 };
 
 export function CategoryHeader({ category }: CategoryHeaderProps) {
