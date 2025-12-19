@@ -10,38 +10,36 @@ export interface CatalogFilters {
 }
 
 export function useCatalogFilters(cars: Car[]) {
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CarCategory>("Todos");
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<FuelType[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const filteredCars = useMemo(() => {
+  const brands = useMemo(() => {
+    return Array.from(new Set(cars.map((c) => c.brand).filter(Boolean))).sort();
+  }, [cars]);
+
+  const filteredCarsNoBrand = useMemo(() => {
     return cars.filter((car) => {
-      // Filter by search query
+      // Search
       if (searchQuery.trim() !== "") {
         const query = searchQuery.toLowerCase();
         const matchesName = car.name.toLowerCase().includes(query);
-        if (!matchesName) {
-          return false;
-        }
+        if (!matchesName) return false;
       }
 
-      // Filter by category
+      // Category
       if (selectedCategory !== "Todos") {
-        if (selectedCategory === "ECOLÓGICOS" && car.fuelType !== "ELÉCTRICO") {
-          return false;
-        } else if (selectedCategory !== "ECOLÓGICOS" && car.category !== selectedCategory) {
-          return false;
-        }
+        if (selectedCategory === "ECOLÓGICOS" && car.fuelType !== "ELÉCTRICO") return false;
+        if (selectedCategory !== "ECOLÓGICOS" && car.category !== selectedCategory) return false;
       }
 
-      // Filter by fuel type
-      if (selectedFuelTypes.length > 0 && !selectedFuelTypes.includes(car.fuelType)) {
-        return false;
-      }
+      // Fuel
+      if (selectedFuelTypes.length > 0 && !selectedFuelTypes.includes(car.fuelType)) return false;
 
-      // Filter by price range
+      // Price
       if (selectedPriceRanges.length > 0) {
         const inRange = selectedPriceRanges.some((range) => {
           const [min, max] = range.split("-").map(Number);
@@ -50,16 +48,29 @@ export function useCatalogFilters(cars: Car[]) {
         if (!inRange) return false;
       }
 
-      // Filter by year
-      if (selectedYears.length > 0 && !selectedYears.includes(car.year)) {
-        return false;
-      }
+      // Year
+      if (selectedYears.length > 0 && !selectedYears.includes(car.year)) return false;
 
       return true;
     });
   }, [cars, selectedCategory, selectedFuelTypes, selectedPriceRanges, selectedYears, searchQuery]);
 
+  const brandCounts = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const car of filteredCarsNoBrand) {
+      out[car.brand] = (out[car.brand] ?? 0) + 1;
+    }
+    return out;
+  }, [filteredCarsNoBrand]);
+
+  const filteredCars = useMemo(() => {
+    if (selectedBrands.length === 0) return filteredCarsNoBrand;
+    return filteredCarsNoBrand.filter((car) => selectedBrands.includes(car.brand));
+  }, [filteredCarsNoBrand, selectedBrands]);
+
+
   const handleClearFilters = () => {
+    setSelectedBrands([]);
     setSelectedFuelTypes([]);
     setSelectedPriceRanges([]);
     setSelectedYears([]);
@@ -68,7 +79,11 @@ export function useCatalogFilters(cars: Car[]) {
 
   return {
     filteredCars,
+    brands, // 👈 lista lista para el UI
+    brandCounts, // ✅ NUEVO
+
     filters: {
+      selectedBrands,
       selectedCategory,
       selectedFuelTypes,
       selectedPriceRanges,
@@ -76,6 +91,7 @@ export function useCatalogFilters(cars: Car[]) {
       searchQuery,
     },
     setters: {
+      setSelectedBrands,
       setSelectedCategory,
       setSelectedFuelTypes,
       setSelectedPriceRanges,

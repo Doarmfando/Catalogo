@@ -48,7 +48,7 @@ export default function LoginPage() {
         <CirclesBackground />
 
         <div className="flex h-screen w-screen relative z-10 login-wrapper">
-          <LeftPanel panelImage="/images/PAISAJESUV_fixed.png" altText="Panel lateral del login">
+          <LeftPanel panelImage="/images/consecionarixda.png" altText="Panel lateral del login">
             <BrandLogo />
           </LeftPanel>
 
@@ -141,7 +141,8 @@ export default function LoginPage() {
           </div>
 
           <FooterBanner
-            logo="/logo-pr.png"
+            logo="/logo_icon.png"
+            logo2="/XDlogo_text.png"
             logoAlt="Hyundai Logo"
             companyName="Fortex"
             contactLabel="Contacto:"

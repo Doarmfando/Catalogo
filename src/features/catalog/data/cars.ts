@@ -4,6 +4,7 @@ export const cars: Car[] = [
   // ECOLÓGICOS
   {
     id: "1",
+    brand: "Hyundai",
     name: "The all-new PALISADE Hybrid",
     year: 2026,
     category: "ECOLÓGICOS",
@@ -15,6 +16,8 @@ export const cars: Car[] = [
   },
   {
     id: "2",
+    brand: "Hyundai",
+
     name: "TUCSON Hybrid",
     year: 2026,
     category: "ECOLÓGICOS",
@@ -26,6 +29,8 @@ export const cars: Car[] = [
   },
   {
     id: "3",
+        brand: "Hyundai",
+
     name: "SANTA FE Hybrid",
     year: 2025,
     category: "ECOLÓGICOS",
@@ -38,6 +43,8 @@ export const cars: Car[] = [
   // HATCHBACK
   {
     id: "4",
+        brand: "Hyundai",
+
     name: "Grand i10 Hatch",
     year: 2026,
     category: "HATCHBACK",
@@ -49,6 +56,8 @@ export const cars: Car[] = [
   },
   {
     id: "5",
+        brand: "Hyundai",
+
     name: "i20 Hatch",
     year: 2026,
     category: "HATCHBACK",
@@ -61,6 +70,8 @@ export const cars: Car[] = [
   // SEDÁN
   {
     id: "6",
+        brand: "Hyundai",
+
     name: "Grand i10 Sedán",
     year: 2026,
     category: "SEDÁN",
@@ -72,6 +83,8 @@ export const cars: Car[] = [
   },
   {
     id: "7",
+        brand: "Hyundai",
+
     name: "ACCENT",
     year: 2026,
     category: "SEDÁN",
@@ -84,6 +97,8 @@ export const cars: Car[] = [
   // SUV
   {
     id: "8",
+        brand: "Hyundai",
+
     name: "The all-new PALISADE Hybrid",
     year: 2026,
     category: "SUV",
@@ -95,6 +110,8 @@ export const cars: Car[] = [
   },
   {
     id: "9",
+        brand: "Hyundai",
+
     name: "VENUE",
     year: 2026,
     category: "SUV",
@@ -106,6 +123,8 @@ export const cars: Car[] = [
   },
   {
     id: "10",
+        brand: "Hyundai",
+
     name: "CRETA",
     year: 2026,
     category: "SUV",
@@ -117,6 +136,8 @@ export const cars: Car[] = [
   },
   {
     id: "11",
+        brand: "Hyundai",
+
     name: "CRETA Grand",
     year: 2026,
     category: "SUV",
@@ -128,6 +149,8 @@ export const cars: Car[] = [
   },
   {
     id: "12",
+        brand: "Hyundai",
+
     name: "TUCSON",
     year: 2026,
     category: "SUV",
@@ -139,6 +162,8 @@ export const cars: Car[] = [
   },
   {
     id: "13",
+        brand: "Hyundai",
+
     name: "TUCSON Hybrid",
     year: 2026,
     category: "SUV",
@@ -147,9 +172,35 @@ export const cars: Car[] = [
     pricePEN: 139366,
     image: "/images/TUCSON_HYB-2026.png",
     imageFrontal: "/images/frontal/TUCSON_HYB-2026-LATERAL.png",
+    versions: [
+      {
+        id: "tucson-gl",
+        name: "GL",
+        shortDescription: "Entrada equilibrada",
+        priceUSD: 27990,
+        highlights: ["6 airbags", "Pantalla 12.3”", "Cámara reversa", "Control crucero"],
+        colors: [
+          { id: "blanco", name: "Blanco", hex: "#f3f4f6", images: ["/images/img/1.jpg", "/images/img/2.jpg"] },
+          { id: "azul", name: "Azul", hex: "#1d4ed8", images: ["/images/img/3.jpg"] },
+        ],
+      },
+      {
+        id: "tucson-gls",
+        name: "GLS",
+        shortDescription: "Más tecnología",
+        priceUSD: 29990,
+        highlights: ["ADAS", "Sunroof", "Climatizador", "Sensores 360"],
+        colors: [
+          { id: "blanco", name: "Blanco", hex: "#f3f4f6", images: ["/images/img/4.jpg", "/images/img/6.jpg"] },
+          { id: "azul", name: "Azul", hex: "#1d4ed8", images: ["/images/img/5.jpg"] },
+        ],
+      },
+    ],
   },
   {
     id: "14",
+        brand: "Hyundai",
+
     name: "SANTA FE",
     year: 2026,
     category: "SUV",
@@ -161,6 +212,8 @@ export const cars: Car[] = [
   },
   {
     id: "15",
+        brand: "Hyundai",
+
     name: "SANTA FE Hybrid",
     year: 2025,
     category: "SUV",
@@ -173,6 +226,8 @@ export const cars: Car[] = [
   // UTILITARIOS
   {
     id: "16",
+        brand: "Hyundai",
+
     name: "STARIA Cargo",
     year: 2026,
     category: "UTILITARIOS",
@@ -184,6 +239,8 @@ export const cars: Car[] = [
   },
   {
     id: "17",
+        brand: "Hyundai",
+
     name: "STARIA Minibús",
     year: 2026,
     category: "UTILITARIOS",
@@ -195,6 +252,8 @@ export const cars: Car[] = [
   },
   {
     id: "18",
+        brand: "Hyundai",
+
     name: "H-100",
     year: 2026,
     category: "UTILITARIOS",
@@ -207,6 +266,8 @@ export const cars: Car[] = [
   // COMERCIALES
   {
     id: "19",
+        brand: "Hyundai",
+
     name: "HD35",
     year: 2024,
     category: "COMERCIALES",
@@ -218,6 +279,8 @@ export const cars: Car[] = [
   },
   {
     id: "20",
+        brand: "Hyundai",
+
     name: "EX6",
     year: 2024,
     category: "COMERCIALES",
@@ -229,6 +292,8 @@ export const cars: Car[] = [
   },
   {
     id: "21",
+        brand: "Hyundai",
+
     name: "EX8",
     year: 2024,
     category: "COMERCIALES",
@@ -240,6 +305,8 @@ export const cars: Car[] = [
   },
   {
     id: "22",
+        brand: "Hyundai",
+
     name: "EX10",
     year: 2024,
     category: "COMERCIALES",
@@ -251,6 +318,8 @@ export const cars: Car[] = [
   },
   {
     id: "23",
+        brand: "Hyundai",
+
     name: "EX11",
     year: 2024,
     category: "COMERCIALES",
@@ -262,6 +331,8 @@ export const cars: Car[] = [
   },
   {
     id: "24",
+        brand: "Hyundai",
+
     name: "PAVISE",
     year: 2024,
     category: "COMERCIALES",
@@ -273,6 +344,8 @@ export const cars: Car[] = [
   },
   {
     id: "25",
+        brand: "Hyundai",
+
     name: "Solati H350",
     year: 2024,
     category: "COMERCIALES",
@@ -284,6 +357,8 @@ export const cars: Car[] = [
   },
   {
     id: "26",
+        brand: "Hyundai",
+
     name: "County Bus",
     year: 2024,
     category: "COMERCIALES",
@@ -295,6 +370,8 @@ export const cars: Car[] = [
   },
   {
     id: "27",
+        brand: "Hyundai",
+
     name: "BX8",
     year: 2024,
     category: "COMERCIALES",
@@ -306,6 +383,8 @@ export const cars: Car[] = [
   },
   {
     id: "28",
+        brand: "Hyundai",
+
     name: "BX11",
     year: 2024,
     category: "COMERCIALES",
@@ -314,5 +393,18 @@ export const cars: Car[] = [
     pricePEN: 168266,
     image: "/images/BX11-2024.png",
     imageFrontal: "/images/frontal/BX11-2024-LATERAL.png",
+  },
+  {
+    id: "29",
+        brand: "JMC",
+
+    name: "GRANDVENUE",
+    year: 2024,
+    category: "PICK-UP",
+    fuelType: "DIESEL",
+    priceUSD: 49490,
+    pricePEN: 168266,
+    image: "/images/GRAND_AVENUE.png",
+    imageFrontal: "/images/frontal/GRAND_AVENUE_LATERAL.png",
   },
 ];

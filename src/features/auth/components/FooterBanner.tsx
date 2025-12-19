@@ -6,6 +6,7 @@ import { Phone } from 'lucide-react'
 
 interface FooterBannerProps {
   logo: string
+  logo2: string
   logoAlt?: string
   companyName?: string
   contactLabel?: string
@@ -15,6 +16,7 @@ interface FooterBannerProps {
 
 const FooterBanner: React.FC<FooterBannerProps> = ({
   logo,
+  logo2,
   logoAlt = 'Company Logo',
   companyName = 'FORTEX',
   contactLabel = 'Contacto:',
@@ -35,14 +37,20 @@ const FooterBanner: React.FC<FooterBannerProps> = ({
               className="object-cover"
             />
           </div>
-          <span className="text-[#002C5F]">
-            Powered by {companyName}{' '}
-            <span className="text-gray-500 text-sm font-normal italic">v{version}</span>
-          </span>
+          <div className="relative h-5 w-[50px] shrink-0 overflow-hidden">
+            <Image
+              src={logo2}
+              alt={logoAlt}
+              fill
+              sizes="820px"
+              className="object-cover"
+            />
+          </div>
+
         </div>
 
         {/* Información de contacto */}
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <span className="text-gray-600 text-xs">{contactLabel}</span>
           <div className="flex items-center gap-3">
             {phoneNumbers.map((phone, index) => (
@@ -52,7 +60,7 @@ const FooterBanner: React.FC<FooterBannerProps> = ({
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
       <style jsx>{`

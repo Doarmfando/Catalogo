@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+
 import { ArrowRight, Fuel, Zap } from "lucide-react";
 import type { Car } from "@/shared/types/car";
 
@@ -99,16 +101,18 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
             ó S/ {car.pricePEN.toLocaleString("en-US")}
           </span>
         </div>
-          <button
-            className="relative text-[0.75rem] inline-flex items-center gap-1.5
-                      px-0 py-1 font-semibold text-[#002C5F]
-                      border-b border-[#002C5F]/70
-                      hover:border-b-[2px] hover:border-[#002C5F]
-                      hover:text-[#001a3a] transition-all cursor-pointer"
-          >
-            <span>Cotizar</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+        <Link
+          href={`/modelos/${car.id}`}
+          className="relative text-[0.75rem] inline-flex items-center gap-1.5
+                     px-0 py-1 font-semibold text-[#002C5F]
+                     border-b border-[#002C5F]/70
+                     hover:border-b-[2px] hover:border-[#002C5F]
+                     hover:text-[#001a3a] transition-all cursor-pointer"
+          aria-label={`Ver más sobre ${car.name}`}
+        >
+          <span>Ver Más</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
 
       </div>
     </article>

@@ -13,17 +13,17 @@ export function Navbar() {
       <div className="container-custom">
         <div className="flex items-center justify-between py-3 gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-4">
             <Image
-              src="/logo-pr.png"
+              src="/logo-asm.png"
               alt="Hyundai"
-              width={44}
-              height={44}
-              className="w-11 h-11 object-contain"
+              width={80}
+              height={80}
+              className="w-22 h-11 object-contain"
               priority
             />
             <div className="flex flex-col text-[0.8rem] uppercase tracking-[0.16em]">
-              <span className="font-semibold text-[0.85rem] text-[#002C5F]">Hyundai</span>
+              <span className="font-semibold text-[0.85rem] text-[#002C5F]">2025-2026</span>
               <span className="text-[#6b7280] text-[0.7rem]">Catálogo Perú</span>
             </div>
           </Link>
@@ -51,18 +51,20 @@ export function Navbar() {
             >
               Modelos
             </Link>
-            <Link
+            {/* <Link
               href="#marcas"
               className="px-3 py-2 rounded-full text-[#6b7280] hover:bg-[rgba(0,44,95,0.06)] hover:text-[#002C5F] transition-all duration-[180ms] hover:-translate-y-px"
             >
               Servicios
-            </Link>
+            </Link> */}
+
             <Link
               href="#contacto"
               className="px-3 py-2 rounded-full text-[#6b7280] hover:bg-[rgba(0,44,95,0.06)] hover:text-[#002C5F] transition-all duration-[180ms] hover:-translate-y-px"
             >
-              Contacto
+              Soporte
             </Link>
+
             <Link
               href="/login"
               className="px-3 py-2 rounded-full border border-[#002C5F] text-[#002C5F] hover:bg-[#002C5F] hover:text-white transition-all duration-[180ms] hover:-translate-y-px"

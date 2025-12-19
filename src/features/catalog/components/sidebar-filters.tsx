@@ -1,6 +1,7 @@
 "use client";
 
 import { Checkbox } from "@/shared/components/ui/checkbox";
+
 import { Label } from "@/shared/components/ui/label";
 import {
   Accordion,
@@ -11,7 +12,14 @@ import {
 import { FuelType } from "@/shared/types/car";
 import { Search } from "lucide-react";
 
+function toggle(list: string[], value: string) {
+  return list.includes(value) ? list.filter((x) => x !== value) : [...list, value];
+}
+
 interface SidebarFiltersProps {
+  brands: string[];
+  selectedBrands: string[];
+  onBrandChange: (next: string[]) => void;
   selectedFuelTypes: FuelType[];
   selectedPriceRanges: string[];
   selectedYears: number[];
@@ -36,6 +44,10 @@ const priceRanges = [
 const years = [2024, 2025, 2026];
 
 export function SidebarFilters({
+  brands,
+  selectedBrands,
+  onBrandChange,
+
   selectedFuelTypes,
   selectedPriceRanges,
   selectedYears,
@@ -68,6 +80,7 @@ export function SidebarFilters({
   };
 
   return (
+    
     <div className="w-full bg-white rounded-lg border p-6 sticky top-24">
       {/* Search Input */}
       <div className="mb-6">
@@ -86,7 +99,7 @@ export function SidebarFilters({
           />
         </div>
       </div>
-
+      
       <h2 className="text-lg font-semibold mb-6 text-[#002C5F]">Filtros</h2>
       <Accordion type="multiple" defaultValue={["fuel", "price", "year"]} className="w-full">
         <AccordionItem value="fuel" className="border-b border-gray-200">

@@ -137,3 +137,26 @@
     padding: 0 1.5rem;
   }
 }
+
+@keyframes wheelSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes wheelFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+
+.wheel-spin{
+  animation: wheelSpin 14s linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.wheel-float{
+  animation: wheelFloat 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .wheel-spin, .wheel-float{ animation: none !important; }
+}
