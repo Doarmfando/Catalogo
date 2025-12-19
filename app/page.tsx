@@ -1,74 +1,36 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { HeroSection } from "@/components/sections/hero-section";
-import { BrandsSection } from "@/components/sections/brands-section";
-import { ContactSection } from "@/components/sections/contact-section";
-import { VehicleCardNew } from "@/components/catalog/vehicle-card-new";
-import { TopTabs } from "@/components/catalog/top-tabs";
-import { SidebarFilters } from "@/components/catalog/sidebar-filters";
-import { CategoryHeader } from "@/components/catalog/category-header";
-import { cars } from "@/data/cars";
-import { CarCategory, FuelType } from "@/types/car";
+import { Navbar } from "@/shared/components/layout/navbar";
+import { Footer } from "@/shared/components/layout/footer";
+import { HeroSection } from "@/features/home/components/hero-section";
+import { BrandsSection } from "@/features/home/components/brands-section";
+import { ContactSection } from "@/features/home/components/contact-section";
+import { VehicleCardNew } from "@/features/catalog/components/vehicle-card-new";
+import { TopTabs } from "@/features/catalog/components/top-tabs";
+import { SidebarFilters } from "@/features/catalog/components/sidebar-filters";
+import { CategoryHeader } from "@/features/catalog/components/category-header";
+import { cars } from "@/features/catalog/data";
+import { useCatalogFilters } from "@/features/catalog/hooks";
 
-export default function CatalogPage() {
-  const [selectedCategory, setSelectedCategory] = useState<CarCategory>("Todos");
-  const [selectedFuelTypes, setSelectedFuelTypes] = useState<FuelType[]>([]);
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
-  const [selectedYears, setSelectedYears] = useState<number[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const filteredCars = useMemo(() => {
-    return cars.filter((car) => {
-      // Filter by search query
-      if (searchQuery.trim() !== "") {
-        const query = searchQuery.toLowerCase();
-        const matchesName = car.name.toLowerCase().includes(query);
-        if (!matchesName) {
-          return false;
-        }
-      }
-
-      // Filter by category
-      if (selectedCategory !== "Todos") {
-        if (selectedCategory === "ECOLÓGICOS" && car.fuelType !== "ELÉCTRICO") {
-          return false;
-        } else if (selectedCategory !== "ECOLÓGICOS" && car.category !== selectedCategory) {
-          return false;
-        }
-      }
-
-      // Filter by fuel type
-      if (selectedFuelTypes.length > 0 && !selectedFuelTypes.includes(car.fuelType)) {
-        return false;
-      }
-
-      // Filter by price range
-      if (selectedPriceRanges.length > 0) {
-        const inRange = selectedPriceRanges.some((range) => {
-          const [min, max] = range.split("-").map(Number);
-          return car.priceUSD >= min && car.priceUSD <= max;
-        });
-        if (!inRange) return false;
-      }
-
-      // Filter by year
-      if (selectedYears.length > 0 && !selectedYears.includes(car.year)) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [selectedCategory, selectedFuelTypes, selectedPriceRanges, selectedYears, searchQuery]);
-
-  const handleClearFilters = () => {
-    setSelectedFuelTypes([]);
-    setSelectedPriceRanges([]);
-    setSelectedYears([]);
-    setSearchQuery("");
-  };
+export default function HomePage() {
+  const {
+    filteredCars,
+    filters: {
+      selectedCategory,
+      selectedFuelTypes,
+      selectedPriceRanges,
+      selectedYears,
+      searchQuery,
+    },
+    setters: {
+      setSelectedCategory,
+      setSelectedFuelTypes,
+      setSelectedPriceRanges,
+      setSelectedYears,
+      setSearchQuery,
+    },
+    handleClearFilters,
+  } = useCatalogFilters(cars);
 
   return (
     <div className="min-h-screen bg-[#f6f3f2]">

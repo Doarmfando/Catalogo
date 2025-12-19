@@ -64,6 +64,12 @@ export function Navbar() {
               Contacto
             </Link>
             <Link
+              href="/login"
+              className="px-3 py-2 rounded-full border border-[#002C5F] text-[#002C5F] hover:bg-[#002C5F] hover:text-white transition-all duration-[180ms] hover:-translate-y-px"
+            >
+              Ingresar
+            </Link>
+            <Link
               href="#modelos"
               className="px-4 py-2 rounded-full bg-gradient-to-br from-[#002C5F] to-[#0957a5] text-white font-semibold shadow-[0_10px_25px_rgba(0,44,95,0.35)] hover:shadow-[0_12px_30px_rgba(0,44,95,0.45)] hover:-translate-y-px transition-all duration-[180ms]"
             >
@@ -101,6 +107,13 @@ export function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contacto
+              </Link>
+              <Link
+                href="/login"
+                className="px-4 py-3 rounded-lg border border-[#002C5F] text-[#002C5F] hover:bg-[#002C5F] hover:text-white transition-colors text-center mt-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Ingresar
               </Link>
               <Link
                 href="#modelos"

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { cars } from "@/data/cars";
+import { cars } from "@/features/catalog/data";
 
 const SLIDE_DURATION = 4500; // ms
 const TICK = 50; // ms

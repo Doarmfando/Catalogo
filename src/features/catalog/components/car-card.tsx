@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Car } from "@/types/car";
+import { Card, CardContent } from "@/shared/components/ui/card";
+import { Badge } from "@/shared/components/ui/badge";
+import { Checkbox } from "@/shared/components/ui/checkbox";
+import { Label } from "@/shared/components/ui/label";
+import { Car } from "@/shared/types/car";
 
 interface CarCardProps {
   car: Car;

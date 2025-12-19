@@ -1,7 +1,7 @@
 "use client";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CarCategory } from "@/types/car";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
+import { CarCategory } from "@/shared/types/car";
 
 interface TopTabsProps {
   selectedCategory: CarCategory;

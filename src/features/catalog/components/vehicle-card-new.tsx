@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Fuel, Zap } from "lucide-react";
-import type { Car } from "@/types/car";
+import type { Car } from "@/shared/types/car";
 
 interface VehicleCardProps {
   car: Car;

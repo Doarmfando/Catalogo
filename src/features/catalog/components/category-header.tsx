@@ -1,4 +1,4 @@
-import { CarCategory } from "@/types/car";
+import { CarCategory } from "@/shared/types/car";
 
 interface CategoryHeaderProps {
   category: CarCategory;

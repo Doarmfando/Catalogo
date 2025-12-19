@@ -1,14 +1,14 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/shared/components/ui/checkbox";
+import { Label } from "@/shared/components/ui/label";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { FuelType } from "@/types/car";
+} from "@/shared/components/ui/accordion";
+import { FuelType } from "@/shared/types/car";
 import { Search } from "lucide-react";
 
 interface SidebarFiltersProps {
