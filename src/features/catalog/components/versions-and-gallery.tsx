@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import VersionColorGallery from "./VersionColorGallery";
+import { VersionColorGallery } from "./version-color-gallery";
 import { CheckCircle2 } from "lucide-react";
 import type { CarVersion } from "@/shared/types/car";
 
@@ -50,7 +50,7 @@ function VersionSwitch({
   );
 }
 
-export default function VersionsAndGallery({
+export function VersionsAndGallery({
   modelName,
   versions,
   basePriceUSD,

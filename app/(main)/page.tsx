@@ -1,7 +1,5 @@
 "use client";
 
-import { Navbar } from "@/shared/components/layout/navbar";
-import { Footer } from "@/shared/components/layout/footer";
 import { HeroSection } from "@/features/home/components/hero-section";
 import { BrandsSection } from "@/features/home/components/brands-section";
 import { ContactSection } from "@/features/home/components/contact-section";
@@ -21,7 +19,7 @@ import { useMemo } from "react";
 export default function HomePage() {
 const {
   filteredCars,
-  brands, // ✅ AÑADE ESTO
+  brands,
   brandCounts,
 
   filters: {
@@ -60,70 +58,65 @@ const groupedByBrand = useMemo(() => {
 }, [filteredCars]);
 
   return (
-    <div className="min-h-screen bg-[#f6f3f2]">
-      {/* Header */}
-      <Navbar />
+    <>
+      {/* Hero Section */}
+      <HeroSection />
 
-      {/* Main Content */}
-      <main>
-        {/* Hero Section */}
-        <HeroSection />
+      {/* Catalog Section */}
+      <section className="py-10 scroll-mt-24 lg:scroll-mt-10" id="modelos">
+        <div className="container-custom">
+          {/* Tabs */}
+          <div className="mb-8">
+            <TopTabs
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
+          </div>
 
-        {/* Catalog Section */}
-        <section className="py-10 scroll-mt-24 lg:scroll-mt-10" id="modelos">
-          <div className="container-custom">
-            {/* Tabs */}
-            <div className="mb-8">
-              <TopTabs
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-              />
-            </div>
+          {/* Category Header */}
+          <CategoryHeader category={selectedCategory} />
+          <div className="mb-6">
+            <BrandFilterBar
+              brands={brands}
+              selectedBrands={selectedBrands}
+              onChange={setSelectedBrands}
+              brandCounts={brandCounts}
+            />
+          </div>
 
-            {/* Category Header */}
-            <CategoryHeader category={selectedCategory} />
-            <div className="mb-6">
-              <BrandFilterBar
+          {/* Content Grid with Sidebar */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Sidebar Filters */}
+            <aside className="lg:col-span-1">
+              <SidebarFilters
                 brands={brands}
                 selectedBrands={selectedBrands}
-                onChange={setSelectedBrands}
-                brandCounts={brandCounts}
+                onBrandChange={setSelectedBrands}
+
+                selectedFuelTypes={selectedFuelTypes}
+                selectedPriceRanges={selectedPriceRanges}
+                selectedYears={selectedYears}
+                searchQuery={searchQuery}
+                onFuelTypeChange={setSelectedFuelTypes}
+                onPriceRangeChange={setSelectedPriceRanges}
+                onYearChange={setSelectedYears}
+                onSearchChange={setSearchQuery}
+                onClearFilters={handleClearFilters}
               />
-            </div>
+            </aside>
 
-            {/* Content Grid with Sidebar */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Sidebar Filters */}
-              <aside className="lg:col-span-1">
-                <SidebarFilters
-                  brands={brands}
-                  selectedBrands={selectedBrands}
-                  onBrandChange={setSelectedBrands}
-
-                  selectedFuelTypes={selectedFuelTypes}
-                  selectedPriceRanges={selectedPriceRanges}
-                  selectedYears={selectedYears}
-                  searchQuery={searchQuery}
-                  onFuelTypeChange={setSelectedFuelTypes}
-                  onPriceRangeChange={setSelectedPriceRanges}
-                  onYearChange={setSelectedYears}
-                  onSearchChange={setSearchQuery}
-                  onClearFilters={handleClearFilters}
-                />
-              </aside>
-
-              {/* Vehicle Grid */}
-              <div className="lg:col-span-3">
-                {filteredCars.length === 0 ? (
-                  <div className="text-center py-16 px-6 rounded-[1.1rem] bg-white border border-dashed border-[rgba(148,163,184,0.5)] text-[#6b7280] text-sm">
-                    No se encontraron vehículos con los filtros seleccionados.
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-sm text-[#6b7280] mb-6">
-                      Mostrando {filteredCars.length}{" "}
-                      {filteredCars.length === 1 ? "vehículo" : "vehículos"}
-                    </p>
+            {/* Vehicle Grid */}
+            <div className="lg:col-span-3">
+              {filteredCars.length === 0 ? (
+                <div className="text-center py-16 px-6 rounded-[1.1rem] bg-white border border-dashed border-[rgba(148,163,184,0.5)] text-[#6b7280] text-sm">
+                  No se encontraron vehículos con los filtros seleccionados.
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-[#6b7280] mb-6">
+                    Mostrando {filteredCars.length}{" "}
+                    {filteredCars.length === 1 ? "vehículo" : "vehículos"}
+                  </p>
 <div className="space-y-10">
   {groupedByBrand.map(({ brand, cars }) => {
     const meta = getBrandMeta(brand);
@@ -167,22 +160,18 @@ const groupedByBrand = useMemo(() => {
   })}
 </div>
 
-                  </>
-                )}
-              </div>
+                </>
+              )}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Brands & Services Section */}
-        {/* <BrandsSection /> */}
+      {/* Brands & Services Section */}
+      {/* <BrandsSection /> */}
 
-        {/* Contact Section */}
-        {/* <ContactSection /> */}
-      </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+      {/* Contact Section */}
+      {/* <ContactSection /> */}
+    </>
   );
 }

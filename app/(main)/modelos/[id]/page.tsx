@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import VersionColorGallery from "./VersionColorGallery";
-import VersionsAndGallery from "./VersionsAndGallery";
+import { VersionsAndGallery } from "@/features/catalog/components";
 
 import {
   ArrowLeft,

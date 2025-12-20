@@ -22,7 +22,7 @@ type GalleryImg = {
   versionName: string;
 };
 
-export default function VersionColorGallery({
+export function VersionColorGallery({
   modelName,
   versions,
   selectedVersionId,

@@ -1,6 +1,6 @@
 export type CarBrand = "Hyundai" | "JMC" | "RAM"; // etc
 export type FuelType = "ELÉCTRICO" | "GASOLINA" | "DIESEL";
-export type CarCategory = "Todos" | "ECOLÓGICOS" | "HATCHBACK" | "SEDÁN" | "SUV" | "UTILITARIOS" | "COMERCIALES" | "PICK-UP";
+export type CarCategory = "Todos" | "ECOLÓGICOS" | "HATCHBACK" | "SEDÁN" | "SUV" | "UTILITARIOS" | "COMERCIALES";
 export type CarColor = {
   id: string;
   name: string;

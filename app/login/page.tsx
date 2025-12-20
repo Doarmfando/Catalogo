@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { User, Lock, Eye, EyeOff } from 'lucide-react'
-import CirclesBackground from '@/features/auth/components/CirclesBackground'
-import LeftPanel from '@/features/auth/components/LeftPanel'
-import BrandLogo from '@/features/auth/components/BrandLogo'
-import FooterBanner from '@/features/auth/components/FooterBanner'
+import {
+  CirclesBackground,
+  LeftPanel,
+  BrandLogo,
+  FooterBanner,
+} from '@/features/auth/components'
 
 export default function LoginPage() {
   const router = useRouter()

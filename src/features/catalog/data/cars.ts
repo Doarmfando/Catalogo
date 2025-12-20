@@ -400,7 +400,7 @@ export const cars: Car[] = [
 
     name: "GRANDVENUE",
     year: 2024,
-    category: "PICK-UP",
+    category: "UTILITARIOS",
     fuelType: "DIESEL",
     priceUSD: 49490,
     pricePEN: 168266,
