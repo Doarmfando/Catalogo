@@ -383,8 +383,7 @@ export const cars: Car[] = [
   },
   {
     id: "28",
-        brand: "Hyundai",
-
+    brand: "Hyundai",
     name: "BX11",
     year: 2024,
     category: "COMERCIALES",
