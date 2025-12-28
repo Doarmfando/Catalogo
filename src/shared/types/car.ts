@@ -20,6 +20,7 @@ export type CarVersion = {
 
 export interface Car {
   id: string;
+  slug: string;
   brand: CarBrand; // ✅ NUEVO (Marca)
 
   name: string;
@@ -30,7 +31,7 @@ export interface Car {
   pricePEN: number;
   image: string;
   imageFrontal?: string;
-  
+
   versions?: CarVersion[]; // 👈 aquí
 }
 

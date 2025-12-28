@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface UserData {
   id?: string;
-  name: string;
+  full_name: string | null;
   email: string;
   role: string;
-  status: string;
-  password?: string;
+  is_active: boolean;
 }
 
 interface UserFormProps {
@@ -17,11 +17,14 @@ interface UserFormProps {
 }
 
 export function UserForm({ initialData, mode = "create" }: UserFormProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: "",
+    full_name: "",
     email: "",
-    role: "Personal",
-    status: "Activo",
+    role: "personal",
+    is_active: true,
     password: "",
     confirmPassword: "",
   });
@@ -29,36 +32,75 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
   useEffect(() => {
     if (initialData) {
       setFormData({
-        name: initialData.name,
+        full_name: initialData.full_name || "",
         email: initialData.email,
         role: initialData.role,
-        status: initialData.status,
+        is_active: initialData.is_active,
         password: "",
         confirmPassword: "",
       });
     }
   }, [initialData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
 
-    if (mode === "create" && formData.password !== formData.confirmPassword) {
-      alert("Las contraseñas no coinciden");
+    // Validar contraseñas
+    if (mode === "create" && !formData.password) {
+      setError("La contraseña es requerida");
+      setLoading(false);
       return;
     }
 
-    const action = mode === "edit" ? "actualizado" : "creado";
-    alert(`Usuario ${action} (maqueta)\nNombre: ${formData.name}\nEmail: ${formData.email}\nRol: ${formData.role}`);
+    if (formData.password && formData.password !== formData.confirmPassword) {
+      setError("Las contraseñas no coinciden");
+      setLoading(false);
+      return;
+    }
 
-    if (mode === "create") {
-      setFormData({
-        name: "",
-        email: "",
-        role: "Personal",
-        status: "Activo",
-        password: "",
-        confirmPassword: "",
+    try {
+      const url = mode === "create"
+        ? "/api/admin/users"
+        : `/api/admin/users/${initialData?.id}`;
+
+      const method = mode === "create" ? "POST" : "PUT";
+
+      const body: any = {
+        full_name: formData.full_name,
+        email: formData.email,
+        role: formData.role,
+        is_active: formData.is_active,
+      };
+
+      // Solo incluir contraseña si se proporcionó
+      if (formData.password) {
+        body.password = formData.password;
+      }
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Error al guardar usuario");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/admin/usuarios");
+      router.refresh();
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      setError("Error al guardar usuario");
+      setLoading(false);
     }
   };
 
@@ -71,6 +113,13 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
         {mode === "edit" ? "Editar Usuario" : "Nuevo Usuario"}
       </h3>
 
+      {/* Error message */}
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+
       <div className="space-y-4">
         {/* Name */}
         <div>
@@ -80,9 +129,10 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           <input
             type="text"
             required
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            disabled={loading}
+            value={formData.full_name}
+            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
             placeholder="Ej: Juan Pérez"
           />
         </div>
@@ -95,9 +145,10 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           <input
             type="email"
             required
+            disabled={loading}
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
             placeholder="usuario@ejemplo.com"
           />
         </div>
@@ -109,12 +160,13 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           </label>
           <select
             required
+            disabled={loading}
             value={formData.role}
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
           >
-            <option value="Administrador">Administrador</option>
-            <option value="Personal">Personal</option>
+            <option value="administrador">Administrador</option>
+            <option value="personal">Personal</option>
           </select>
           <p className="text-xs text-gray-500 mt-1">
             Administrador: Control total | Personal: Gestiona catálogo
@@ -128,12 +180,13 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           </label>
           <select
             required
-            value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            disabled={loading}
+            value={formData.is_active ? "true" : "false"}
+            onChange={(e) => setFormData({ ...formData, is_active: e.target.value === "true" })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
           >
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
           </select>
         </div>
 
@@ -145,11 +198,12 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           <input
             type="password"
             required={mode === "create"}
+            disabled={loading}
             value={formData.password}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
             placeholder={mode === "edit" ? "Dejar vacío para mantener actual" : ""}
           />
         </div>
@@ -162,11 +216,12 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           <input
             type="password"
             required={mode === "create"}
+            disabled={loading}
             value={formData.confirmPassword}
             onChange={(e) =>
               setFormData({ ...formData, confirmPassword: e.target.value })
             }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
           />
         </div>
 
@@ -174,13 +229,23 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
         <div className="flex gap-3 pt-4 border-t border-gray-200">
           <button
             type="submit"
-            className="flex-1 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
+            disabled={loading}
+            className="flex-1 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {mode === "edit" ? "Guardar Cambios" : "Crear Usuario"}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                {mode === "edit" ? "Guardando..." : "Creando..."}
+              </span>
+            ) : (
+              mode === "edit" ? "Guardar Cambios" : "Crear Usuario"
+            )}
           </button>
           <button
             type="button"
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            disabled={loading}
+            onClick={() => router.back()}
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50"
           >
             Cancelar
           </button>

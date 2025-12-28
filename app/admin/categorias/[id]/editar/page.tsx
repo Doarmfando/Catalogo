@@ -1,21 +1,25 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { notFound } from "next/navigation";
 import { AdminTopbar } from "@/features/admin-layout/components";
 import { CategoryForm } from "@/features/admin-categories/components";
+import { getCategoryByIdAdmin } from "@/lib/supabase/queries/admin-categories";
 
-export default function EditarCategoriaPage({ params }: { params: { id: string } }) {
-  // Mock data - en producción vendría de una API
-  const mockCategoryData = {
-    id: params.id,
-    name: "SUV",
-    displayName: "SUV",
-    description: "Camionetas deportivas utilitarias",
-    status: "Activo",
-  };
+export default async function EditarCategoriaPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const category = await getCategoryByIdAdmin(id);
+
+  if (!category) {
+    notFound();
+  }
 
   return (
     <>
-      <AdminTopbar title="Editar Categoría" />
+      <AdminTopbar title={`Editar: ${category.name}`} />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}
@@ -27,10 +31,13 @@ export default function EditarCategoriaPage({ params }: { params: { id: string }
             <ArrowLeft className="h-4 w-4" />
             Volver a Categorías
           </Link>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Editar: {category.name}
+          </h1>
         </div>
 
         {/* Form */}
-        <CategoryForm initialData={mockCategoryData} mode="edit" />
+        <CategoryForm initialData={category} mode="edit" />
       </div>
     </>
   );

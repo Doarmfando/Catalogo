@@ -1,10 +1,13 @@
-import { AdminSidebar, AdminTopbar } from "@/features/admin-layout/components";
+import { AdminSidebar } from "@/features/admin-layout/components";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Autenticación deshabilitada temporalmente durante desarrollo
+  // Se habilitará al final
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}

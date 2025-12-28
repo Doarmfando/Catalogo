@@ -12,7 +12,7 @@ import {
 
 export default function LoginPage() {
   const router = useRouter()
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -24,19 +24,30 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      if (!username.trim() || !password) {
-        setError('Por favor ingresa usuario/email y contraseña')
+      if (!email.trim() || !password) {
+        setError('Por favor ingresa email y contraseña')
         setLoading(false)
         return
       }
 
-      // TODO: Aquí irá la lógica de autenticación
-      // Por ahora solo simula un delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
 
-      // Ejemplo: redirigir después del login
-      console.log('Login con:', { username, password })
-      router.push('/')
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Error al iniciar sesión')
+        setLoading(false)
+        return
+      }
+
+      // Redirigir al admin después del login exitoso
+      router.push('/admin/autos')
       router.refresh()
     } catch (err) {
       setError('Error al iniciar sesión')
@@ -70,19 +81,19 @@ export default function LoginPage() {
               )}
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                {/* Usuario */}
+                {/* Email */}
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
                     <User className="w-5 h-5 text-gray-400" />
                   </div>
                   <input
-                    type="text"
-                    value={username}
+                    type="email"
+                    value={email}
                     onChange={(e) => {
-                      setUsername(e.target.value)
+                      setEmail(e.target.value)
                       if (error) setError(null)
                     }}
-                    placeholder="Usuario o correo electrónico"
+                    placeholder="Correo electrónico"
                     disabled={loading}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-[#002C5F] outline-none transition-all"
                   />
@@ -116,7 +127,7 @@ export default function LoginPage() {
 
                 <button
                   type="submit"
-                  disabled={loading || !username || !password}
+                  disabled={loading || !email || !password}
                   className="bg-[#002C5F] text-white p-3 text-base font-semibold rounded-lg cursor-pointer transition-all duration-300 outline-none hover:bg-[#0957a5] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (

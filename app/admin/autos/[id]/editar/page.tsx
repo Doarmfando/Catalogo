@@ -1,20 +1,12 @@
 import { AdminTopbar } from "@/features/admin-layout/components";
 import { CarForm } from "@/features/admin-cars/components";
 import { notFound } from "next/navigation";
-
-// Mock data para el ejemplo
-const mockCar = {
-  id: "1",
-  name: "PALISADE Hybrid",
-  brand: "Hyundai",
-  year: 2026,
-  category: "SUV",
-  fuelType: "ELÉCTRICO",
-  priceUSD: 54990,
-  pricePEN: 186966,
-  image: "/images/PALISADE_HYB-2026.png",
-  imageFrontal: "/images/frontal/PALISADE_HYB-2026-LATERAL.png",
-};
+import { getCarByIdAdmin } from "@/lib/supabase/queries/admin-cars";
+import {
+  getAllBrands,
+  getAllCategories,
+  getAllFuelTypes,
+} from "@/lib/supabase/queries/form-options";
 
 export default async function EditCarPage({
   params,
@@ -23,17 +15,29 @@ export default async function EditCarPage({
 }) {
   const { id } = await params;
 
-  // En producción, aquí buscarías el auto por ID
-  if (id !== "1") {
+  const [car, brands, categories, fuelTypes] = await Promise.all([
+    getCarByIdAdmin(id),
+    getAllBrands(),
+    getAllCategories(),
+    getAllFuelTypes(),
+  ]);
+
+  if (!car) {
     notFound();
   }
 
   return (
     <>
-      <AdminTopbar title={`Editar: ${mockCar.name}`} />
+      <AdminTopbar title={`Editar: ${car.name}`} />
 
       <div className="p-6">
-        <CarForm mode="edit" initialData={mockCar} />
+        <CarForm
+          mode="edit"
+          initialData={car}
+          brands={brands}
+          categories={categories}
+          fuelTypes={fuelTypes}
+        />
       </div>
     </>
   );

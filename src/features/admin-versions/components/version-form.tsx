@@ -1,45 +1,76 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { X, Plus, Loader2 } from "lucide-react";
 import { ColorManager } from "./color-manager";
 
-interface Color {
+interface VersionColor {
   id: string;
+  colorId: string;
   name: string;
   hex: string;
-  images: string[];
-}
-
-interface VersionData {
-  id?: string;
-  name: string;
-  priceUSD: number;
-  highlights: string[];
-  colors: Color[];
+  images: File[];
+  imageUrls: string[];
 }
 
 interface VersionFormProps {
-  initialData?: VersionData;
+  carId: string;
+  initialData?: any;
   mode?: "create" | "edit";
 }
 
-export function VersionForm({ initialData, mode = "create" }: VersionFormProps) {
+export function VersionForm({ carId, initialData, mode = "create" }: VersionFormProps) {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [priceUSD, setPriceUSD] = useState("");
   const [highlights, setHighlights] = useState<string[]>([""]);
-  const [colors, setColors] = useState<Color[]>([]);
+  const [colors, setColors] = useState<VersionColor[]>([]);
+  const [availableColors, setAvailableColors] = useState<any[]>([]);
   const [showColorManager, setShowColorManager] = useState(false);
-  const [editingColor, setEditingColor] = useState<Color | null>(null);
+  const [editingColor, setEditingColor] = useState<VersionColor | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    loadColors();
+
     if (initialData) {
       setName(initialData.name);
-      setPriceUSD(initialData.priceUSD.toString());
-      setHighlights(initialData.highlights.length > 0 ? initialData.highlights : [""]);
-      setColors(initialData.colors);
+      setPriceUSD(initialData.price_usd?.toString() || "");
+      setHighlights(initialData.highlights?.length > 0 ? initialData.highlights : [""]);
+
+      // Transform version_colors to local format
+      if (initialData.version_colors) {
+        const transformedColors = initialData.version_colors.map((vc: any) => ({
+          id: vc.id,
+          colorId: vc.color_id,
+          name: vc.colors.name,
+          hex: vc.colors.hex_code,
+          images: [],
+          imageUrls: vc.color_images?.map((ci: any) => ci.image_url) || [],
+        }));
+        setColors(transformedColors);
+      }
     }
   }, [initialData]);
+
+  const loadColors = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/colors");
+      if (!res.ok) {
+        throw new Error("Error al cargar los colores");
+      }
+      const colorsData = await res.json();
+      setAvailableColors(colorsData);
+    } catch (error) {
+      console.error("Error loading colors:", error);
+      alert("Error al cargar los colores del catálogo");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAddHighlight = () => {
     setHighlights([...highlights, ""]);
@@ -60,30 +91,123 @@ export function VersionForm({ initialData, mode = "create" }: VersionFormProps) 
     setShowColorManager(true);
   };
 
-  const handleEditColor = (color: Color) => {
+  const handleEditColor = (color: VersionColor) => {
     setEditingColor(color);
     setShowColorManager(true);
   };
 
-  const handleSaveColor = (color: Color) => {
+  const handleSaveColor = (versionColor: VersionColor) => {
     if (editingColor) {
-      setColors(colors.map((c) => (c.id === color.id ? color : c)));
+      setColors(colors.map((c) => (c.id === versionColor.id ? versionColor : c)));
     } else {
-      setColors([...colors, { ...color, id: Date.now().toString() }]);
+      setColors([...colors, { ...versionColor, id: Date.now().toString() }]);
     }
     setShowColorManager(false);
     setEditingColor(null);
   };
 
   const handleDeleteColor = (colorId: string) => {
-    setColors(colors.filter((c) => c.id !== colorId));
+    if (confirm("¿Estás seguro de eliminar este color de la versión?")) {
+      setColors(colors.filter((c) => c.id !== colorId));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const validHighlights = highlights.filter((h) => h.trim() !== "");
-    const action = mode === "edit" ? "actualizada" : "creada";
-    alert(`Versión ${action} (maqueta)\nNombre: ${name}\nPrecio: $${priceUSD}\nCaracterísticas: ${validHighlights.length}\nColores: ${colors.length}`);
+
+    if (validHighlights.length === 0) {
+      alert("Debe agregar al menos una característica destacada");
+      return;
+    }
+
+    if (colors.length === 0) {
+      alert("Debe agregar al menos un color a la versión");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      // Upload new images for each color
+      const colorsWithUploadedImages = await Promise.all(
+        colors.map(async (color) => {
+          if (color.images.length === 0) {
+            return {
+              colorId: color.colorId,
+              imageUrls: color.imageUrls,
+            };
+          }
+
+          // Upload images
+          const uploadedUrls = await Promise.all(
+            color.images.map(async (file) => {
+              const formData = new FormData();
+              formData.append("file", file);
+              formData.append("folder", "colors");
+
+              const res = await fetch("/api/admin/upload", {
+                method: "POST",
+                body: formData,
+              });
+
+              if (!res.ok) {
+                throw new Error("Error al subir imagen");
+              }
+
+              const data = await res.json();
+              return data.url;
+            })
+          );
+
+          return {
+            colorId: color.colorId,
+            imageUrls: [...color.imageUrls, ...uploadedUrls],
+          };
+        })
+      );
+
+      // Create version data
+      const versionData = {
+        car_id: carId,
+        name,
+        price_usd: parseFloat(priceUSD),
+        highlights: validHighlights,
+        display_order: 0,
+      };
+
+      const endpoint = mode === "edit"
+        ? `/api/admin/versions/${initialData.id}`
+        : "/api/admin/versions";
+
+      const method = mode === "edit" ? "PUT" : "POST";
+
+      const res = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...versionData,
+          colors: colorsWithUploadedImages,
+        }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Error al guardar la versión");
+      }
+
+      alert(mode === "edit" ? "Versión actualizada exitosamente" : "Versión creada exitosamente");
+      router.push(`/admin/autos/${carId}/versiones`);
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error saving version:", error);
+      alert(error.message || "Error al guardar la versión");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -231,13 +355,21 @@ export function VersionForm({ initialData, mode = "create" }: VersionFormProps) 
           <div className="flex gap-3 pt-4 border-t border-gray-200">
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
+              disabled={submitting || loading}
+              className="flex-1 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {mode === "edit" ? "Guardar Cambios" : "Crear Versión"}
+              {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+              {submitting
+                ? "Guardando..."
+                : mode === "edit"
+                ? "Guardar Cambios"
+                : "Crear Versión"}
             </button>
             <button
               type="button"
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              onClick={() => router.back()}
+              disabled={submitting}
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50"
             >
               Cancelar
             </button>
@@ -248,7 +380,9 @@ export function VersionForm({ initialData, mode = "create" }: VersionFormProps) 
       {/* Color Manager Modal */}
       {showColorManager && (
         <ColorManager
-          color={editingColor}
+          versionColor={editingColor}
+          availableColors={availableColors}
+          selectedColorIds={colors.map((c) => c.colorId)}
           onSave={handleSaveColor}
           onCancel={() => {
             setShowColorManager(false);

@@ -4,30 +4,53 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, X, ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
+import { uploadImage } from "@/lib/utils/image-upload";
 
 type CarFormProps = {
   mode: "create" | "edit";
   initialData?: any;
+  brands: any[];
+  categories: any[];
+  fuelTypes: any[];
 };
 
-export function CarForm({ mode, initialData }: CarFormProps) {
+// Helper para generar slug desde el nombre
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Quitar acentos
+    .replace(/[^a-z0-9\s-]/g, "") // Quitar caracteres especiales
+    .trim()
+    .replace(/\s+/g, "-") // Reemplazar espacios con guiones
+    .replace(/-+/g, "-"); // Eliminar guiones duplicados
+}
+
+export function CarForm({ mode, initialData, brands, categories, fuelTypes }: CarFormProps) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
-    brand: initialData?.brand || "Hyundai",
-    year: initialData?.year || 2026,
-    category: initialData?.category || "SUV",
-    fuelType: initialData?.fuelType || "GASOLINA",
-    priceUSD: initialData?.priceUSD || "",
-    pricePEN: initialData?.pricePEN || "",
+    brand_id: initialData?.brand_id || brands[0]?.id || "",
+    year: initialData?.year || new Date().getFullYear(),
+    category_id: initialData?.category_id || categories[0]?.id || "",
+    fuel_type_id: initialData?.fuel_type_id || fuelTypes[0]?.id || "",
+    price_usd: initialData?.price_usd || "",
+    price_pen: initialData?.price_pen || "",
+    image_url: initialData?.image_url || "",
+    image_frontal_url: initialData?.image_frontal_url || "",
+    is_active: initialData?.is_active ?? true,
   });
 
+  // Estados separados para los archivos nuevos
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [frontalFile, setFrontalFile] = useState<File | null>(null);
+
   const [imagePreview, setImagePreview] = useState<string | null>(
-    initialData?.image || null
+    initialData?.image_url || null
   );
   const [frontalPreview, setFrontalPreview] = useState<string | null>(
-    initialData?.imageFrontal || null
+    initialData?.image_frontal_url || null
   );
 
   const handleImageChange = (
@@ -36,6 +59,14 @@ export function CarForm({ mode, initialData }: CarFormProps) {
   ) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Guardar el archivo para subirlo después
+      if (type === "main") {
+        setImageFile(file);
+      } else {
+        setFrontalFile(file);
+      }
+
+      // Crear preview local
       const reader = new FileReader();
       reader.onloadend = () => {
         if (type === "main") {
@@ -48,11 +79,63 @@ export function CarForm({ mode, initialData }: CarFormProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica de guardado (por ahora solo maqueta)
-    alert("Formulario enviado (maqueta)");
-    router.push("/admin/autos");
+    setLoading(true);
+
+    try {
+      const slug = generateSlug(formData.name);
+
+      // Subir imágenes nuevas si existen
+      let imageUrl = formData.image_url;
+      let frontalUrl = formData.image_frontal_url;
+
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile, "cars");
+      }
+
+      if (frontalFile) {
+        frontalUrl = await uploadImage(frontalFile, "frontal");
+      }
+
+      // Validar que haya imagen principal
+      if (!imageUrl) {
+        throw new Error("La imagen principal es requerida");
+      }
+
+      const payload = {
+        ...formData,
+        slug,
+        image_url: imageUrl,
+        image_frontal_url: frontalUrl,
+        price_usd: parseFloat(formData.price_usd as any),
+        price_pen: parseFloat(formData.price_pen as any),
+      };
+
+      const url = mode === "create"
+        ? "/api/admin/cars"
+        : `/api/admin/cars/${initialData.id}`;
+
+      const method = mode === "create" ? "POST" : "PUT";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Error al guardar");
+      }
+
+      router.push("/admin/autos");
+      router.refresh();
+    } catch (error: any) {
+      alert(error.message || "Error al guardar el auto");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,10 +151,11 @@ export function CarForm({ mode, initialData }: CarFormProps) {
         </Link>
         <button
           type="submit"
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50"
         >
           <Save className="h-5 w-5" />
-          {mode === "create" ? "Crear Auto" : "Guardar Cambios"}
+          {loading ? "Guardando..." : mode === "create" ? "Crear Auto" : "Guardar Cambios"}
         </button>
       </div>
 
@@ -100,6 +184,9 @@ export function CarForm({ mode, initialData }: CarFormProps) {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                   placeholder="Ej: TUCSON Hybrid 2026"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Slug generado: {generateSlug(formData.name) || "(automático)"}
+                </p>
               </div>
 
               {/* Brand */}
@@ -109,16 +196,17 @@ export function CarForm({ mode, initialData }: CarFormProps) {
                 </label>
                 <select
                   required
-                  value={formData.brand}
+                  value={formData.brand_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, brand: e.target.value })
+                    setFormData({ ...formData, brand_id: e.target.value })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                 >
-                  <option value="Hyundai">Hyundai</option>
-                  <option value="JMC">JMC</option>
-                  <option value="Nissan">Nissan</option>
-                  <option value="Toyota">Toyota</option>
+                  {brands.map((brand) => (
+                    <option key={brand.id} value={brand.id}>
+                      {brand.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -147,18 +235,17 @@ export function CarForm({ mode, initialData }: CarFormProps) {
                 </label>
                 <select
                   required
-                  value={formData.category}
+                  value={formData.category_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
+                    setFormData({ ...formData, category_id: e.target.value })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                 >
-                  <option value="ECOLÓGICOS">Ecológicos</option>
-                  <option value="HATCHBACK">Hatchback</option>
-                  <option value="SEDÁN">Sedán</option>
-                  <option value="SUV">SUV</option>
-                  <option value="UTILITARIOS">Utilitarios</option>
-                  <option value="COMERCIALES">Comerciales</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -169,15 +256,17 @@ export function CarForm({ mode, initialData }: CarFormProps) {
                 </label>
                 <select
                   required
-                  value={formData.fuelType}
+                  value={formData.fuel_type_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, fuelType: e.target.value })
+                    setFormData({ ...formData, fuel_type_id: e.target.value })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                 >
-                  <option value="ELÉCTRICO">Eléctrico</option>
-                  <option value="GASOLINA">Gasolina</option>
-                  <option value="DIESEL">Diésel</option>
+                  {fuelTypes.map((fuelType) => (
+                    <option key={fuelType.id} value={fuelType.id}>
+                      {fuelType.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -201,10 +290,11 @@ export function CarForm({ mode, initialData }: CarFormProps) {
                   </span>
                   <input
                     type="number"
+                    step="0.01"
                     required
-                    value={formData.priceUSD}
+                    value={formData.price_usd}
                     onChange={(e) =>
-                      setFormData({ ...formData, priceUSD: e.target.value })
+                      setFormData({ ...formData, price_usd: e.target.value })
                     }
                     className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                     placeholder="0.00"
@@ -223,10 +313,11 @@ export function CarForm({ mode, initialData }: CarFormProps) {
                   </span>
                   <input
                     type="number"
+                    step="0.01"
                     required
-                    value={formData.pricePEN}
+                    value={formData.price_pen}
                     onChange={(e) =>
-                      setFormData({ ...formData, pricePEN: e.target.value })
+                      setFormData({ ...formData, price_pen: e.target.value })
                     }
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                     placeholder="0.00"
@@ -248,15 +339,18 @@ export function CarForm({ mode, initialData }: CarFormProps) {
             <div className="space-y-4">
               {imagePreview ? (
                 <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
-                  <Image
+                  <img
                     src={imagePreview}
                     alt="Preview"
-                    fill
-                    className="object-cover"
+                    className="w-full h-full object-cover"
                   />
                   <button
                     type="button"
-                    onClick={() => setImagePreview(null)}
+                    onClick={() => {
+                      setImagePreview(null);
+                      setImageFile(null);
+                      setFormData({ ...formData, image_url: "" });
+                    }}
                     className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
                   >
                     <X className="h-4 w-4" />
@@ -291,15 +385,18 @@ export function CarForm({ mode, initialData }: CarFormProps) {
             <div className="space-y-4">
               {frontalPreview ? (
                 <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
-                  <Image
+                  <img
                     src={frontalPreview}
                     alt="Preview Frontal"
-                    fill
-                    className="object-cover"
+                    className="w-full h-full object-cover"
                   />
                   <button
                     type="button"
-                    onClick={() => setFrontalPreview(null)}
+                    onClick={() => {
+                      setFrontalPreview(null);
+                      setFrontalFile(null);
+                      setFormData({ ...formData, image_frontal_url: "" });
+                    }}
                     className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
                   >
                     <X className="h-4 w-4" />

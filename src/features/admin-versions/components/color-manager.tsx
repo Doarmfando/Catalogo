@@ -2,61 +2,113 @@
 
 import { useState, useEffect } from "react";
 import { X, Upload, Trash2 } from "lucide-react";
-import Image from "next/image";
 
-interface Color {
+interface VersionColor {
   id: string;
+  colorId: string;
   name: string;
   hex: string;
-  images: string[];
+  images: File[];
+  imageUrls: string[];
 }
 
 interface ColorManagerProps {
-  color: Color | null;
-  onSave: (color: Color) => void;
+  versionColor: VersionColor | null;
+  availableColors: any[];
+  selectedColorIds: string[];
+  onSave: (versionColor: VersionColor) => void;
   onCancel: () => void;
 }
 
-export function ColorManager({ color, onSave, onCancel }: ColorManagerProps) {
-  const [name, setName] = useState("");
-  const [hex, setHex] = useState("#FFFFFF");
-  const [images, setImages] = useState<string[]>([]);
+export function ColorManager({
+  versionColor,
+  availableColors,
+  selectedColorIds,
+  onSave,
+  onCancel,
+}: ColorManagerProps) {
+  const [selectedColorId, setSelectedColorId] = useState("");
+  const [selectedColor, setSelectedColor] = useState<any>(null);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   useEffect(() => {
-    if (color) {
-      setName(color.name);
-      setHex(color.hex);
-      setImages(color.images);
+    if (versionColor) {
+      setSelectedColorId(versionColor.colorId);
+      const color = availableColors.find((c) => c.id === versionColor.colorId);
+      setSelectedColor(color);
+      setExistingImageUrls(versionColor.imageUrls);
+      setNewImages(versionColor.images || []);
+
+      // Create previews for new images
+      if (versionColor.images && versionColor.images.length > 0) {
+        const previews = versionColor.images.map((file) => URL.createObjectURL(file));
+        setImagePreviews(previews);
+      }
     }
-  }, [color]);
+  }, [versionColor, availableColors]);
+
+  useEffect(() => {
+    if (selectedColorId) {
+      const color = availableColors.find((c) => c.id === selectedColorId);
+      setSelectedColor(color);
+    }
+  }, [selectedColorId, availableColors]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
       const fileArray = Array.from(files);
-      fileArray.forEach((file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImages((prev) => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
+      const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
+
+      setNewImages((prev) => [...prev, ...fileArray]);
+      setImagePreviews((prev) => [...prev, ...newPreviews]);
     }
   };
 
-  const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
+  const handleRemoveExistingImage = (index: number) => {
+    setExistingImageUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveNewImage = (index: number) => {
+    URL.revokeObjectURL(imagePreviews[index]);
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!selectedColorId) {
+      alert("Por favor selecciona un color");
+      return;
+    }
+
+    if (existingImageUrls.length === 0 && newImages.length === 0) {
+      alert("Debes agregar al menos una imagen para este color");
+      return;
+    }
+
     onSave({
-      id: color?.id || "",
-      name,
-      hex,
-      images,
+      id: versionColor?.id || Date.now().toString(),
+      colorId: selectedColorId,
+      name: selectedColor.name,
+      hex: selectedColor.hex_code,
+      images: newImages,
+      imageUrls: existingImageUrls,
     });
+
+    // Cleanup
+    imagePreviews.forEach((preview) => URL.revokeObjectURL(preview));
   };
+
+  // Filter out already selected colors (except the one being edited)
+  const filteredColors = availableColors.filter(
+    (color) =>
+      !selectedColorIds.includes(color.id) ||
+      color.id === versionColor?.colorId
+  );
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -64,7 +116,7 @@ export function ColorManager({ color, onSave, onCancel }: ColorManagerProps) {
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">
-            {color ? "Editar Color" : "Nuevo Color"}
+            {versionColor ? "Editar Color de Versión" : "Agregar Color a Versión"}
           </h3>
           <button
             onClick={onCancel}
@@ -76,50 +128,49 @@ export function ColorManager({ color, onSave, onCancel }: ColorManagerProps) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Color Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nombre del Color *
-              </label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
-                placeholder="Ej: Blanco Polar"
-              />
-            </div>
+          {/* Color Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Seleccionar Color del Catálogo *
+            </label>
+            <select
+              required
+              value={selectedColorId}
+              onChange={(e) => setSelectedColorId(e.target.value)}
+              disabled={!!versionColor}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="">Selecciona un color...</option>
+              {filteredColors.map((color) => (
+                <option key={color.id} value={color.id}>
+                  {color.name}
+                </option>
+              ))}
+            </select>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Código de Color *
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={hex}
-                  onChange={(e) => setHex(e.target.value)}
-                  className="h-10 w-16 rounded-lg border border-gray-300 cursor-pointer"
+            {/* Color Preview */}
+            {selectedColor && (
+              <div className="mt-3 flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <div
+                  className="h-12 w-12 rounded-lg border-2 border-gray-300 flex-shrink-0"
+                  style={{ backgroundColor: selectedColor.hex_code }}
                 />
-                <input
-                  type="text"
-                  required
-                  value={hex}
-                  onChange={(e) => setHex(e.target.value)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono"
-                  placeholder="#FFFFFF"
-                  pattern="^#[0-9A-Fa-f]{6}$"
-                />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {selectedColor.name}
+                  </p>
+                  <p className="text-xs text-gray-500 font-mono">
+                    {selectedColor.hex_code}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Gallery */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              Galería de Imágenes
+              Galería de Imágenes *
             </label>
 
             {/* Upload Area */}
@@ -141,22 +192,22 @@ export function ColorManager({ color, onSave, onCancel }: ColorManagerProps) {
             </label>
 
             {/* Images Grid */}
-            {images.length > 0 && (
+            {(existingImageUrls.length > 0 || imagePreviews.length > 0) && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {images.map((image, index) => (
+                {/* Existing images from database */}
+                {existingImageUrls.map((imageUrl, index) => (
                   <div
-                    key={index}
+                    key={`existing-${index}`}
                     className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-300 group"
                   >
-                    <Image
-                      src={image}
+                    <img
+                      src={imageUrl}
                       alt={`Imagen ${index + 1}`}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
                     />
                     <button
                       type="button"
-                      onClick={() => handleRemoveImage(index)}
+                      onClick={() => handleRemoveExistingImage(index)}
                       className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -166,10 +217,34 @@ export function ColorManager({ color, onSave, onCancel }: ColorManagerProps) {
                     </div>
                   </div>
                 ))}
+
+                {/* New images to upload */}
+                {imagePreviews.map((preview, index) => (
+                  <div
+                    key={`new-${index}`}
+                    className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-300 group"
+                  >
+                    <img
+                      src={preview}
+                      alt={`Nueva imagen ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveNewImage(index)}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-green-600 text-white text-xs rounded">
+                      Nueva {existingImageUrls.length + index + 1}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
-            {images.length === 0 && (
+            {existingImageUrls.length === 0 && imagePreviews.length === 0 && (
               <div className="text-center py-8 border border-dashed border-gray-300 rounded-lg">
                 <p className="text-sm text-gray-500">
                   No hay imágenes agregadas aún
@@ -184,7 +259,7 @@ export function ColorManager({ color, onSave, onCancel }: ColorManagerProps) {
               type="submit"
               className="flex-1 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
             >
-              {color ? "Guardar Cambios" : "Agregar Color"}
+              {versionColor ? "Guardar Cambios" : "Agregar Color"}
             </button>
             <button
               type="button"

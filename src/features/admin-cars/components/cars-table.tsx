@@ -1,44 +1,52 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Pencil, Trash2, Eye, Palette } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Car } from "@/shared/types/car";
 
-// Mock data
-const mockCars = [
-  {
-    id: "1",
-    name: "PALISADE Hybrid",
-    brand: "Hyundai",
-    year: 2026,
-    category: "SUV",
-    fuelType: "ELÉCTRICO",
-    priceUSD: 54990,
-    image: "/images/PALISADE_HYB-2026.png",
-  },
-  {
-    id: "4",
-    name: "Grand i10 Hatch",
-    brand: "Hyundai",
-    year: 2026,
-    category: "HATCHBACK",
-    fuelType: "GASOLINA",
-    priceUSD: 10890,
-    image: "/images/GRANDI10_HTC-2026.png",
-  },
-  {
-    id: "9",
-    name: "VENUE",
-    brand: "Hyundai",
-    year: 2026,
-    category: "SUV",
-    fuelType: "GASOLINA",
-    priceUSD: 17490,
-    image: "/images/VENUE-2026.png",
-  },
-];
+interface CarsTableProps {
+  cars: Car[];
+}
 
-export function CarsTable() {
+export function CarsTable({ cars }: CarsTableProps) {
+  const router = useRouter();
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const handleDelete = async (carId: string, carName: string) => {
+    if (!confirm(`¿Estás seguro de eliminar "${carName}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    setDeleting(carId);
+
+    try {
+      const res = await fetch(`/api/admin/cars/${carId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error("Error al eliminar");
+      }
+
+      // Refrescar la página para mostrar los cambios
+      router.refresh();
+    } catch (error) {
+      alert("Error al eliminar el auto. Intenta de nuevo.");
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  if (cars.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <p className="text-gray-500">No hay autos registrados. Crea el primero.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">
@@ -69,16 +77,17 @@ export function CarsTable() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {mockCars.map((car) => (
+            {cars.map((car) => (
               <tr key={car.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4">
-                  <div className="h-16 w-24 relative rounded-lg overflow-hidden bg-gray-100">
-                    <Image
-                      src={car.image}
-                      alt={car.name}
-                      fill
-                      className="object-cover"
-                    />
+                  <div className="h-16 w-24 rounded-lg overflow-hidden bg-gray-100">
+                    {car.image && (
+                      <img
+                        src={car.image}
+                        alt={car.name}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4">
@@ -126,7 +135,9 @@ export function CarsTable() {
                       <Pencil className="h-4 w-4" />
                     </Link>
                     <button
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      onClick={() => handleDelete(car.id, car.name)}
+                      disabled={deleting === car.id}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                       title="Eliminar"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -142,17 +153,7 @@ export function CarsTable() {
       {/* Pagination */}
       <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
         <div className="text-sm text-gray-500">
-          Mostrando <span className="font-semibold">1</span> a{" "}
-          <span className="font-semibold">3</span> de{" "}
-          <span className="font-semibold">3</span> resultados
-        </div>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-            Anterior
-          </button>
-          <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-            Siguiente
-          </button>
+          Mostrando <span className="font-semibold">{cars.length}</span> resultado{cars.length !== 1 ? 's' : ''}
         </div>
       </div>
     </div>

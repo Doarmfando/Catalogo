@@ -2,8 +2,11 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { AdminTopbar } from "@/features/admin-layout/components";
 import { UsersTable } from "@/features/admin-users/components";
+import { getAllUsers } from "@/lib/supabase/queries/admin-users";
 
-export default function UsuariosPage() {
+export default async function UsuariosPage() {
+  const users = await getAllUsers();
+
   return (
     <>
       <AdminTopbar title="Gestión de Usuarios" />
@@ -11,7 +14,12 @@ export default function UsuariosPage() {
       <div className="p-6">
         {/* Header with action button */}
         <div className="flex items-center justify-between mb-6">
-          <div></div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Usuarios</h1>
+            <p className="text-gray-600 mt-1">
+              Administra los usuarios del sistema
+            </p>
+          </div>
           <Link
             href="/admin/usuarios/nuevo"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
@@ -22,7 +30,7 @@ export default function UsuariosPage() {
         </div>
 
         {/* Table */}
-        <UsersTable />
+        <UsersTable users={users} />
       </div>
     </>
   );

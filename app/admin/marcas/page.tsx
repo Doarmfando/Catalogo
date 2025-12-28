@@ -1,7 +1,10 @@
 import { AdminTopbar } from "@/features/admin-layout/components";
 import { BrandsGrid, BrandForm } from "@/features/admin-brands/components";
+import { getAllBrandsAdmin } from "@/lib/supabase/queries/admin-brands";
 
-export default function MarcasPage() {
+export default async function MarcasPage() {
+  const brands = await getAllBrandsAdmin();
+
   return (
     <>
       <AdminTopbar title="Gestión de Marcas" />
@@ -15,7 +18,7 @@ export default function MarcasPage() {
 
           {/* Grid */}
           <div className="lg:col-span-2">
-            <BrandsGrid />
+            <BrandsGrid brands={brands} />
           </div>
         </div>
       </div>

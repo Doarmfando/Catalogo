@@ -1,21 +1,25 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { notFound } from "next/navigation";
 import { AdminTopbar } from "@/features/admin-layout/components";
 import { UserForm } from "@/features/admin-users/components";
+import { getUserById } from "@/lib/supabase/queries/admin-users";
 
-export default function EditarUsuarioPage({ params }: { params: { id: string } }) {
-  // Mock data - en producción vendría de una API
-  const mockUserData = {
-    id: params.id,
-    name: "Juan Pérez",
-    email: "juan.perez@hyundai.com",
-    role: "Administrador",
-    status: "Activo",
-  };
+export default async function EditarUsuarioPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const user = await getUserById(id);
+
+  if (!user) {
+    notFound();
+  }
 
   return (
     <>
-      <AdminTopbar title="Editar Usuario" />
+      <AdminTopbar title={`Editar: ${user.full_name || user.email}`} />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}
@@ -27,10 +31,13 @@ export default function EditarUsuarioPage({ params }: { params: { id: string } }
             <ArrowLeft className="h-4 w-4" />
             Volver a Usuarios
           </Link>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Editar: {user.full_name || user.email}
+          </h1>
         </div>
 
         {/* Form */}
-        <UserForm initialData={mockUserData} mode="edit" />
+        <UserForm initialData={user} mode="edit" />
       </div>
     </>
   );

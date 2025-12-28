@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Upload, X } from "lucide-react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Upload, X, Loader2 } from "lucide-react";
+import { uploadImage } from "@/lib/utils/image-upload";
 
 interface BrandData {
   id?: string;
   name: string;
-  logo: string;
+  logo_url?: string;
+  slug?: string;
 }
 
 interface BrandFormProps {
@@ -15,20 +17,50 @@ interface BrandFormProps {
   mode?: "create" | "edit";
 }
 
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
 export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
+  const router = useRouter();
   const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (initialData) {
-      setName(initialData.name);
-      setLogoPreview(initialData.logo);
+      setName(initialData.name || "");
+      setSlug(initialData.slug || "");
+      setLogoUrl(initialData.logo_url || "");
+      if (initialData.logo_url) {
+        setLogoPreview(initialData.logo_url);
+      }
     }
   }, [initialData]);
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+    if (mode === "create" || !slug) {
+      setSlug(generateSlug(value));
+    }
+  };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setLogoFile(file);
+      setImageError(false);
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result as string);
@@ -37,13 +69,75 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRemoveLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    setLogoUrl("");
+    setImageError(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const action = mode === "edit" ? "actualizada" : "creada";
-    alert(`Marca ${action} (maqueta)`);
-    if (mode === "create") {
-      setName("");
-      setLogoPreview(null);
+
+    if (!name.trim()) {
+      alert("El nombre es requerido");
+      return;
+    }
+
+    if (!slug.trim()) {
+      alert("El slug es requerido");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      let finalLogoUrl = logoUrl;
+      if (logoFile) {
+        finalLogoUrl = await uploadImage(logoFile, "brands");
+      }
+
+      const brandData = {
+        name: name.trim(),
+        slug: slug.trim(),
+        logo_url: finalLogoUrl || null,
+      };
+
+      const endpoint = mode === "edit"
+        ? `/api/admin/brands/${initialData?.id}`
+        : "/api/admin/brands";
+
+      const method = mode === "edit" ? "PUT" : "POST";
+
+      const res = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(brandData),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Error al guardar la marca");
+      }
+
+      alert(mode === "edit" ? "Marca actualizada exitosamente" : "Marca creada exitosamente");
+
+      if (mode === "create") {
+        setName("");
+        setSlug("");
+        setLogoFile(null);
+        setLogoPreview(null);
+        setLogoUrl("");
+      }
+
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error saving brand:", error);
+      alert(error.message || "Error al guardar la marca");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -54,37 +148,22 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
       </h3>
 
       <div className="space-y-4">
-        {/* Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nombre de la Marca *
-          </label>
-          <input
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
-            placeholder="Ej: Toyota"
-          />
-        </div>
-
         {/* Logo */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Logo *
+            Logo
           </label>
-          {logoPreview ? (
+          {logoPreview && !imageError ? (
             <div className="relative h-32 rounded-lg overflow-hidden bg-gray-100 border border-gray-300">
-              <Image
+              <img
                 src={logoPreview}
                 alt="Logo Preview"
-                fill
-                className="object-contain p-4"
+                className="w-full h-full object-contain p-4"
+                onError={() => setImageError(true)}
               />
               <button
                 type="button"
-                onClick={() => setLogoPreview(null)}
+                onClick={handleRemoveLogo}
                 className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
               >
                 <X className="h-4 w-4" />
@@ -109,12 +188,51 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
           )}
         </div>
 
+        {/* Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nombre de la Marca *
+          </label>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            placeholder="Ej: Toyota"
+          />
+        </div>
+
+        {/* Slug */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Slug *
+          </label>
+          <input
+            type="text"
+            required
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono text-sm"
+            placeholder="ej: toyota"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Se genera automáticamente
+          </p>
+        </div>
+
         {/* Submit */}
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
+          disabled={submitting}
+          className="w-full px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {mode === "edit" ? "Guardar Cambios" : "Crear Marca"}
+          {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+          {submitting
+            ? "Guardando..."
+            : mode === "edit"
+            ? "Guardar Cambios"
+            : "Crear Marca"}
         </button>
       </div>
     </form>

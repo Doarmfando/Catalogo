@@ -2,8 +2,14 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { AdminTopbar } from "@/features/admin-layout/components";
 import { CarsTable, CarsSearchFilter } from "@/features/admin-cars/components";
+import { getAllCarsAdmin } from "@/lib/supabase/queries/admin-cars";
+import { adaptSupabaseCars } from "@/lib/supabase/adapters/cars";
 
-export default function AutosPage() {
+export default async function AutosPage() {
+  // Fetch cars from Supabase
+  const supabaseCars = await getAllCarsAdmin();
+  const cars = adaptSupabaseCars(supabaseCars);
+
   return (
     <>
       <AdminTopbar title="Gestión de Autos" />
@@ -22,7 +28,7 @@ export default function AutosPage() {
         </div>
 
         {/* Table */}
-        <CarsTable />
+        <CarsTable cars={cars} />
       </div>
     </>
   );

@@ -1,14 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Car, Tag, Users, Layers, LogOut, LayoutDashboard } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { Car, Tag, Users, Layers, LogOut, LayoutDashboard, Fuel, Palette, Image } from "lucide-react";
 
 const menuItems = [
   {
     label: "Autos",
     href: "/admin/autos",
     icon: Car,
+  },
+  {
+    label: "Banners",
+    href: "/admin/banners",
+    icon: Image,
+  },
+  {
+    label: "Tipos de Combustible",
+    href: "/admin/tipos-combustible",
+    icon: Fuel,
+  },
+  {
+    label: "Colores",
+    href: "/admin/colores",
+    icon: Palette,
   },
   {
     label: "Marcas",
@@ -29,6 +45,26 @@ const menuItems = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      if (res.ok) {
+        router.push('/login');
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <aside className="w-64 bg-[#002C5F] text-white flex flex-col h-screen sticky top-0">
@@ -72,13 +108,14 @@ export function AdminSidebar() {
 
       {/* Logout */}
       <div className="p-4 border-t border-white/10">
-        <Link
-          href="/login"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-colors"
+        <button
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <LogOut className="h-5 w-5" />
-          <span>Cerrar Sesión</span>
-        </Link>
+          <span>{isLoggingOut ? 'Cerrando sesión...' : 'Cerrar Sesión'}</span>
+        </button>
       </div>
     </aside>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import { ArrowRight, Fuel, Zap } from "lucide-react";
@@ -58,12 +57,10 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
           Imagen referencial
         </div> */}
         {currentImage ? (
-          <Image
+          <img
             key={currentImage}
             src={currentImage}
             alt={car.name}
-            width={468}
-            height={260}
             className="w-full h-full object-cover transition-opacity duration-300"
           />
         ) : (

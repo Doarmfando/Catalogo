@@ -1,7 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { VersionsAndGallery } from "@/features/catalog/components";
+import { getCarById } from "@/lib/supabase/queries";
+import { adaptSupabaseCar } from "@/lib/supabase/adapters/cars";
 
 import {
   ArrowLeft,
@@ -11,7 +12,6 @@ import {
   BadgeCheck,
   PhoneCall,
 } from "lucide-react";
-import { cars } from "@/features/catalog/data";
 
 function money(n: number) {
   return n.toLocaleString("en-US");
@@ -93,8 +93,11 @@ export default async function ModelDetailPage({
 }) {
   const { id } = await params;
 
-  const car = cars.find((c) => String(c.id) === id);
-  if (!car) return notFound();
+  // Fetch car from Supabase by ID
+  const supabaseCar = await getCarById(id);
+  if (!supabaseCar) return notFound();
+
+  const car = adaptSupabaseCar(supabaseCar);
 
   const versions = car.versions ?? [];
   const { label: fuelLabel, Icon: FuelIcon } = fuelMeta(car.fuelType);
@@ -228,13 +231,11 @@ export default async function ModelDetailPage({
       {/* RIGHT (IMAGE) */}
       <div className="relative">
         <div className="relative shadow-[0_28px_80px_rgba(0,0,0,0.35)]">
-          <div className="aspect-video relative">
-            <Image
+          <div className="aspect-video">
+            <img
               src={car.image}
               alt={car.name}
-              fill
-              className="object-cover"
-              priority
+              className="w-full h-full object-cover"
             />
           </div>
         </div>

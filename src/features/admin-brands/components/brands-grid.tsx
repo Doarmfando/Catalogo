@@ -1,50 +1,92 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Pencil, Trash2 } from "lucide-react";
 
-// Mock data
-const mockBrands = [
-  {
-    id: "1",
-    name: "Hyundai",
-    logo: "/images/brands/logo_hyundai.png",
-    totalCars: 24,
-  },
-  {
-    id: "2",
-    name: "JMC",
-    logo: "/images/brands/logo_jmc.png",
-    totalCars: 4,
-  },
-];
+interface BrandsGridProps {
+  brands: any[];
+}
 
-export function BrandsGrid() {
+export function BrandsGrid({ brands }: BrandsGridProps) {
+  const router = useRouter();
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+
+  const handleImageError = (brandId: string) => {
+    setImageErrors(prev => new Set(prev).add(brandId));
+  };
+
+  const handleDelete = async (brandId: string, brandName: string, carCount: number) => {
+    if (carCount > 0) {
+      alert(`No se puede eliminar la marca "${brandName}" porque tiene ${carCount} auto${carCount > 1 ? 's' : ''} asociado${carCount > 1 ? 's' : ''}.`);
+      return;
+    }
+
+    if (!confirm(`¿Estás seguro de eliminar la marca "${brandName}"?`)) {
+      return;
+    }
+
+    setDeleting(brandId);
+
+    try {
+      const res = await fetch(`/api/admin/brands/${brandId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Error al eliminar");
+      }
+
+      router.refresh();
+    } catch (error: any) {
+      alert(error.message || "Error al eliminar la marca. Intenta de nuevo.");
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  if (brands.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <p className="text-gray-500">No hay marcas creadas aún</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {mockBrands.map((brand) => (
+      {brands.map((brand) => {
+        const carCount = brand.cars?.[0]?.count || 0;
+
+        return (
         <div
           key={brand.id}
           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
         >
           {/* Logo */}
           <div className="h-24 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
-            <div className="relative h-16 w-full">
-              <Image
-                src={brand.logo}
+            {brand.logo_url && !imageErrors.has(brand.id) ? (
+              <img
+                src={brand.logo_url}
                 alt={brand.name}
-                fill
-                className="object-contain"
+                className="h-16 w-auto object-contain"
+                onError={() => handleImageError(brand.id)}
               />
-            </div>
+            ) : (
+              <span className="text-3xl font-bold text-gray-400">
+                {brand.name.charAt(0)}
+              </span>
+            )}
           </div>
 
           {/* Info */}
           <div className="text-center mb-4">
             <h3 className="text-lg font-semibold text-gray-900">{brand.name}</h3>
             <p className="text-sm text-gray-500 mt-1">
-              {brand.totalCars} {brand.totalCars === 1 ? "auto" : "autos"}
+              {carCount} {carCount === 1 ? "auto" : "autos"}
             </p>
           </div>
 
@@ -57,12 +99,17 @@ export function BrandsGrid() {
               <Pencil className="h-4 w-4" />
               Editar
             </Link>
-            <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+            <button
+              onClick={() => handleDelete(brand.id, brand.name, carCount)}
+              disabled={deleting === brand.id}
+              className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+            >
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
