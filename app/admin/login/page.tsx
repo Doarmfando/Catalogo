@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "@/lib/supabase/auth";
+import { signIn } from "@/lib/supabase/auth-client";
 import { Lock, Mail, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {

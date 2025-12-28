@@ -490,9 +490,9 @@ export function BannerForm({
               <input
                 type="text"
                 disabled={submitting}
-                value={formData.cta_primary_url}
+                value={formData.cta_primary_link}
                 onChange={(e) =>
-                  setFormData({ ...formData, cta_primary_url: e.target.value })
+                  setFormData({ ...formData, cta_primary_link: e.target.value })
                 }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
                 placeholder="/catalogo"
@@ -525,7 +525,7 @@ export function BannerForm({
               <input
                 type="text"
                 disabled={submitting}
-                value={formData.cta_secondary_url}
+                value={formData.cta_secondary_link}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
