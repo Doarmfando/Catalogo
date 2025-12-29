@@ -199,14 +199,14 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
-            placeholder="Ej: Toyota"
+            placeholder="Ej: Hyundai"
           />
         </div>
 
         {/* Slug */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Slug *
+            Etiqueta *
           </label>
           <input
             type="text"
@@ -214,7 +214,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono text-sm"
-            placeholder="ej: toyota"
+            placeholder="ej: hyundai"
           />
           <p className="mt-1 text-xs text-gray-500">
             Se genera automáticamente

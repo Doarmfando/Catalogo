@@ -1,12 +1,38 @@
+// src/features/admin-cars/components/cars-search-filter.tsx
 "use client";
 
-import { Search, Filter } from "lucide-react";
-import { useState } from "react";
+import { Search } from "lucide-react";
+import { useState, useEffect } from "react";
 
-export function CarsSearchFilter() {
+export interface FilterState {
+  searchTerm: string;
+  brand: string;
+  category: string;
+}
+
+interface CarsSearchFilterProps {
+  onFilterChange: (filters: FilterState) => void;
+  brands?: string[]; // Dynamic brands from actual data
+  categories?: string[]; // Dynamic categories from actual data
+}
+
+export function CarsSearchFilter({ 
+  onFilterChange, 
+  brands = [], 
+  categories = [] 
+}: CarsSearchFilterProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+
+  // Notify parent component when filters change
+  useEffect(() => {
+    onFilterChange({
+      searchTerm,
+      brand: selectedBrand,
+      category: selectedCategory,
+    });
+  }, [searchTerm, selectedBrand, selectedCategory, onFilterChange]);
 
   return (
     <div className="flex flex-1 gap-3 max-w-3xl">
@@ -17,7 +43,7 @@ export function CarsSearchFilter() {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Buscar por nombre o modelo..."
+          placeholder="Buscar por nombre, modelo o marca..."
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
         />
       </div>
@@ -29,8 +55,11 @@ export function CarsSearchFilter() {
         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none bg-white min-w-[150px]"
       >
         <option value="">Todas las marcas</option>
-        <option value="Hyundai">Hyundai</option>
-        <option value="JMC">JMC</option>
+        {brands.map((brand) => (
+          <option key={brand} value={brand}>
+            {brand}
+          </option>
+        ))}
       </select>
 
       {/* Category Filter */}
@@ -40,12 +69,11 @@ export function CarsSearchFilter() {
         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none bg-white min-w-[150px]"
       >
         <option value="">Todas las categorías</option>
-        <option value="ECOLÓGICOS">Ecológicos</option>
-        <option value="HATCHBACK">Hatchback</option>
-        <option value="SEDÁN">Sedán</option>
-        <option value="SUV">SUV</option>
-        <option value="UTILITARIOS">Utilitarios</option>
-        <option value="COMERCIALES">Comerciales</option>
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
       </select>
     </div>
   );

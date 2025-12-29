@@ -117,7 +117,7 @@ export function FuelTypeForm({ initialData, mode = "create" }: FuelTypeFormProps
         {/* Slug */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Slug *
+            Etiqueta *
           </label>
           <input
             type="text"

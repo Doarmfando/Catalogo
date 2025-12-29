@@ -9,7 +9,7 @@ interface CategoryHeaderProps {
 const specialCategoryInfo: Record<string, { title: string; description: string }> = {
   "Todos": {
     title: "Todos los Modelos",
-    description: "Explora nuestra línea completa de vehículos Hyundai. Encuentra el auto perfecto para ti entre nuestra amplia selección de modelos.",
+    description: "Explora nuestra línea completa de vehículos. Encuentra el auto perfecto para ti entre nuestra amplia selección de modelos.",
   },
 };
 
