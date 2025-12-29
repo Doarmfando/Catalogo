@@ -12,12 +12,14 @@ interface ColorFormProps {
 export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [colorCode, setColorCode] = useState("");
   const [hexCode, setHexCode] = useState("#000000");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || "");
+      setColorCode(initialData.color_code || "");
       setHexCode(initialData.hex_code || "#000000");
     }
   }, [initialData]);
@@ -27,6 +29,11 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
 
     if (!name.trim()) {
       alert("El nombre es requerido");
+      return;
+    }
+
+    if (!colorCode.trim()) {
+      alert("El código del color es requerido");
       return;
     }
 
@@ -40,6 +47,7 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
     try {
       const colorData = {
         name: name.trim(),
+        color_code: colorCode.trim().toUpperCase(),
         hex_code: hexCode.toUpperCase(),
       };
 
@@ -82,7 +90,7 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
         {mode === "edit" ? "Editar Color" : "Nuevo Color"}
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -96,6 +104,25 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
             placeholder="Ej: Rojo Metálico"
           />
+        </div>
+
+        {/* Color Code */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Código *
+          </label>
+          <input
+            type="text"
+            required
+            value={colorCode}
+            onChange={(e) => setColorCode(e.target.value.toUpperCase())}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono uppercase"
+            placeholder="Ej: ROJ-001"
+            maxLength={10}
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Código interno del negocio
+          </p>
         </div>
 
         {/* Hex Code */}
@@ -138,6 +165,7 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
           />
           <div>
             <p className="text-sm font-semibold text-gray-900">{name || "Nombre del color"}</p>
+            <p className="text-xs text-gray-600 font-mono font-semibold">{colorCode || "CÓDIGO"}</p>
             <p className="text-xs text-gray-500 font-mono">{hexCode}</p>
           </div>
         </div>

@@ -59,6 +59,9 @@ export function ColorsTable({ colors }: ColorsTableProps) {
                 Nombre
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Código
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Código Hex
               </th>
               <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -78,6 +81,11 @@ export function ColorsTable({ colors }: ColorsTableProps) {
                 <td className="px-6 py-4">
                   <span className="text-sm font-semibold text-gray-900">
                     {color.name}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  <span className="text-sm font-semibold text-gray-900 font-mono bg-gray-100 px-2 py-1 rounded">
+                    {color.color_code || "—"}
                   </span>
                 </td>
                 <td className="px-6 py-4">

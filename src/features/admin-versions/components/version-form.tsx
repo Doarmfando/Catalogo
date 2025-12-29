@@ -9,6 +9,7 @@ interface VersionColor {
   id: string;
   colorId: string;
   name: string;
+  colorCode?: string;
   hex: string;
   images: File[];
   imageUrls: string[];
@@ -46,6 +47,7 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
           id: vc.id,
           colorId: vc.color_id,
           name: vc.colors.name,
+          colorCode: vc.colors.color_code,
           hex: vc.colors.hex_code,
           images: [],
           imageUrls: vc.color_images?.map((ci: any) => ci.image_url) || [],
@@ -319,9 +321,16 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
                       <p className="text-sm font-medium text-gray-900">
                         {color.name}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        {color.images.length} {color.images.length === 1 ? "imagen" : "imágenes"}
-                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {color.colorCode && (
+                          <span className="text-xs font-semibold text-gray-700 font-mono bg-gray-100 px-1.5 py-0.5 rounded">
+                            {color.colorCode}
+                          </span>
+                        )}
+                        <span className="text-xs text-gray-500">
+                          {color.images.length + color.imageUrls.length} {(color.images.length + color.imageUrls.length) === 1 ? "imagen" : "imágenes"}
+                        </span>
+                      </div>
                     </div>
                     <div className="flex gap-1">
                       <button

@@ -7,6 +7,7 @@ interface VersionColor {
   id: string;
   colorId: string;
   name: string;
+  colorCode?: string;
   hex: string;
   images: File[];
   imageUrls: string[];
@@ -94,6 +95,7 @@ export function ColorManager({
       id: versionColor?.id || Date.now().toString(),
       colorId: selectedColorId,
       name: selectedColor.name,
+      colorCode: selectedColor.color_code,
       hex: selectedColor.hex_code,
       images: newImages,
       imageUrls: existingImageUrls,
@@ -137,13 +139,12 @@ export function ColorManager({
               required
               value={selectedColorId}
               onChange={(e) => setSelectedColorId(e.target.value)}
-              disabled={!!versionColor}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
             >
               <option value="">Selecciona un color...</option>
               {filteredColors.map((color) => (
                 <option key={color.id} value={color.id}>
-                  {color.name}
+                  {color.color_code ? `[${color.color_code}] ` : ''}{color.name}
                 </option>
               ))}
             </select>
@@ -155,13 +156,20 @@ export function ColorManager({
                   className="h-12 w-12 rounded-lg border-2 border-gray-300 flex-shrink-0"
                   style={{ backgroundColor: selectedColor.hex_code }}
                 />
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900">
                     {selectedColor.name}
                   </p>
-                  <p className="text-xs text-gray-500 font-mono">
-                    {selectedColor.hex_code}
-                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    {selectedColor.color_code && (
+                      <span className="text-xs font-semibold text-gray-700 font-mono bg-gray-200 px-2 py-0.5 rounded">
+                        {selectedColor.color_code}
+                      </span>
+                    )}
+                    <span className="text-xs text-gray-500 font-mono">
+                      {selectedColor.hex_code}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}

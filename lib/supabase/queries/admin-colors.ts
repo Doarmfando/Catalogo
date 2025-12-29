@@ -26,7 +26,11 @@ export async function getAllColors() {
 /**
  * Crea un nuevo color
  */
-export async function createColor(colorData: { name: string; hex_code: string }) {
+export async function createColor(colorData: {
+  name: string;
+  color_code: string;
+  hex_code: string
+}) {
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -68,7 +72,7 @@ export async function getColorById(colorId: string) {
  */
 export async function updateColor(
   colorId: string,
-  colorData: { name?: string; hex_code?: string }
+  colorData: { name?: string; color_code?: string; hex_code?: string }
 ) {
   const supabase = await createClient()
 
