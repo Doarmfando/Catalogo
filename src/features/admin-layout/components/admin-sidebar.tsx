@@ -56,7 +56,7 @@ export function AdminSidebar() {
       });
 
       if (res.ok) {
-        router.push('/login');
+        router.push('/');
         router.refresh();
       }
     } catch (error) {

@@ -36,3 +36,8 @@ export {
   getModelDetailBanner,
   getAllHeroBanners,
 } from './banners'
+
+// Fuel Types
+export {
+  getActiveFuelTypes,
+} from './fuel-types'

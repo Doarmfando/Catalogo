@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, X, Loader2 } from "lucide-react";
-import { uploadImage } from "@/lib/utils/image-upload";
+import { Loader2 } from "lucide-react";
 
 interface CategoryData {
   id?: string;
   name: string;
   slug?: string;
   description?: string;
-  image_url?: string;
 }
 
 interface CategoryFormProps {
@@ -34,21 +32,13 @@ export function CategoryForm({ initialData, mode = "create" }: CategoryFormProps
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || "");
       setSlug(initialData.slug || "");
       setDescription(initialData.description || "");
-      setImageUrl(initialData.image_url || "");
-      if (initialData.image_url) {
-        setImagePreview(initialData.image_url);
-      }
     }
   }, [initialData]);
 
@@ -57,26 +47,6 @@ export function CategoryForm({ initialData, mode = "create" }: CategoryFormProps
     if (mode === "create" || !slug) {
       setSlug(generateSlug(value));
     }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      setImageError(false);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
-    setImageUrl("");
-    setImageError(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -95,16 +65,10 @@ export function CategoryForm({ initialData, mode = "create" }: CategoryFormProps
     setSubmitting(true);
 
     try {
-      let finalImageUrl = imageUrl;
-      if (imageFile) {
-        finalImageUrl = await uploadImage(imageFile, "categories");
-      }
-
       const categoryData = {
         name: name.trim(),
         slug: slug.trim(),
         description: description.trim() || null,
-        image_url: finalImageUrl || null,
       };
 
       const endpoint = mode === "edit"
@@ -147,46 +111,6 @@ export function CategoryForm({ initialData, mode = "create" }: CategoryFormProps
       </h3>
 
       <div className="space-y-4">
-        {/* Image */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Imagen
-          </label>
-          {imagePreview && !imageError ? (
-            <div className="relative h-32 rounded-lg overflow-hidden bg-gray-100 border border-gray-300">
-              <img
-                src={imagePreview}
-                alt="Category Preview"
-                className="w-full h-full object-cover"
-                onError={() => setImageError(true)}
-              />
-              <button
-                type="button"
-                onClick={handleRemoveImage}
-                className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          ) : (
-            <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#002C5F] transition-colors">
-              <Upload className="h-8 w-8 text-gray-400 mb-2" />
-              <span className="text-sm text-gray-600">
-                Click para subir imagen
-              </span>
-              <span className="text-xs text-gray-400 mt-1">
-                JPG o PNG
-              </span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </label>
-          )}
-        </div>
-
         {/* Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -2,23 +2,22 @@
 
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { CarCategory } from "@/shared/types/car";
+import { useMemo } from "react";
 
 interface TopTabsProps {
+  categories: any[];
   selectedCategory: CarCategory;
   onCategoryChange: (category: CarCategory) => void;
 }
 
-const categories: CarCategory[] = [
-  "Todos",
-  "ECOLÓGICOS",
-  "HATCHBACK",
-  "SEDÁN",
-  "SUV",
-  "UTILITARIOS",
-  "COMERCIALES",
-];
-
-export function TopTabs({ selectedCategory, onCategoryChange }: TopTabsProps) {
+export function TopTabs({ categories: dbCategories, selectedCategory, onCategoryChange }: TopTabsProps) {
+  // Build categories array: "Todos" + active categories (with ECOLÓGICOS)
+  const categories = useMemo(() => {
+    const activeCategories = dbCategories.map((cat) => cat.name.toUpperCase() as CarCategory);
+    // Use Set to avoid duplicates and ensure "Todos" is first and "ECOLÓGICOS" is second
+    const categoriesSet = new Set<CarCategory>(["Todos" as CarCategory, "ECOLÓGICOS" as CarCategory, ...activeCategories]);
+    return Array.from(categoriesSet);
+  }, [dbCategories]);
   return (
     <Tabs
       value={selectedCategory}

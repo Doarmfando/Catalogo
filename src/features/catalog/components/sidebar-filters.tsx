@@ -20,8 +20,10 @@ interface SidebarFiltersProps {
   brands: string[];
   selectedBrands: string[];
   onBrandChange: (next: string[]) => void;
+  fuelTypes: any[];
   selectedFuelTypes: FuelType[];
   selectedPriceRanges: string[];
+  years: number[];
   selectedYears: number[];
   searchQuery: string;
   onFuelTypeChange: (fuelTypes: FuelType[]) => void;
@@ -31,8 +33,6 @@ interface SidebarFiltersProps {
   onClearFilters: () => void;
 }
 
-const fuelTypes: FuelType[] = ["ELÉCTRICO", "GASOLINA", "DIESEL"];
-
 const priceRanges = [
   { label: "$10,000 a $15,000", value: "10000-15000" },
   { label: "$15,000 a $20,000", value: "15000-20000" },
@@ -41,15 +41,14 @@ const priceRanges = [
   { label: "$30,000 a más", value: "30000-999999" },
 ];
 
-const years = [2024, 2025, 2026];
-
 export function SidebarFilters({
   brands,
   selectedBrands,
   onBrandChange,
-
+  fuelTypes,
   selectedFuelTypes,
   selectedPriceRanges,
+  years,
   selectedYears,
   searchQuery,
   onFuelTypeChange,
@@ -108,21 +107,24 @@ export function SidebarFilters({
           </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4 pt-2">
-              {fuelTypes.map((fuelType) => (
-                <div key={fuelType} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`fuel-${fuelType}`}
-                    checked={selectedFuelTypes.includes(fuelType)}
-                    onCheckedChange={() => handleFuelTypeToggle(fuelType)}
-                  />
-                  <Label
-                    htmlFor={`fuel-${fuelType}`}
-                    className="text-sm font-medium cursor-pointer text-[#1c1b1b]"
-                  >
-                    {fuelType}
-                  </Label>
-                </div>
-              ))}
+              {fuelTypes.map((fuelType) => {
+                const fuelTypeName = fuelType.name.toUpperCase() as FuelType;
+                return (
+                  <div key={fuelType.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`fuel-${fuelType.id}`}
+                      checked={selectedFuelTypes.includes(fuelTypeName)}
+                      onCheckedChange={() => handleFuelTypeToggle(fuelTypeName)}
+                    />
+                    <Label
+                      htmlFor={`fuel-${fuelType.id}`}
+                      className="text-sm font-medium cursor-pointer text-[#1c1b1b]"
+                    >
+                      {fuelTypeName}
+                    </Label>
+                  </div>
+                );
+              })}
             </div>
           </AccordionContent>
         </AccordionItem>

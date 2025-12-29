@@ -5,14 +5,14 @@
 import { createClient } from '../server'
 
 /**
- * Obtiene todas las categorías activas
+ * Obtiene todas las categorías activas (solo id, name, slug)
  */
 export async function getActiveCategories() {
   const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('categories')
-    .select('*')
+    .select('id, name, slug')
     .eq('is_active', true)
     .order('display_order', { ascending: true })
 

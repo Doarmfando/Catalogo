@@ -14,9 +14,11 @@ import type { Car } from "@/shared/types/car";
 
 interface CatalogClientProps {
   cars: Car[];
+  categories: any[];
+  fuelTypes: any[];
 }
 
-export function CatalogClient({ cars }: CatalogClientProps) {
+export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProps) {
   const {
     filteredCars,
     brands,
@@ -40,6 +42,12 @@ export function CatalogClient({ cars }: CatalogClientProps) {
     handleClearFilters,
   } = useCatalogFilters(cars);
 
+  // Extract available years from cars
+  const availableYears = useMemo(() => {
+    const yearsSet = new Set(cars.map((c) => c.year));
+    return Array.from(yearsSet).sort((a, b) => b - a); // Descending order
+  }, [cars]);
+
   const groupedByBrand = useMemo(() => {
     const map = new Map<string, typeof filteredCars>();
     for (const c of filteredCars) {
@@ -62,6 +70,7 @@ export function CatalogClient({ cars }: CatalogClientProps) {
         {/* Tabs */}
         <div className="mb-8">
           <TopTabs
+            categories={categories}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
           />
@@ -86,8 +95,10 @@ export function CatalogClient({ cars }: CatalogClientProps) {
               brands={brands}
               selectedBrands={selectedBrands}
               onBrandChange={setSelectedBrands}
+              fuelTypes={fuelTypes}
               selectedFuelTypes={selectedFuelTypes}
               selectedPriceRanges={selectedPriceRanges}
+              years={availableYears}
               selectedYears={selectedYears}
               searchQuery={searchQuery}
               onFuelTypeChange={setSelectedFuelTypes}

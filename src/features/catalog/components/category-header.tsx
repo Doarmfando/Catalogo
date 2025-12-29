@@ -43,7 +43,11 @@ const categoryInfo: Record<CarCategory, { title: string; subtitle: string; descr
 };
 
 export function CategoryHeader({ category }: CategoryHeaderProps) {
-  const info = categoryInfo[category];
+  const info = categoryInfo[category] || {
+    title: `Modelos ${category}`,
+    subtitle: category,
+    description: `Descubre nuestra línea de vehículos ${category.toLowerCase()}. Encuentra el modelo perfecto para ti.`
+  };
 
   return (
     <div className="mb-8">
