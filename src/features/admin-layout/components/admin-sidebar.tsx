@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Car, Tag, Users, Layers, LogOut, LayoutDashboard, Fuel, Palette, Image } from "lucide-react";
 
 const menuItems = [
@@ -48,6 +48,23 @@ export function AdminSidebar() {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  // Escuchar eventos de logout en otras pestañas
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      // Si otra pestaña cerró sesión, redirigir esta también
+      if (e.key === 'logout-event') {
+        router.push('/');
+        router.refresh();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [router]);
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
@@ -56,6 +73,11 @@ export function AdminSidebar() {
       });
 
       if (res.ok) {
+        // Notificar a otras pestañas que se cerró sesión
+        localStorage.setItem('logout-event', Date.now().toString());
+        // Limpiar el evento inmediatamente
+        localStorage.removeItem('logout-event');
+
         router.push('/');
         router.refresh();
       }

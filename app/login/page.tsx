@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { User, Lock, Eye, EyeOff } from 'lucide-react'
 import {
@@ -17,6 +17,30 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [checkingSession, setCheckingSession] = useState(true)
+
+  // Verificar si ya hay sesión activa
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await fetch('/api/auth/session')
+        const data = await res.json()
+
+        if (data.user) {
+          // Ya hay sesión activa, redirigir al admin
+          router.push('/admin/autos')
+          router.refresh()
+        } else {
+          setCheckingSession(false)
+        }
+      } catch (error) {
+        console.error('Error checking session:', error)
+        setCheckingSession(false)
+      }
+    }
+
+    checkSession()
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,6 +77,23 @@ export default function LoginPage() {
       setError('Error al iniciar sesión')
       setLoading(false)
     }
+  }
+
+  // Mostrar loading mientras se verifica sesión
+  if (checkingSession) {
+    return (
+      <>
+        <div className="font-['Segoe_UI'] relative min-h-screen w-full">
+          <CirclesBackground />
+          <div className="flex h-screen w-screen items-center justify-center">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-[#002C5F] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-[#002C5F] font-semibold">Verificando sesión...</p>
+            </div>
+          </div>
+        </div>
+      </>
+    )
   }
 
   return (
