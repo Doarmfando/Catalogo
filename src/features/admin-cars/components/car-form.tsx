@@ -141,7 +141,7 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Link
           href="/admin/autos"
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
@@ -152,7 +152,7 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50 whitespace-nowrap"
         >
           <Save className="h-5 w-5" />
           {loading ? "Guardando..." : mode === "create" ? "Crear Auto" : "Guardar Cambios"}
@@ -275,7 +275,7 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
               Precios
             </h3>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Price USD */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
