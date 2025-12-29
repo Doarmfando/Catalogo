@@ -11,11 +11,11 @@ interface TopTabsProps {
 }
 
 export function TopTabs({ categories: dbCategories, selectedCategory, onCategoryChange }: TopTabsProps) {
-  // Build categories array: "Todos" + active categories (with ECOLÓGICOS)
+  // Build categories array: "Todos" + active categories from DB
   const categories = useMemo(() => {
     const activeCategories = dbCategories.map((cat) => cat.name.toUpperCase() as CarCategory);
-    // Use Set to avoid duplicates and ensure "Todos" is first and "ECOLÓGICOS" is second
-    const categoriesSet = new Set<CarCategory>(["Todos" as CarCategory, "ECOLÓGICOS" as CarCategory, ...activeCategories]);
+    // Use Set to avoid duplicates and ensure "Todos" is first
+    const categoriesSet = new Set<CarCategory>(["Todos" as CarCategory, ...activeCategories]);
     return Array.from(categoriesSet);
   }, [dbCategories]);
   return (

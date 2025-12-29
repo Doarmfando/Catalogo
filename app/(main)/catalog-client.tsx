@@ -77,7 +77,7 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
         </div>
 
         {/* Category Header */}
-        <CategoryHeader category={selectedCategory} />
+        <CategoryHeader category={selectedCategory} categories={categories} />
         <div className="mb-6">
           <BrandFilterBar
             brands={brands}
