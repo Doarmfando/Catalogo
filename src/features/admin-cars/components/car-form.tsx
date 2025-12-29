@@ -184,9 +184,6 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                   placeholder="Ej: TUCSON Hybrid 2026"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Slug generado: {generateSlug(formData.name) || "(automático)"}
-                </p>
               </div>
 
               {/* Brand */}

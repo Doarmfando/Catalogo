@@ -483,7 +483,7 @@ export function BannerForm({
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 URL Botón Primario
               </label>
@@ -497,7 +497,7 @@ export function BannerForm({
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
                 placeholder="/catalogo"
               />
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -517,7 +517,7 @@ export function BannerForm({
                 placeholder="Opcional"
               />
             </div>
-
+{/* 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 URL Botón Secundario
@@ -535,7 +535,7 @@ export function BannerForm({
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
                 placeholder="Opcional"
               />
-            </div>
+            </div> */}
           </div>
         </div>
 

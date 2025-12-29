@@ -541,7 +541,7 @@ export function VersionColorGallery({
                         title="Descargar imagen"
                       >
                         <Download className="h-4 w-4" />
-                        Descargar
+                        
                       </a>
                     </div>
 

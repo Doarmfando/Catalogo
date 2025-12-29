@@ -88,7 +88,7 @@ export function CategoryForm({ initialData, mode = "create" }: CategoryFormProps
     }
 
     if (!slug.trim()) {
-      alert("El slug es requerido");
+      alert("La etiqueta es requerida");
       return;
     }
 
@@ -205,7 +205,7 @@ export function CategoryForm({ initialData, mode = "create" }: CategoryFormProps
         {/* Slug */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Slug *
+            Etiqueta *
           </label>
           <input
             type="text"

@@ -61,7 +61,7 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
                 Nombre
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Slug
+                Etiqueta
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Descripción

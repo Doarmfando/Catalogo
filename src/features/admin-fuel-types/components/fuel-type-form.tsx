@@ -50,7 +50,7 @@ export function FuelTypeForm({ initialData, mode = "create" }: FuelTypeFormProps
     }
 
     if (!slug.trim()) {
-      alert("El slug es requerido");
+      alert("La etiqueta es requerida");
       return;
     }
 

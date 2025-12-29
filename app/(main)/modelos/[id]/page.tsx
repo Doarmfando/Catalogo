@@ -229,8 +229,9 @@ export default async function ModelDetailPage({
       </div>
 
       {/* RIGHT (IMAGE) */}
-      <div className="relative">
-        <div className="relative shadow-[0_28px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative z-10">
+        <div className="relative">
+        {/* <div className="relative shadow-[0_28px_80px_rgba(0,0,0,0.35)]"> */}
           <div className="aspect-video">
             <img
               src={car.image}

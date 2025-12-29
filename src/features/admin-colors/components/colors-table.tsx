@@ -97,7 +97,7 @@ export function ColorsTable({ colors }: ColorsTableProps) {
                     <button
                       onClick={() => handleDelete(color.id, color.name)}
                       disabled={deleting === color.id}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
                       title="Eliminar"
                     >
                       <Trash2 className="h-4 w-4" />

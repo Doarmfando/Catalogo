@@ -53,7 +53,7 @@ export function FuelTypesTable({ fuelTypes }: FuelTypesTableProps) {
                 Nombre
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Slug
+                Etiqueta
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Autos
@@ -95,7 +95,7 @@ export function FuelTypesTable({ fuelTypes }: FuelTypesTableProps) {
                       <button
                         onClick={() => handleDelete(fuelType.id, fuelType.name, carCount)}
                         disabled={deleting === fuelType.id}
-                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

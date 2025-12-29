@@ -187,7 +187,7 @@ export function BannersTable({ banners }: BannersTableProps) {
                       onClick={() =>
                         router.push(`/admin/banners/${banner.id}/editar`)
                       }
-                      className="text-[#002C5F] hover:text-[#0957a5] transition-colors p-1"
+                      className="text-[#002C5F] hover:text-[#0957a5] transition-colors p-1 cursor-pointer"
                       title="Editar"
                     >
                       <Edit className="h-5 w-5" />
@@ -195,7 +195,7 @@ export function BannersTable({ banners }: BannersTableProps) {
                     <button
                       onClick={() => handleDelete(banner.id, banner.title)}
                       disabled={deletingId === banner.id}
-                      className="text-red-600 hover:text-red-800 transition-colors p-1 disabled:opacity-50"
+                      className="text-red-600 hover:text-red-800 transition-colors p-1 disabled:opacity-50 cursor-pointer"
                       title="Eliminar"
                     >
                       {deletingId === banner.id ? (

@@ -40,7 +40,7 @@ export function Footer() {
 
             
             <p className="text-sm text-gray-300 leading-relaxed">
-              Encuentra el vehiculo perfecto para ti. Innovacion, diseño y confianza en cada modelo.
+              Encuentra el vehiculo perfecto para tí. Innovación, diseño y confianza en cada modelo.
             </p>
             <div className="flex items-center gap-3">
               {socialLinks.map(({ icon: Icon, label, href }) => (

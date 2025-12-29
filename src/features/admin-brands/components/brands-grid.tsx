@@ -102,7 +102,7 @@ export function BrandsGrid({ brands }: BrandsGridProps) {
             <button
               onClick={() => handleDelete(brand.id, brand.name, carCount)}
               disabled={deleting === brand.id}
-              className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+              className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 cursor-pointer"
             >
               <Trash2 className="h-4 w-4" />
             </button>
