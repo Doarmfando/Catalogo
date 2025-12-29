@@ -8,38 +8,61 @@ export default function ColoresLoading() {
 
       <div className="p-6">
         {/* Header with search and button */}
-        <div className="flex items-center justify-between mb-6">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-10 w-36 rounded-lg" />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <Skeleton className="h-10 w-full sm:w-64" />
+          <Skeleton className="h-10 w-full sm:w-36 rounded-lg" />
         </div>
 
         {/* Table skeleton */}
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          {/* Table header */}
-          <div className="border-b border-gray-200 bg-gray-50">
-            <div className="flex items-center gap-4 px-6 py-4">
-              <Skeleton className="h-4 w-8" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-4 w-28" />
-              <Skeleton className="h-4 w-20" />
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left">
+                    <Skeleton className="h-4 w-12" />
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <Skeleton className="h-4 w-24" />
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <Skeleton className="h-4 w-20" />
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <Skeleton className="h-4 w-20" />
+                  </th>
+                  <th className="px-6 py-3 text-right">
+                    <Skeleton className="h-4 w-20 ml-auto" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <tr key={i}>
+                    <td className="px-6 py-4">
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <Skeleton className="h-5 w-28 mb-1" />
+                      <Skeleton className="h-4 w-20" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <Skeleton className="h-6 w-20 rounded" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <Skeleton className="h-4 w-16" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <Skeleton className="h-8 w-8 rounded-lg" />
+                        <Skeleton className="h-8 w-8 rounded-lg" />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-
-          {/* Table rows */}
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="border-b border-gray-200 last:border-0">
-              <div className="flex items-center gap-4 px-6 py-4">
-                <Skeleton className="h-8 w-8 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="h-4 w-20" />
-                </div>
-                <Skeleton className="h-6 w-24 rounded" />
-                <Skeleton className="h-8 w-8 rounded" />
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </>

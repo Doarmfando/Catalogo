@@ -79,8 +79,8 @@ export function SidebarFilters({
   };
 
   return (
-    
-    <div className="w-full bg-white rounded-lg border p-6 sticky top-24">
+
+    <div className="w-full bg-white rounded-lg border p-6 lg:sticky lg:top-24">
       {/* Search Input */}
       <div className="mb-6">
         <label htmlFor="searchFilter" className="text-lg font-semibold text-[#002C5F] mb-2 block">

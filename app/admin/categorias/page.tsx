@@ -13,11 +13,10 @@ export default async function CategoriasPage() {
 
       <div className="p-6">
         {/* Header with action button */}
-        <div className="flex items-center justify-between mb-6">
-          <div></div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-6">
           <Link
             href="/admin/categorias/nueva"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium whitespace-nowrap"
           >
             <Plus className="h-5 w-5" />
             Nueva Categoría

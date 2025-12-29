@@ -97,7 +97,7 @@ export default function ModelDetailLoading() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
             <div className="flex-1">
               <Skeleton className="h-7 w-64" />
-              <Skeleton className="h-4 w-96 mt-2" />
+              <Skeleton className="h-4 w-full max-w-96 mt-2" />
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
               <Skeleton className="h-10 w-28 rounded-full" />

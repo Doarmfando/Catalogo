@@ -24,7 +24,7 @@ export default async function BannersPage() {
           </div>
           <Link
             href="/admin/banners/nuevo"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium whitespace-nowrap"
           >
             <Plus className="h-5 w-5" />
             Nuevo Banner

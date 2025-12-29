@@ -28,7 +28,7 @@ export default async function VersionsPage({
 
       <div className="p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <Link
             href="/admin/autos"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
@@ -39,7 +39,7 @@ export default async function VersionsPage({
 
           <Link
             href={`/admin/autos/${id}/versiones/nueva`}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium whitespace-nowrap"
           >
             <Plus className="h-5 w-5" />
             Nueva Versión
@@ -48,12 +48,12 @@ export default async function VersionsPage({
 
         {/* Info del Auto */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {car.image_url && (
               <img
                 src={car.image_url}
                 alt={car.name}
-                className="w-24 h-16 object-cover rounded"
+                className="w-full sm:w-24 h-32 sm:h-16 object-cover rounded"
               />
             )}
             <div>

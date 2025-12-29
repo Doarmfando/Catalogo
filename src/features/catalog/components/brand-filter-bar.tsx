@@ -58,7 +58,7 @@ export function BrandFilterBar({
               aria-pressed={active}
               onClick={() => onChange(toggle(selectedBrands, brand))}
               className={[
-                "group relative rounded-2xl px-5 py-4 min-w-[170px]",
+                "group relative rounded-2xl px-5 py-4 min-w-[140px] sm:min-w-[170px]",
                 "border border-[rgba(0,44,95,0.14)] bg-transparent",
                 "transition hover:bg-white/60 hover:shadow-[0_10px_25px_rgba(0,0,0,0.06)]",
                 active
