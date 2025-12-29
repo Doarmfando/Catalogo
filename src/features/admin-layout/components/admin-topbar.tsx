@@ -8,10 +8,10 @@ interface AdminTopbarProps {
   userEmail?: string;
 }
 
-export function AdminTopbar({ 
-  title, 
-  userName = "Administrador", 
-  userEmail = "admin@hyundai.com" 
+export function AdminTopbar({
+  title,
+  userName = "Usuario",
+  userEmail = ""
 }: AdminTopbarProps) {
   return (
     <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">

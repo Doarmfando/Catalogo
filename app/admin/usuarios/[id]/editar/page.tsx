@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { UserForm } from "@/features/admin-users/components";
 import { getUserById } from "@/lib/supabase/queries/admin-users";
 
@@ -19,7 +19,7 @@ export default async function EditarUsuarioPage({
 
   return (
     <>
-      <AdminTopbar title={`Editar: ${user.full_name || user.email}`} />
+      <AdminTopbarWrapper title={`Editar: ${user.full_name || user.email}`} />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

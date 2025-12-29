@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { ColorsTable } from "@/features/admin-colors/components";
 import { getAllColors } from "@/lib/supabase/queries/admin-colors";
 
@@ -9,7 +9,7 @@ export default async function ColoresPage() {
 
   return (
     <>
-      <AdminTopbar title="Gestión de Colores" />
+      <AdminTopbarWrapper title="Gestión de Colores" />
 
       <div className="p-6">
         {/* Header */}

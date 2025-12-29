@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { ColorForm } from "@/features/admin-colors/components";
 import { getColorById } from "@/lib/supabase/queries/admin-colors";
 
@@ -19,7 +19,7 @@ export default async function EditarColorPage({
 
   return (
     <>
-      <AdminTopbar title={`Editar: ${color.name}`} />
+      <AdminTopbarWrapper title={`Editar: ${color.name}`} />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

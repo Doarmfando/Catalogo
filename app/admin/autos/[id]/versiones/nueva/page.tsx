@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { VersionForm } from "@/features/admin-versions/components/version-form";
 import { getCarByIdAdmin } from "@/lib/supabase/queries/admin-cars";
 import { notFound } from "next/navigation";
@@ -19,7 +19,7 @@ export default async function NuevaVersionPage({
 
   return (
     <>
-      <AdminTopbar title={`Nueva Versión: ${car.name}`} />
+      <AdminTopbarWrapper title={`Nueva Versión: ${car.name}`} />
 
       <div className="p-6 max-w-4xl mx-auto">
         {/* Header */}

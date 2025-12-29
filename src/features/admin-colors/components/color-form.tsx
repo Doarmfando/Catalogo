@@ -90,7 +90,7 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
         {mode === "edit" ? "Editar Color" : "Nuevo Color"}
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -125,8 +125,8 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
           </p>
         </div>
 
-        {/* Hex Code */}
-        <div>
+        {/* Hex Code - Full width */}
+        <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Código Hexadecimal *
           </label>
@@ -142,7 +142,7 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
               required
               value={hexCode}
               onChange={(e) => setHexCode(e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono uppercase"
+              className="flex-1 max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono uppercase"
               placeholder="#FF0000"
               pattern="^#[0-9A-Fa-f]{6}$"
             />

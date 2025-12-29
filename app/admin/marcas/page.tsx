@@ -1,4 +1,4 @@
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { BrandsGrid, BrandForm } from "@/features/admin-brands/components";
 import { getAllBrandsAdmin } from "@/lib/supabase/queries/admin-brands";
 
@@ -7,7 +7,7 @@ export default async function MarcasPage() {
 
   return (
     <>
-      <AdminTopbar title="Gestión de Marcas" />
+      <AdminTopbarWrapper title="Gestión de Marcas" />
 
       <div className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { CategoriesTable } from "@/features/admin-categories/components";
 import { getAllCategoriesAdmin } from "@/lib/supabase/queries/admin-categories";
 
@@ -9,7 +9,7 @@ export default async function CategoriasPage() {
 
   return (
     <>
-      <AdminTopbar title="Gestión de Categorías" />
+      <AdminTopbarWrapper title="Gestión de Categorías" />
 
       <div className="p-6">
         {/* Header with action button */}

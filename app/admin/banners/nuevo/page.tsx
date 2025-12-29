@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { BannerForm } from "@/features/admin-banners/components";
 import { createClient } from "@/lib/supabase/server";
 
@@ -15,7 +15,7 @@ export default async function NuevoBannerPage() {
 
   return (
     <>
-      <AdminTopbar title="Nuevo Banner" />
+      <AdminTopbarWrapper title="Nuevo Banner" />
 
       <div className="p-6 max-w-4xl mx-auto">
         {/* Header */}

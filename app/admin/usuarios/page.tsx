@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { AdminTopbar } from "@/features/admin-layout/components";
+import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { UsersTable } from "@/features/admin-users/components";
 import { getAllUsers } from "@/lib/supabase/queries/admin-users";
 
@@ -9,7 +9,7 @@ export default async function UsuariosPage() {
 
   return (
     <>
-      <AdminTopbar title="Gestión de Usuarios" />
+      <AdminTopbarWrapper title="Gestión de Usuarios" />
 
       <div className="p-6">
         {/* Header with action button */}
