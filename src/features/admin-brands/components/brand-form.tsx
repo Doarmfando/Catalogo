@@ -10,6 +10,7 @@ interface BrandData {
   name: string;
   logo_url?: string;
   slug?: string;
+  description?: string;
 }
 
 interface BrandFormProps {
@@ -32,6 +33,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
+  const [description, setDescription] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -42,6 +44,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
     if (initialData) {
       setName(initialData.name || "");
       setSlug(initialData.slug || "");
+      setDescription(initialData.description || "");
       setLogoUrl(initialData.logo_url || "");
       if (initialData.logo_url) {
         setLogoPreview(initialData.logo_url);
@@ -100,6 +103,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
       const brandData = {
         name: name.trim(),
         slug: slug.trim(),
+        description: description.trim() || null,
         logo_url: finalLogoUrl || null,
       };
 
@@ -127,6 +131,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
       if (mode === "create") {
         setName("");
         setSlug("");
+        setDescription("");
         setLogoFile(null);
         setLogoPreview(null);
         setLogoUrl("");
@@ -218,6 +223,23 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
           />
           <p className="mt-1 text-xs text-gray-500">
             Se genera automáticamente
+          </p>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Descripción
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none resize-none"
+            placeholder="Descripción breve de la marca (opcional)"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Opcional - Información adicional sobre la marca
           </p>
         </div>
 
