@@ -40,6 +40,8 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  const MAX_DESCRIPTION_LENGTH = 150;
+
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || "");
@@ -233,14 +235,24 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
           </label>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= MAX_DESCRIPTION_LENGTH) {
+                setDescription(e.target.value);
+              }
+            }}
             rows={3}
+            maxLength={MAX_DESCRIPTION_LENGTH}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none resize-none"
             placeholder="Descripción breve de la marca (opcional)"
           />
-          <p className="mt-1 text-xs text-gray-500">
-            Opcional - Información adicional sobre la marca
-          </p>
+          <div className="mt-1 flex items-center justify-between">
+            <p className="text-xs text-gray-500">
+              Opcional - Información adicional sobre la marca
+            </p>
+            <p className={`text-xs ${description.length >= MAX_DESCRIPTION_LENGTH ? 'text-red-600 font-semibold' : 'text-gray-500'}`}>
+              {description.length}/{MAX_DESCRIPTION_LENGTH}
+            </p>
+          </div>
         </div>
 
         {/* Submit */}

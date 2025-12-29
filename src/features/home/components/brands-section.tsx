@@ -90,7 +90,7 @@ export function BrandsSection({ brands }: BrandsSectionProps) {
                     {brand.name}
                   </h3>
                   {brand.description && (
-                    <p className="text-xs text-[#6b7280] mt-1 line-clamp-2">
+                    <p className="text-xs text-[#6b7280] mt-1 leading-relaxed">
                       {brand.description}
                     </p>
                   )}
