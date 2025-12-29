@@ -26,6 +26,7 @@ export default async function HomePage() {
       {/* Catalog Section */}
       <CatalogClient
         cars={cars}
+        brands={brands}
         categories={categories}
         fuelTypes={fuelTypes}
       />

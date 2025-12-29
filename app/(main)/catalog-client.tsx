@@ -6,22 +6,23 @@ import { SidebarFilters } from "@/features/catalog/components/sidebar-filters";
 import { CategoryHeader } from "@/features/catalog/components/category-header";
 import { useCatalogFilters } from "@/features/catalog/hooks";
 import { BrandFilterBar } from "@/features/catalog/components/brand-filter-bar";
-import { BRAND_ORDER, getBrandMeta } from "@/features/catalog/brands";
 import Image from "next/image";
 import { Badge } from "@/shared/components/ui/badge";
 import { useMemo } from "react";
 import type { Car } from "@/shared/types/car";
+import type { Brand } from "@/shared/types/brand";
 
 interface CatalogClientProps {
   cars: Car[];
+  brands: Brand[];
   categories: any[];
   fuelTypes: any[];
 }
 
-export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProps) {
+export function CatalogClient({ cars, brands, categories, fuelTypes }: CatalogClientProps) {
   const {
     filteredCars,
-    brands,
+    brands: brandNames,
     brandCounts,
     filters: {
       selectedBrands,
@@ -42,6 +43,15 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
     handleClearFilters,
   } = useCatalogFilters(cars);
 
+  // Crear mapa de marcas por nombre para búsqueda rápida
+  const brandMap = useMemo(() => {
+    const map = new Map<string, Brand>();
+    for (const brand of brands) {
+      map.set(brand.name, brand);
+    }
+    return map;
+  }, [brands]);
+
   // Extract available years from cars
   const availableYears = useMemo(() => {
     const yearsSet = new Set(cars.map((c) => c.year));
@@ -56,13 +66,16 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
       map.get(b)!.push(c);
     }
 
+    // Las marcas ya vienen ordenadas por created_at desde la BD
+    const brandOrder = brands.map(b => b.name);
+
     const order = [
-      ...BRAND_ORDER.filter((b) => map.has(b)),
-      ...Array.from(map.keys()).filter((b) => !BRAND_ORDER.includes(b)),
+      ...brandOrder.filter((b) => map.has(b)),
+      ...Array.from(map.keys()).filter((b) => !brandOrder.includes(b)),
     ];
 
     return order.map((b) => ({ brand: b, cars: map.get(b)! }));
-  }, [filteredCars]);
+  }, [filteredCars, brands]);
 
   return (
     <section className="py-10 scroll-mt-24 lg:scroll-mt-10" id="modelos">
@@ -81,6 +94,7 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
         <div className="mb-6">
           <BrandFilterBar
             brands={brands}
+            brandNames={brandNames}
             selectedBrands={selectedBrands}
             onChange={setSelectedBrands}
             brandCounts={brandCounts}
@@ -92,7 +106,7 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
           {/* Sidebar Filters */}
           <aside className="lg:col-span-1">
             <SidebarFilters
-              brands={brands}
+              brands={brandNames}
               selectedBrands={selectedBrands}
               onBrandChange={setSelectedBrands}
               fuelTypes={fuelTypes}
@@ -123,7 +137,8 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
                 </p>
                 <div className="space-y-10">
                   {groupedByBrand.map(({ brand, cars }) => {
-                    const meta = getBrandMeta(brand);
+                    const brandData = brandMap.get(brand);
+                    const logoUrl = brandData?.logo_url || "/images/brands/default.png";
 
                     return (
                       <section key={brand} className="space-y-4">
@@ -131,8 +146,8 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
                         <div className="flex items-center gap-3">
                           <div className="h-8 flex items-center">
                             <Image
-                              src={meta.logo}
-                              alt={meta.label}
+                              src={logoUrl}
+                              alt={brand}
                               width={120}
                               height={32}
                               className="h-7 w-auto object-contain"
@@ -140,7 +155,7 @@ export function CatalogClient({ cars, categories, fuelTypes }: CatalogClientProp
                           </div>
 
                           <h3 className="text-lg font-semibold text-[#002C5F]">
-                            {meta.label}
+                            {brand}
                           </h3>
 
                           <Badge

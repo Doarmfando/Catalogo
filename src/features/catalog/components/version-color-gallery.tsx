@@ -14,6 +14,28 @@ function fileNameFromSrc(src: string) {
   return last;
 }
 
+async function downloadImage(url: string, filename: string) {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Limpiar el blob URL después de un momento
+    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
+  } catch (error) {
+    console.error('Error downloading image:', error);
+    // Fallback: abrir en nueva pestaña
+    window.open(url, '_blank');
+  }
+}
+
 type GalleryImg = {
   index: number;
   src: string;
@@ -238,14 +260,14 @@ export function VersionColorGallery({
               </div>
 
               <div className="flex items-center gap-2">
-                <a
-                  href={current.src}
-                  download={fileNameFromSrc(current.src)}
+                <button
+                  type="button"
+                  onClick={() => downloadImage(current.src, fileNameFromSrc(current.src))}
                   className="inline-flex items-center gap-2 rounded-full bg-white border border-[rgba(0,44,95,0.20)] px-3 py-2 text-xs font-extrabold text-[#002C5F] hover:bg-[rgba(0,44,95,0.06)] transition"
                 >
                   <Download className="h-4 w-4" />
                   Descargar
-                </a>
+                </button>
 
                 <button
                   type="button"
@@ -474,16 +496,18 @@ export function VersionColorGallery({
                               />
 
                               {/* ✅ DESCARGAR (no abre modal) */}
-                              <a
-                                href={img.src}
-                                download={fileNameFromSrc(img.src)}
-                                onClick={(e) => e.stopPropagation()}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  downloadImage(img.src, fileNameFromSrc(img.src));
+                                }}
                                 className="absolute top-3 right-3 inline-flex items-center gap-2 rounded-full bg-white/95 border border-black/10 px-3 py-1.5 text-xs font-extrabold text-[#002C5F] shadow-sm hover:bg-white transition"
                                 title="Descargar imagen"
                               >
                                 <Download className="h-4 w-4" />
-                                Descargar
-                              </a>
+                                
+                              </button>
                             </div>
 
                             <figcaption className="px-4 py-3 text-xs text-[#6b7280] flex items-center justify-between">
@@ -533,16 +557,18 @@ export function VersionColorGallery({
                       />
 
                       {/* ✅ DESCARGAR (no abre modal) */}
-                      <a
-                        href={img.src}
-                        download={fileNameFromSrc(img.src)}
-                        onClick={(e) => e.stopPropagation()}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadImage(img.src, fileNameFromSrc(img.src));
+                        }}
                         className="absolute top-3 right-3 inline-flex items-center gap-2 rounded-full bg-white/95 border border-black/10 px-3 py-1.5 text-xs font-extrabold text-[#002C5F] shadow-sm hover:bg-white transition"
                         title="Descargar imagen"
                       >
                         <Download className="h-4 w-4" />
                         
-                      </a>
+                      </button>
                     </div>
 
                     <figcaption className="px-4 py-3 text-xs text-[#6b7280] flex items-center justify-between">

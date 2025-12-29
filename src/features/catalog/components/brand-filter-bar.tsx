@@ -1,14 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { BRAND_ORDER, getBrandMeta } from "@/features/catalog/brands";
+import type { Brand } from "@/shared/types/brand";
+import { useMemo } from "react";
 
 function toggle(list: string[], value: string) {
   return list.includes(value) ? list.filter((x) => x !== value) : [...list, value];
 }
 
 type Props = {
-  brands: string[];
+  brands: Brand[];
+  brandNames: string[];
   selectedBrands: string[];
   onChange: (next: string[]) => void;
   brandCounts?: Record<string, number>;
@@ -16,14 +18,26 @@ type Props = {
 
 export function BrandFilterBar({
   brands,
+  brandNames,
   selectedBrands,
   onChange,
   brandCounts = {},
 }: Props) {
-  const ordered = [
-    ...BRAND_ORDER.filter((b) => brands.includes(b)),
-    ...brands.filter((b) => !BRAND_ORDER.includes(b)),
-  ];
+  // Crear mapa de marcas por nombre para búsqueda rápida
+  const brandMap = useMemo(() => {
+    const map = new Map<string, Brand>();
+    for (const brand of brands) {
+      map.set(brand.name, brand);
+    }
+    return map;
+  }, [brands]);
+
+  // Ordenar marcas por fecha de creación (ya vienen ordenadas de la BD)
+  const ordered = useMemo(() => {
+    return [...brands]
+      .filter(b => brandNames.includes(b.name))
+      .map(b => b.name);
+  }, [brands, brandNames]);
 
   const hasSelection = selectedBrands.length > 0;
 
@@ -46,17 +60,18 @@ export function BrandFilterBar({
 
       {/* Logos grandes, sin background */}
       <div className="flex flex-wrap gap-3">
-        {ordered.map((brand) => {
-          const meta = getBrandMeta(brand);
-          const active = selectedBrands.includes(brand);
-          const count = brandCounts[brand] ?? 0;
+        {ordered.map((brandName) => {
+          const brandData = brandMap.get(brandName);
+          const active = selectedBrands.includes(brandName);
+          const count = brandCounts[brandName] ?? 0;
+          const logoUrl = brandData?.logo_url || "/images/brands/default.png";
 
           return (
             <button
-              key={brand}
+              key={brandName}
               type="button"
               aria-pressed={active}
-              onClick={() => onChange(toggle(selectedBrands, brand))}
+              onClick={() => onChange(toggle(selectedBrands, brandName))}
               className={[
                 "group relative rounded-2xl px-5 py-4 min-w-[140px] sm:min-w-[170px]",
                 "border border-[rgba(0,44,95,0.14)] bg-transparent",
@@ -82,8 +97,8 @@ export function BrandFilterBar({
               {/* Logo grande */}
               <div className="flex items-center justify-center h-12">
                 <Image
-                  src={meta.logo}
-                  alt={meta.label}
+                  src={logoUrl}
+                  alt={brandName}
                   width={170}
                   height={52}
                   className={[

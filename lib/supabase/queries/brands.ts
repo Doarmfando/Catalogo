@@ -5,7 +5,7 @@
 import { createClient } from '../server'
 
 /**
- * Obtiene todas las marcas activas
+ * Obtiene todas las marcas activas ordenadas por fecha de creación
  */
 export async function getActiveBrands() {
   const supabase = await createClient()
@@ -14,7 +14,7 @@ export async function getActiveBrands() {
     .from('brands')
     .select('*')
     .eq('is_active', true)
-    .order('display_order', { ascending: true })
+    .order('created_at', { ascending: true })
 
   if (error) {
     console.error('Error fetching active brands:', error)
