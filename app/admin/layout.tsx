@@ -1,25 +1,46 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { AdminSidebar } from "@/features/admin-layout/components";
+import { UserProvider } from "@/contexts/user-context";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Autenticación deshabilitada temporalmente durante desarrollo
-  // Se habilitará al final
+  // Verificar autenticación
+  const supabase = await createClient();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+
+  if (!authUser) {
+    redirect("/login");
+  }
+
+  // Obtener datos del usuario de la tabla users
+  const { data: userData } = await supabase
+    .from('users')
+    .select('id, email, full_name, role, is_active')
+    .eq('id', authUser.id)
+    .single();
+
+  if (!userData) {
+    redirect("/login");
+  }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <AdminSidebar />
+    <UserProvider user={userData}>
+      <div className="flex h-screen bg-gray-50">
+        {/* Sidebar */}
+        <AdminSidebar />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto">
-          {children}
-        </main>
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Content */}
+          <main className="flex-1 overflow-y-auto">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </UserProvider>
   );
 }

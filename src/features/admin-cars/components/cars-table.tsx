@@ -3,16 +3,16 @@
 import Link from "next/link";
 import { Pencil, Trash2, Eye, Palette } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import type { Car } from "@/shared/types/car";
+import { useUser } from "@/contexts/user-context";
 
 interface CarsTableProps {
   cars: Car[];
 }
 
 export function CarsTable({ cars }: CarsTableProps) {
-  const router = useRouter();
   const [deleting, setDeleting] = useState<string | null>(null);
+  const { isAdmin } = useUser();
 
   const handleDelete = async (carId: string, carName: string) => {
     if (!confirm(`¿Estás seguro de eliminar "${carName}"? Esta acción no se puede deshacer.`)) {
@@ -30,8 +30,7 @@ export function CarsTable({ cars }: CarsTableProps) {
         throw new Error("Error al eliminar");
       }
 
-      // Refrescar la página para mostrar los cambios
-      router.refresh();
+      // Realtime will update automatically
     } catch (error) {
       alert("Error al eliminar el auto. Intenta de nuevo.");
     } finally {
@@ -53,6 +52,9 @@ export function CarsTable({ cars }: CarsTableProps) {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
+              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                #
+              </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Imagen
               </th>
@@ -77,8 +79,11 @@ export function CarsTable({ cars }: CarsTableProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {cars.map((car) => (
+            {cars.map((car, index) => (
               <tr key={car.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-4 text-center text-sm font-medium text-gray-900">
+                  {index + 1}
+                </td>
                 <td className="px-6 py-4">
                   <div className="h-16 w-24 rounded-lg overflow-hidden bg-gray-100">
                     {car.image && (
@@ -134,14 +139,16 @@ export function CarsTable({ cars }: CarsTableProps) {
                     >
                       <Pencil className="h-4 w-4" />
                     </Link>
-                    <button
-                      onClick={() => handleDelete(car.id, car.name)}
-                      disabled={deleting === car.id}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
-                      title="Eliminar"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(car.id, car.name)}
+                        disabled={deleting === car.id}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                        title="Eliminar"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

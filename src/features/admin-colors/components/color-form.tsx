@@ -9,6 +9,17 @@ interface ColorFormProps {
   mode?: "create" | "edit";
 }
 
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
 export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -47,6 +58,7 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
     try {
       const colorData = {
         name: name.trim(),
+        slug: generateSlug(name),
         color_code: colorCode.trim().toUpperCase(),
         hex_code: hexCode.toUpperCase(),
       };

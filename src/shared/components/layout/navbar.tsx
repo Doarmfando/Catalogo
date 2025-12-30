@@ -23,7 +23,7 @@ export function Navbar() {
               priority
             />
             <div className="flex flex-col text-[0.8rem] uppercase tracking-[0.16em]">
-              <span className="font-semibold text-[0.85rem] text-[#002C5F]">2025-2026</span>
+              <span className="font-semibold text-[0.85rem] text-[#002C5F]">2026</span>
               <span className="text-[#6b7280] text-[0.7rem]">Catálogo Perú</span>
             </div>
           </Link>

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Edit, Trash2, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { useUser } from "@/contexts/user-context";
 
 interface Car {
   id: string;
@@ -38,9 +40,16 @@ interface BannersTableProps {
   banners: Banner[];
 }
 
-export function BannersTable({ banners }: BannersTableProps) {
+export function BannersTable({ banners: initialBanners }: BannersTableProps) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { isAdmin } = useUser();
+
+  // Realtime subscription
+  const { data: banners } = useRealtimeTable({
+    table: 'banners',
+    initialData: initialBanners,
+  });
 
   const handleDelete = async (bannerId: string, bannerTitle: string) => {
     if (!confirm(`¿Estás seguro de eliminar el banner "${bannerTitle}"?`)) {
@@ -54,7 +63,7 @@ export function BannersTable({ banners }: BannersTableProps) {
       });
 
       if (res.ok) {
-        router.refresh();
+        // No need for router.refresh() - Realtime will update automatically
       } else {
         const data = await res.json();
         alert(data.error || "Error al eliminar banner");
@@ -192,18 +201,20 @@ export function BannersTable({ banners }: BannersTableProps) {
                     >
                       <Edit className="h-5 w-5" />
                     </button>
-                    <button
-                      onClick={() => handleDelete(banner.id, banner.title)}
-                      disabled={deletingId === banner.id}
-                      className="text-red-600 hover:text-red-800 transition-colors p-1 disabled:opacity-50 cursor-pointer"
-                      title="Eliminar"
-                    >
-                      {deletingId === banner.id ? (
-                        <div className="h-5 w-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Trash2 className="h-5 w-5" />
-                      )}
-                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(banner.id, banner.title)}
+                        disabled={deletingId === banner.id}
+                        className="text-red-600 hover:text-red-800 transition-colors p-1 disabled:opacity-50 cursor-pointer"
+                        title="Eliminar"
+                      >
+                        {deletingId === banner.id ? (
+                          <div className="h-5 w-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Trash2 className="h-5 w-5" />
+                        )}
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -279,28 +290,30 @@ export function BannersTable({ banners }: BannersTableProps) {
                 onClick={() =>
                   router.push(`/admin/banners/${banner.id}/editar`)
                 }
-                className="flex-1 px-3 py-2 text-sm font-medium text-[#002C5F] bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2"
+                className={`${isAdmin ? 'flex-1' : 'w-full'} px-3 py-2 text-sm font-medium text-[#002C5F] bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2`}
               >
                 <Edit className="h-4 w-4" />
                 Editar
               </button>
-              <button
-                onClick={() => handleDelete(banner.id, banner.title)}
-                disabled={deletingId === banner.id}
-                className="flex-1 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                {deletingId === banner.id ? (
-                  <>
-                    <div className="h-4 w-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-                    Eliminando...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="h-4 w-4" />
-                    Eliminar
-                  </>
-                )}
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => handleDelete(banner.id, banner.title)}
+                  disabled={deletingId === banner.id}
+                  className="flex-1 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {deletingId === banner.id ? (
+                    <>
+                      <div className="h-4 w-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                      Eliminando...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4" />
+                      Eliminar
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         ))}

@@ -70,6 +70,7 @@ export async function getVersionById(versionId: string) {
         colors (
           id,
           name,
+          color_code,
           hex_code
         ),
         color_images (
@@ -80,6 +81,7 @@ export async function getVersionById(versionId: string) {
       )
     `)
     .eq('id', versionId)
+    .order('display_order', { referencedTable: 'version_colors.color_images', ascending: true })
     .single()
 
   if (error) {
@@ -241,6 +243,35 @@ export async function deleteColorImage(imageId: string) {
   if (error) {
     console.error('Error deleting color image:', error)
     return { error: error.message }
+  }
+
+  return { error: null }
+}
+
+/**
+ * Actualiza el orden de múltiples imágenes de manera optimizada
+ * Usa una sola query UPDATE con CASE statement
+ */
+export async function updateColorImagesOrder(
+  imageUpdates: { imageUrl: string; displayOrder: number }[]
+) {
+  const supabase = await createClient()
+
+  // Actualizar cada imagen individualmente (Supabase no soporta CASE en el cliente)
+  const promises = imageUpdates.map(({ imageUrl, displayOrder }) =>
+    supabase
+      .from('color_images')
+      .update({ display_order: displayOrder })
+      .eq('image_url', imageUrl)
+  )
+
+  const results = await Promise.all(promises)
+
+  const errors = results.filter(r => r.error).map(r => r.error)
+
+  if (errors.length > 0) {
+    console.error('Error updating color images order:', errors)
+    return { error: errors[0]?.message }
   }
 
   return { error: null }

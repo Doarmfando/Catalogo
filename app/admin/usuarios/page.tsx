@@ -1,10 +1,30 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { redirect } from "next/navigation";
 import { AdminTopbarWrapper } from "@/features/admin-layout/components";
 import { UsersTable } from "@/features/admin-users/components";
 import { getAllUsers } from "@/lib/supabase/queries/admin-users";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function UsuariosPage() {
+  // Verificar que sea administrador
+  const supabase = await createClient();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+
+  if (!authUser) {
+    redirect("/login");
+  }
+
+  const { data: userData } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', authUser.id)
+    .single();
+
+  if (userData?.role !== 'administrador') {
+    redirect("/admin/autos");
+  }
+
   const users = await getAllUsers();
 
   return (

@@ -4,14 +4,24 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Pencil, Trash2 } from "lucide-react";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { useUser } from "@/contexts/user-context";
 
 interface CategoriesTableProps {
   categories: any[];
 }
 
-export function CategoriesTable({ categories }: CategoriesTableProps) {
+export function CategoriesTable({ categories: initialCategories }: CategoriesTableProps) {
   const router = useRouter();
   const [deleting, setDeleting] = useState<string | null>(null);
+  const { isAdmin } = useUser();
+
+  // Realtime subscription
+  const { data: categories } = useRealtimeTable({
+    table: 'categories',
+    initialData: initialCategories,
+    select: '*, cars(count)',
+  });
 
   const handleDelete = async (categoryId: string, categoryName: string, carCount: number) => {
     if (carCount > 0) {
@@ -35,7 +45,7 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
         throw new Error(error.error || "Error al eliminar");
       }
 
-      router.refresh();
+      // No need for router.refresh() - Realtime will update automatically
     } catch (error: any) {
       alert(error.message || "Error al eliminar la categoría. Intenta de nuevo.");
     } finally {
@@ -109,14 +119,16 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
                       >
                         <Pencil className="h-4 w-4" />
                       </Link>
-                      <button
-                        onClick={() => handleDelete(category.id, category.name, carCount)}
-                        disabled={deleting === category.id}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                        title="Eliminar"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDelete(category.id, category.name, carCount)}
+                          disabled={deleting === category.id}
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                          title="Eliminar"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

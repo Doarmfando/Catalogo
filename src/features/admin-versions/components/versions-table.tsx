@@ -4,16 +4,25 @@ import Link from "next/link";
 import { Pencil, Trash2, ChevronDown, ChevronRight, Images } from "lucide-react";
 import { useState, Fragment } from "react";
 import { useRouter } from "next/navigation";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { useUser } from "@/contexts/user-context";
 
 interface VersionsTableProps {
   carId: string;
   versions: any[];
 }
 
-export function VersionsTable({ carId, versions }: VersionsTableProps) {
+export function VersionsTable({ carId, versions: initialVersions }: VersionsTableProps) {
   const router = useRouter();
   const [expandedVersions, setExpandedVersions] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState<string | null>(null);
+  const { isAdmin } = useUser();
+
+  // Realtime subscription for versions
+  const { data: versions } = useRealtimeTable({
+    table: 'versions',
+    initialData: initialVersions,
+  });
 
   const toggleVersion = (versionId: string) => {
     setExpandedVersions((prev) => {
@@ -43,7 +52,7 @@ export function VersionsTable({ carId, versions }: VersionsTableProps) {
         throw new Error("Error al eliminar");
       }
 
-      router.refresh();
+      // No need for router.refresh() - Realtime will update automatically
     } catch (error) {
       alert("Error al eliminar la versión. Intenta de nuevo.");
     } finally {
@@ -57,6 +66,9 @@ export function VersionsTable({ carId, versions }: VersionsTableProps) {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
+              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                #
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Versión
               </th>
@@ -75,7 +87,7 @@ export function VersionsTable({ carId, versions }: VersionsTableProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {versions.map((version) => {
+            {versions.map((version, index) => {
               const colors = version.version_colors?.map((vc: any) => ({
                 id: vc.id,
                 name: vc.colors.name,
@@ -88,6 +100,9 @@ export function VersionsTable({ carId, versions }: VersionsTableProps) {
               <Fragment key={version.id}>
                 {/* Version Row */}
                 <tr className="hover:bg-gray-50">
+                  <td className="px-4 py-4 text-center text-sm font-medium text-gray-900">
+                    {index + 1}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <button
@@ -152,13 +167,15 @@ export function VersionsTable({ carId, versions }: VersionsTableProps) {
                       >
                         <Pencil className="h-4 w-4" />
                       </Link>
-                      <button
-                        onClick={() => handleDelete(version.id, version.name)}
-                        disabled={deleting === version.id}
-                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDelete(version.id, version.name)}
+                          disabled={deleting === version.id}
+                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -166,7 +183,7 @@ export function VersionsTable({ carId, versions }: VersionsTableProps) {
                 {/* Expanded Colors Row */}
                 {expandedVersions.has(version.id) && (
                   <tr>
-                    <td colSpan={5} className="px-6 py-4 bg-gray-50">
+                    <td colSpan={6} className="px-6 py-4 bg-gray-50">
                       <div className="space-y-2">
                         <h4 className="text-sm font-medium text-gray-700 mb-3">
                           Colores Disponibles

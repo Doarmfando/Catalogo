@@ -25,7 +25,7 @@ const BrandLogo: React.FC = () => {
     <h2 className="text-white text-xl font-bold uppercase tracking-wider">
       Catálogo
     </h2>
-    <p className="text-white/80 text-sm mt-1">(2025-2026)</p>
+    <p className="text-white/80 text-sm mt-1">(2026)</p>
   </div>
 </div>
 

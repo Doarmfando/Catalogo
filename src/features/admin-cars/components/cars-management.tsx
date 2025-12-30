@@ -7,6 +7,7 @@ import { Plus } from "lucide-react";
 import { CarsTable } from "./cars-table";
 import { CarsSearchFilter, type FilterState } from "./cars-search-filter";
 import type { Car } from "@/shared/types/car";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
 
 interface CarsManagementProps {
   initialCars: Car[];
@@ -19,33 +20,39 @@ export function CarsManagement({ initialCars }: CarsManagementProps) {
     category: "",
   });
 
+  // Realtime subscription for cars
+  const { data: cars } = useRealtimeTable({
+    table: 'cars',
+    initialData: initialCars,
+  });
+
   // Extract unique brands and categories from cars
   const { brands, categories } = useMemo(() => {
     const brandsSet = new Set<string>();
     const categoriesSet = new Set<string>();
-    
-    initialCars.forEach((car) => {
+
+    cars.forEach((car) => {
       if (car.brand) brandsSet.add(car.brand);
       if (car.category) categoriesSet.add(car.category);
     });
-    
+
     return {
       brands: Array.from(brandsSet).sort(),
       categories: Array.from(categoriesSet).sort(),
     };
-  }, [initialCars]);
+  }, [cars]);
 
   // Filter cars based on current filters
   const filteredCars = useMemo(() => {
-    return initialCars.filter((car) => {
+    return cars.filter((car) => {
       // Search filter (searches in name, brand, and fuel type)
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
-        const matchesSearch = 
+        const matchesSearch =
           car.name?.toLowerCase().includes(searchLower) ||
           car.brand?.toLowerCase().includes(searchLower) ||
           car.fuelType?.toLowerCase().includes(searchLower);
-        
+
         if (!matchesSearch) return false;
       }
 
@@ -61,7 +68,7 @@ export function CarsManagement({ initialCars }: CarsManagementProps) {
 
       return true;
     });
-  }, [initialCars, filters]);
+  }, [cars, filters]);
 
   const handleFilterChange = useCallback((newFilters: FilterState) => {
     setFilters(newFilters);
@@ -91,7 +98,7 @@ export function CarsManagement({ initialCars }: CarsManagementProps) {
       {/* Show filter status */}
       {(filters.searchTerm || filters.brand || filters.category) && (
         <div className="mt-4 text-sm text-gray-600">
-          Mostrando {filteredCars.length} de {initialCars.length} autos
+          Mostrando {filteredCars.length} de {cars.length} autos
           {filters.searchTerm && (
             <span className="ml-2">
               • Búsqueda: "{filters.searchTerm}"

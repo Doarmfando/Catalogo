@@ -99,6 +99,7 @@ CREATE TABLE colors (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name text NOT NULL,
     slug text UNIQUE NOT NULL,
+    color_code text,
     hex_code text,
     color_family text,
     is_metallic boolean DEFAULT false,
@@ -108,9 +109,11 @@ CREATE TABLE colors (
 );
 
 CREATE INDEX idx_colors_slug ON colors(slug);
+CREATE INDEX idx_colors_color_code ON colors(color_code);
 CREATE INDEX idx_colors_family ON colors(color_family);
 
 COMMENT ON TABLE colors IS 'Catálogo global de colores disponibles para todos los vehículos';
+COMMENT ON COLUMN colors.color_code IS 'Código interno del negocio para el color (ej: ROJ-001, AZU-002)';
 
 -- ============================================================================
 -- TABLA DE USUARIOS (referencia a auth.users de Supabase)

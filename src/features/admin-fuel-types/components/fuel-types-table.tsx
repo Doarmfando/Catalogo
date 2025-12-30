@@ -4,14 +4,24 @@ import Link from "next/link";
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { useUser } from "@/contexts/user-context";
 
 interface FuelTypesTableProps {
   fuelTypes: any[];
 }
 
-export function FuelTypesTable({ fuelTypes }: FuelTypesTableProps) {
+export function FuelTypesTable({ fuelTypes: initialFuelTypes }: FuelTypesTableProps) {
   const router = useRouter();
   const [deleting, setDeleting] = useState<string | null>(null);
+  const { isAdmin } = useUser();
+
+  // Realtime subscription
+  const { data: fuelTypes } = useRealtimeTable({
+    table: 'fuel_types',
+    initialData: initialFuelTypes,
+    select: '*, cars(count)',
+  });
 
   const handleDelete = async (fuelTypeId: string, fuelTypeName: string, carCount: number) => {
     if (carCount > 0) {
@@ -35,7 +45,7 @@ export function FuelTypesTable({ fuelTypes }: FuelTypesTableProps) {
         throw new Error(error.error || "Error al eliminar");
       }
 
-      router.refresh();
+      // No need for router.refresh() - Realtime will update automatically
     } catch (error: any) {
       alert(error.message || "Error al eliminar el tipo de combustible. Intenta de nuevo.");
     } finally {
@@ -92,13 +102,15 @@ export function FuelTypesTable({ fuelTypes }: FuelTypesTableProps) {
                       >
                         <Pencil className="h-4 w-4" />
                       </Link>
-                      <button
-                        onClick={() => handleDelete(fuelType.id, fuelType.name, carCount)}
-                        disabled={deleting === fuelType.id}
-                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDelete(fuelType.id, fuelType.name, carCount)}
+                          disabled={deleting === fuelType.id}
+                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

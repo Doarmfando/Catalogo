@@ -139,7 +139,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
         setLogoUrl("");
       }
 
-      router.refresh();
+      // No need for router.refresh() - Realtime will update automatically
     } catch (error: any) {
       console.error("Error saving brand:", error);
       alert(error.message || "Error al guardar la marca");

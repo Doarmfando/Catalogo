@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hyundai Perú | Catálogo de Vehículos 2025-2026",
+  title: "Hyundai Perú | Catálogo de Vehículos 2026",
   description: "Encuentra el vehículo ideal para ti. Catálogo completo de modelos Hyundai: SUV, Sedán, Hatchback, Utilitarios y Comerciales. Financiamiento disponible.",
   keywords: ["Hyundai", "vehículos", "autos", "SUV", "sedán", "catálogo", "Perú", "financiamiento"],
   openGraph: {

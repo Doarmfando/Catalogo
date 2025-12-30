@@ -6,6 +6,7 @@ import { SidebarFilters } from "@/features/catalog/components/sidebar-filters";
 import { CategoryHeader } from "@/features/catalog/components/category-header";
 import { useCatalogFilters } from "@/features/catalog/hooks";
 import { BrandFilterBar } from "@/features/catalog/components/brand-filter-bar";
+import { useHomeRealtime } from "@/hooks/use-home-realtime";
 import Image from "next/image";
 import { Badge } from "@/shared/components/ui/badge";
 import { useMemo } from "react";
@@ -19,7 +20,19 @@ interface CatalogClientProps {
   fuelTypes: any[];
 }
 
-export function CatalogClient({ cars, brands, categories, fuelTypes }: CatalogClientProps) {
+export function CatalogClient({
+  cars: initialCars,
+  brands: initialBrands,
+  categories: initialCategories,
+  fuelTypes: initialFuelTypes
+}: CatalogClientProps) {
+  // Use Realtime hook to get live data
+  const { cars, brands, categories, fuelTypes } = useHomeRealtime({
+    initialCars,
+    initialBrands,
+    initialCategories,
+    initialFuelTypes,
+  });
   const {
     filteredCars,
     brands: brandNames,

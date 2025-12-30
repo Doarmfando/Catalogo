@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Car, Tag, Users, Layers, LogOut, LayoutDashboard, Fuel, Palette, Image } from "lucide-react";
+import { useUser } from "@/contexts/user-context";
 
 const menuItems = [
   {
@@ -40,6 +41,7 @@ const menuItems = [
     label: "Usuarios",
     href: "/admin/usuarios",
     icon: Users,
+    adminOnly: true, // Solo visible para administradores
   },
 ];
 
@@ -47,6 +49,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { isAdmin } = useUser();
 
   // Escuchar eventos de logout en otras pestañas
   useEffect(() => {
@@ -104,27 +107,29 @@ export function AdminSidebar() {
       {/* Menu Items */}
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname?.startsWith(item.href);
+          {menuItems
+            .filter((item) => !item.adminOnly || isAdmin) // Filtrar items solo para admin
+            .map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname?.startsWith(item.href);
 
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={[
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                    isActive
-                      ? "bg-white/10 text-white font-semibold"
-                      : "text-white/70 hover:bg-white/5 hover:text-white",
-                  ].join(" ")}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={[
+                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                      isActive
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-white/70 hover:bg-white/5 hover:text-white",
+                    ].join(" ")}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
         </ul>
       </nav>
 

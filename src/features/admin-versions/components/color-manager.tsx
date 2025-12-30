@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Upload, Trash2 } from "lucide-react";
+import { X, Upload, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 
 interface VersionColor {
   id: string;
@@ -33,6 +33,10 @@ export function ColorManager({
   const [newImages, setNewImages] = useState<File[]>([]);
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+
+  // Drag and drop states
+  const [draggedExistingIndex, setDraggedExistingIndex] = useState<number | null>(null);
+  const [draggedNewIndex, setDraggedNewIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (versionColor) {
@@ -76,6 +80,108 @@ export function ColorManager({
     URL.revokeObjectURL(imagePreviews[index]);
     setNewImages((prev) => prev.filter((_, i) => i !== index));
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const moveExistingImageUp = (index: number) => {
+    if (index === 0) return;
+    setExistingImageUrls((prev) => {
+      const newArray = [...prev];
+      [newArray[index - 1], newArray[index]] = [newArray[index], newArray[index - 1]];
+      return newArray;
+    });
+  };
+
+  const moveExistingImageDown = (index: number) => {
+    setExistingImageUrls((prev) => {
+      if (index === prev.length - 1) return prev;
+      const newArray = [...prev];
+      [newArray[index], newArray[index + 1]] = [newArray[index + 1], newArray[index]];
+      return newArray;
+    });
+  };
+
+  const moveNewImageUp = (index: number) => {
+    if (index === 0) return;
+    setNewImages((prev) => {
+      const newArray = [...prev];
+      [newArray[index - 1], newArray[index]] = [newArray[index], newArray[index - 1]];
+      return newArray;
+    });
+    setImagePreviews((prev) => {
+      const newArray = [...prev];
+      [newArray[index - 1], newArray[index]] = [newArray[index], newArray[index - 1]];
+      return newArray;
+    });
+  };
+
+  const moveNewImageDown = (index: number) => {
+    setNewImages((prev) => {
+      if (index === prev.length - 1) return prev;
+      const newArray = [...prev];
+      [newArray[index], newArray[index + 1]] = [newArray[index + 1], newArray[index]];
+      return newArray;
+    });
+    setImagePreviews((prev) => {
+      if (index === prev.length - 1) return prev;
+      const newArray = [...prev];
+      [newArray[index], newArray[index + 1]] = [newArray[index + 1], newArray[index]];
+      return newArray;
+    });
+  };
+
+  // Drag and drop handlers for existing images
+  const handleDragStartExisting = (index: number) => {
+    setDraggedExistingIndex(index);
+  };
+
+  const handleDragOverExisting = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedExistingIndex === null || draggedExistingIndex === index) return;
+
+    setExistingImageUrls((prev) => {
+      const newArray = [...prev];
+      const draggedItem = newArray[draggedExistingIndex];
+      newArray.splice(draggedExistingIndex, 1);
+      newArray.splice(index, 0, draggedItem);
+      return newArray;
+    });
+    setDraggedExistingIndex(index);
+  };
+
+  const handleDragEndExisting = () => {
+    setDraggedExistingIndex(null);
+  };
+
+  // Drag and drop handlers for new images
+  const handleDragStartNew = (index: number) => {
+    setDraggedNewIndex(index);
+  };
+
+  const handleDragOverNew = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedNewIndex === null || draggedNewIndex === index) return;
+
+    setNewImages((prev) => {
+      const newArray = [...prev];
+      const draggedItem = newArray[draggedNewIndex];
+      newArray.splice(draggedNewIndex, 1);
+      newArray.splice(index, 0, draggedItem);
+      return newArray;
+    });
+
+    setImagePreviews((prev) => {
+      const newArray = [...prev];
+      const draggedItem = newArray[draggedNewIndex];
+      newArray.splice(draggedNewIndex, 1);
+      newArray.splice(index, 0, draggedItem);
+      return newArray;
+    });
+
+    setDraggedNewIndex(index);
+  };
+
+  const handleDragEndNew = () => {
+    setDraggedNewIndex(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -177,9 +283,14 @@ export function ColorManager({
 
           {/* Gallery */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Galería de Imágenes *
-            </label>
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-medium text-gray-700">
+                Galería de Imágenes *
+              </label>
+              <span className="text-xs text-gray-500 italic">
+                Arrastra las imágenes para reordenarlas
+              </span>
+            </div>
 
             {/* Upload Area */}
             <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#002C5F] transition-colors mb-4">
@@ -206,20 +317,55 @@ export function ColorManager({
                 {existingImageUrls.map((imageUrl, index) => (
                   <div
                     key={`existing-${index}`}
-                    className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-300 group"
+                    draggable
+                    onDragStart={() => handleDragStartExisting(index)}
+                    onDragOver={(e) => handleDragOverExisting(e, index)}
+                    onDragEnd={handleDragEndExisting}
+                    className={`relative aspect-video rounded-lg overflow-hidden bg-gray-100 border-2 group cursor-move transition-all ${
+                      draggedExistingIndex === index
+                        ? 'border-blue-500 opacity-50 scale-95'
+                        : 'border-gray-300 hover:border-blue-400'
+                    }`}
                   >
                     <img
                       src={imageUrl}
                       alt={`Imagen ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover pointer-events-none"
                     />
+
+                    {/* Botones de reordenar */}
+                    <div className="absolute top-2 left-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                      <button
+                        type="button"
+                        onClick={() => moveExistingImageUp(index)}
+                        disabled={index === 0}
+                        className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover arriba"
+                      >
+                        <ChevronUp className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveExistingImageDown(index)}
+                        disabled={index === existingImageUrls.length - 1}
+                        className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover abajo"
+                      >
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Botón eliminar */}
                     <button
                       type="button"
                       onClick={() => handleRemoveExistingImage(index)}
                       className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100"
+                      title="Eliminar"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
+
+                    {/* Número de orden */}
                     <div className="absolute bottom-2 left-2 px-2 py-1 bg-black bg-opacity-60 text-white text-xs rounded">
                       {index + 1}
                     </div>
@@ -230,20 +376,55 @@ export function ColorManager({
                 {imagePreviews.map((preview, index) => (
                   <div
                     key={`new-${index}`}
-                    className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-300 group"
+                    draggable
+                    onDragStart={() => handleDragStartNew(index)}
+                    onDragOver={(e) => handleDragOverNew(e, index)}
+                    onDragEnd={handleDragEndNew}
+                    className={`relative aspect-video rounded-lg overflow-hidden bg-gray-100 border-2 group cursor-move transition-all ${
+                      draggedNewIndex === index
+                        ? 'border-green-500 opacity-50 scale-95'
+                        : 'border-gray-300 hover:border-green-400'
+                    }`}
                   >
                     <img
                       src={preview}
                       alt={`Nueva imagen ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover pointer-events-none"
                     />
+
+                    {/* Botones de reordenar */}
+                    <div className="absolute top-2 left-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                      <button
+                        type="button"
+                        onClick={() => moveNewImageUp(index)}
+                        disabled={index === 0}
+                        className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover arriba"
+                      >
+                        <ChevronUp className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveNewImageDown(index)}
+                        disabled={index === imagePreviews.length - 1}
+                        className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover abajo"
+                      >
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Botón eliminar */}
                     <button
                       type="button"
                       onClick={() => handleRemoveNewImage(index)}
                       className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100"
+                      title="Eliminar"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
+
+                    {/* Número de orden */}
                     <div className="absolute bottom-2 left-2 px-2 py-1 bg-green-600 text-white text-xs rounded">
                       Nueva {existingImageUrls.length + index + 1}
                     </div>

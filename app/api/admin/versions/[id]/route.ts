@@ -4,6 +4,8 @@ import {
   updateVersion,
   assignColorToVersion,
   addColorImage,
+  deleteColorImage,
+  updateColorImagesOrder,
   removeColorFromVersion,
   getVersionById,
 } from "@/lib/supabase/queries/admin-versions";
@@ -74,23 +76,50 @@ export async function PUT(
           versionColorId = versionColor.id;
         }
 
-        // Add new images for this color
+        // Update images for this color (optimized: only update what changed)
         if (color.imageUrls && color.imageUrls.length > 0) {
-          // Get current image count for this version_color
-          const currentImageCount = existingAssignment?.color_images?.length || 0;
+          const existingImages = existingAssignment?.color_images || [];
+          const existingUrls = existingImages.map((img: any) => img.image_url);
+          const newUrls = color.imageUrls;
 
-          for (let i = 0; i < color.imageUrls.length; i++) {
-            // Only add images that are new (beyond current count)
-            if (i >= currentImageCount) {
-              const { error: imageError } = await addColorImage(
-                versionColorId,
-                color.imageUrls[i],
-                i
-              );
-
-              if (imageError) {
-                console.error("Error adding color image:", imageError);
+          // Find images to delete (existed before but not anymore)
+          const urlsToDelete = existingUrls.filter((url: string) => !newUrls.includes(url));
+          for (const urlToDelete of urlsToDelete) {
+            const imgToDelete = existingImages.find((img: any) => img.image_url === urlToDelete);
+            if (imgToDelete) {
+              const { error: deleteError } = await deleteColorImage(imgToDelete.id);
+              if (deleteError) {
+                console.error("Error deleting color image:", deleteError);
               }
+            }
+          }
+
+          // Find images to add (new ones that didn't exist)
+          const urlsToAdd = newUrls.filter((url: string) => !existingUrls.includes(url));
+          for (const urlToAdd of urlsToAdd) {
+            const displayOrder = newUrls.indexOf(urlToAdd);
+            const { error: imageError } = await addColorImage(
+              versionColorId,
+              urlToAdd,
+              displayOrder
+            );
+
+            if (imageError) {
+              console.error("Error adding color image:", imageError);
+            }
+          }
+
+          // Update display_order for existing images that were reordered
+          const urlsToUpdate = newUrls.filter((url: string) => existingUrls.includes(url));
+          if (urlsToUpdate.length > 0) {
+            const imageUpdates = urlsToUpdate.map((url: string) => ({
+              imageUrl: url,
+              displayOrder: newUrls.indexOf(url)
+            }));
+
+            const { error: updateError } = await updateColorImagesOrder(imageUpdates);
+            if (updateError) {
+              console.error("Error updating color images order:", updateError);
             }
           }
         }

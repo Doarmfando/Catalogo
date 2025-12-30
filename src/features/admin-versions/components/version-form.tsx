@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { X, Plus, Loader2 } from "lucide-react";
+import { X, Plus, Loader2, GripVertical } from "lucide-react";
 import { ColorManager } from "./color-manager";
 
 interface VersionColor {
@@ -32,6 +32,7 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
   const [editingColor, setEditingColor] = useState<VersionColor | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [draggedHighlightIndex, setDraggedHighlightIndex] = useState<number | null>(null);
 
   useEffect(() => {
     loadColors();
@@ -86,6 +87,27 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
     const newHighlights = [...highlights];
     newHighlights[index] = value;
     setHighlights(newHighlights);
+  };
+
+  // Drag and drop handlers for highlights
+  const handleDragStartHighlight = (index: number) => {
+    setDraggedHighlightIndex(index);
+  };
+
+  const handleDragOverHighlight = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedHighlightIndex === null || draggedHighlightIndex === index) return;
+
+    const newHighlights = [...highlights];
+    const draggedItem = newHighlights[draggedHighlightIndex];
+    newHighlights.splice(draggedHighlightIndex, 1);
+    newHighlights.splice(index, 0, draggedItem);
+    setHighlights(newHighlights);
+    setDraggedHighlightIndex(index);
+  };
+
+  const handleDragEndHighlight = () => {
+    setDraggedHighlightIndex(null);
   };
 
   const handleAddColor = () => {
@@ -268,7 +290,21 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
             </div>
             <div className="space-y-2">
               {highlights.map((highlight, index) => (
-                <div key={index} className="flex gap-2">
+                <div
+                  key={index}
+                  draggable
+                  onDragStart={() => handleDragStartHighlight(index)}
+                  onDragOver={(e) => handleDragOverHighlight(e, index)}
+                  onDragEnd={handleDragEndHighlight}
+                  className={`flex gap-2 transition-all ${
+                    draggedHighlightIndex === index
+                      ? 'opacity-50 scale-95'
+                      : ''
+                  }`}
+                >
+                  <div className="flex items-center text-gray-400 hover:text-gray-600 cursor-move">
+                    <GripVertical className="h-5 w-5" />
+                  </div>
                   <input
                     type="text"
                     value={highlight}

@@ -3,14 +3,14 @@
  */
 
 /**
- * Convierte una imagen a formato WebP con compresión
+ * Convierte una imagen a formato WebP sin compresión
  * @param file - Archivo de imagen original
- * @param quality - Calidad de compresión (0-1), default 0.85
+ * @param quality - Calidad de compresión (0-1), default 1.0 (sin pérdida)
  * @returns Promise con el Blob WebP
  */
 export async function convertToWebP(
   file: File,
-  quality: number = 0.85
+  quality: number = 1.0
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image();

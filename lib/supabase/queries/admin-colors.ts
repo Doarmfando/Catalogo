@@ -28,6 +28,7 @@ export async function getAllColors() {
  */
 export async function createColor(colorData: {
   name: string;
+  slug: string;
   color_code: string;
   hex_code: string
 }) {
@@ -72,7 +73,7 @@ export async function getColorById(colorId: string) {
  */
 export async function updateColor(
   colorId: string,
-  colorData: { name?: string; color_code?: string; hex_code?: string }
+  colorData: { name?: string; slug?: string; color_code?: string; hex_code?: string }
 ) {
   const supabase = await createClient()
 

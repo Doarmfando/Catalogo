@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Pencil, Trash2, Shield, User } from "lucide-react";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
 
 interface UserData {
   id: string;
@@ -33,9 +34,15 @@ const getRoleLabel = (role: string) => {
   return role.charAt(0).toUpperCase() + role.slice(1);
 };
 
-export function UsersTable({ users }: UsersTableProps) {
+export function UsersTable({ users: initialUsers }: UsersTableProps) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // Realtime subscription for users
+  const { data: users } = useRealtimeTable({
+    table: 'users',
+    initialData: initialUsers,
+  });
 
   const handleDelete = async (userId: string, userName: string) => {
     if (!confirm(`¿Estás seguro de eliminar al usuario "${userName}"?`)) {
@@ -55,7 +62,7 @@ export function UsersTable({ users }: UsersTableProps) {
         return;
       }
 
-      router.refresh();
+      // No need for router.refresh() - Realtime will update automatically
     } catch (error) {
       console.error("Error deleting user:", error);
       alert("Error al eliminar usuario");
@@ -69,6 +76,9 @@ export function UsersTable({ users }: UsersTableProps) {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
+              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                #
+              </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Usuario
               </th>
@@ -92,7 +102,7 @@ export function UsersTable({ users }: UsersTableProps) {
           <tbody className="bg-white divide-y divide-gray-200">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center">
+                <td colSpan={7} className="px-6 py-12 text-center">
                   <div className="text-gray-500">
                     <User className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p className="text-sm">No hay usuarios registrados</p>
@@ -100,8 +110,11 @@ export function UsersTable({ users }: UsersTableProps) {
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
+              users.map((user, index) => (
                 <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-4 text-center text-sm font-medium text-gray-900">
+                    {index + 1}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">

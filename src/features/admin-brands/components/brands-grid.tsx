@@ -4,15 +4,25 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Pencil, Trash2 } from "lucide-react";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { useUser } from "@/contexts/user-context";
 
 interface BrandsGridProps {
   brands: any[];
 }
 
-export function BrandsGrid({ brands }: BrandsGridProps) {
+export function BrandsGrid({ brands: initialBrands }: BrandsGridProps) {
   const router = useRouter();
   const [deleting, setDeleting] = useState<string | null>(null);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  const { isAdmin } = useUser();
+
+  // Realtime subscription
+  const { data: brands } = useRealtimeTable({
+    table: 'brands',
+    initialData: initialBrands,
+    select: '*, cars(count)',
+  });
 
   const handleImageError = (brandId: string) => {
     setImageErrors(prev => new Set(prev).add(brandId));
@@ -40,7 +50,7 @@ export function BrandsGrid({ brands }: BrandsGridProps) {
         throw new Error(error.error || "Error al eliminar");
       }
 
-      router.refresh();
+      // No need for router.refresh() - Realtime will update automatically
     } catch (error: any) {
       alert(error.message || "Error al eliminar la marca. Intenta de nuevo.");
     } finally {
@@ -94,18 +104,20 @@ export function BrandsGrid({ brands }: BrandsGridProps) {
           <div className="flex gap-2">
             <Link
               href={`/admin/marcas/${brand.id}/editar`}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className={`${isAdmin ? 'flex-1' : 'flex-1'} flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors`}
             >
               <Pencil className="h-4 w-4" />
               Editar
             </Link>
-            <button
-              onClick={() => handleDelete(brand.id, brand.name, carCount)}
-              disabled={deleting === brand.id}
-              className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 cursor-pointer"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            {isAdmin && (
+              <button
+                onClick={() => handleDelete(brand.id, brand.name, carCount)}
+                disabled={deleting === brand.id}
+                className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
         );

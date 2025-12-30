@@ -4,14 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Trash2, Pencil } from "lucide-react";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
 
 interface ColorsTableProps {
   colors: any[];
 }
 
-export function ColorsTable({ colors }: ColorsTableProps) {
+export function ColorsTable({ colors: initialColors }: ColorsTableProps) {
   const router = useRouter();
   const [deleting, setDeleting] = useState<string | null>(null);
+
+  // Realtime subscription
+  const { data: colors } = useRealtimeTable({
+    table: 'colors',
+    initialData: initialColors,
+  });
 
   const handleDelete = async (colorId: string, colorName: string) => {
     if (!confirm(`¿Estás seguro de eliminar el color "${colorName}"?`)) {
@@ -30,7 +37,7 @@ export function ColorsTable({ colors }: ColorsTableProps) {
         throw new Error(error.error || "Error al eliminar");
       }
 
-      router.refresh();
+      // No need for router.refresh() - Realtime will update automatically
     } catch (error: any) {
       alert(error.message || "Error al eliminar el color. Intenta de nuevo.");
     } finally {
