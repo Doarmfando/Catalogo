@@ -19,6 +19,7 @@ export interface HeroBanner {
   isActive: boolean;
   startDate: string | null;
   endDate: string | null;
+  createdAt: string;
   car: {
     id: string;
     name: string;
@@ -50,6 +51,7 @@ export function adaptSupabaseHeroBanner(supabaseBanner: any): HeroBanner {
     isActive: supabaseBanner.is_active,
     startDate: supabaseBanner.start_date,
     endDate: supabaseBanner.end_date,
+    createdAt: supabaseBanner.created_at,
     car: supabaseBanner.cars ? {
       id: supabaseBanner.cars.id,
       name: supabaseBanner.cars.name,

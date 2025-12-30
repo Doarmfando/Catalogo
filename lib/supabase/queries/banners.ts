@@ -30,6 +30,7 @@ export async function getActiveHeroBanners() {
     .or(`start_date.is.null,start_date.lte.${now}`)
     .or(`end_date.is.null,end_date.gte.${now}`)
     .order('display_order', { ascending: true })
+    .order('created_at', { ascending: true })
 
   if (error) {
     console.error('Error fetching active hero banners:', error)
@@ -82,6 +83,7 @@ export async function getAllHeroBanners() {
       )
     `)
     .order('display_order', { ascending: true })
+    .order('created_at', { ascending: true })
 
   if (error) {
     console.error('Error fetching all hero banners:', error)

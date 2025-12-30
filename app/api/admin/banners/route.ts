@@ -53,7 +53,6 @@ export async function POST(request: Request) {
       cta_primary_link,
       cta_secondary_text,
       cta_secondary_link,
-      display_order,
       is_active,
       start_date,
       end_date,
@@ -67,6 +66,16 @@ export async function POST(request: Request) {
     }
 
     const supabase = await createClient();
+
+    // Obtener el máximo display_order actual
+    const { data: maxOrderData } = await supabase
+      .from("hero_banners")
+      .select("display_order")
+      .order("display_order", { ascending: false })
+      .limit(1)
+      .single();
+
+    const nextDisplayOrder = maxOrderData ? maxOrderData.display_order + 1 : 0;
 
     const { data, error } = await supabase
       .from("hero_banners")
@@ -84,7 +93,7 @@ export async function POST(request: Request) {
           cta_primary_link: cta_primary_link || "#modelos",
           cta_secondary_text: cta_secondary_text || "Quiero cotizar",
           cta_secondary_link: cta_secondary_link || "#contacto",
-          display_order: display_order !== undefined ? display_order : 0,
+          display_order: nextDisplayOrder,
           is_active: is_active !== undefined ? is_active : true,
           start_date: start_date || null,
           end_date: end_date || null,

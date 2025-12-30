@@ -573,47 +573,27 @@ export function BannerForm({
             Configuración
           </h4>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Orden de Visualización
-              </label>
-              <input
-                type="number"
-                disabled={submitting}
-                value={formData.display_order}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    display_order: parseInt(e.target.value) || 0,
-                  })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Menor número aparece primero
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Estado
-              </label>
-              <select
-                disabled={submitting}
-                value={formData.is_active ? "true" : "false"}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    is_active: e.target.value === "true",
-                  })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
-              >
-                <option value="true">Activo</option>
-                <option value="false">Inactivo</option>
-              </select>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Estado
+            </label>
+            <select
+              disabled={submitting}
+              value={formData.is_active ? "true" : "false"}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  is_active: e.target.value === "true",
+                })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
+            >
+              <option value="true">Activo</option>
+              <option value="false">Inactivo</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              El orden de visualización se controla arrastrando las filas en la tabla de banners
+            </p>
           </div>
 
           {/* Visibility Status Warning */}

@@ -36,22 +36,31 @@ export function HeroSectionClient({ banners: initialBanners }: HeroSectionClient
     adapter: adaptSupabaseHeroBanner,
   });
 
-  // Filtrar solo banners activos y vigentes (misma lógica que getActiveHeroBanners)
+  // Filtrar solo banners activos y vigentes, ordenados por display_order
   const banners = useMemo(() => {
     const now = new Date().toISOString();
 
-    return allBanners.filter((banner) => {
-      // Debe estar activo
-      if (!banner.isActive) return false;
+    return allBanners
+      .filter((banner) => {
+        // Debe estar activo
+        if (!banner.isActive) return false;
 
-      // Verificar fecha de inicio (null o ya comenzó)
-      if (banner.startDate && banner.startDate > now) return false;
+        // Verificar fecha de inicio (null o ya comenzó)
+        if (banner.startDate && banner.startDate > now) return false;
 
-      // Verificar fecha de fin (null o aún vigente)
-      if (banner.endDate && banner.endDate < now) return false;
+        // Verificar fecha de fin (null o aún vigente)
+        if (banner.endDate && banner.endDate < now) return false;
 
-      return true;
-    });
+        return true;
+      })
+      .sort((a, b) => {
+        // Ordenar primero por display_order
+        if (a.displayOrder !== b.displayOrder) {
+          return a.displayOrder - b.displayOrder;
+        }
+        // Si tienen el mismo display_order, ordenar por created_at (más antiguo primero)
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      });
   }, [allBanners]);
 
   // Resetear índice si el banner actual desaparece del array filtrado

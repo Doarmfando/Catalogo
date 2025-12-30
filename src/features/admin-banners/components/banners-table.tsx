@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Edit, Trash2, Image as ImageIcon } from "lucide-react";
+import { Edit, Trash2, Image as ImageIcon, GripVertical } from "lucide-react";
 import Image from "next/image";
 import { useRealtimeTable } from "@/hooks/use-realtime-table";
 import { useUser } from "@/contexts/user-context";
@@ -43,10 +43,12 @@ interface BannersTableProps {
 export function BannersTable({ banners: initialBanners }: BannersTableProps) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [localBanners, setLocalBanners] = useState<Banner[]>([]);
   const { isAdmin } = useUser();
 
   // Realtime subscription
-  const { data: banners } = useRealtimeTable({
+  const { data: realtimeBanners } = useRealtimeTable({
     table: 'hero_banners',
     initialData: initialBanners,
     select: `
@@ -58,6 +60,20 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
       )
     `,
   });
+
+  // Ordenar banners por display_order, luego por created_at
+  const banners = useMemo(() => {
+    const sorted = [...realtimeBanners].sort((a, b) => {
+      // Primero por display_order
+      if (a.display_order !== b.display_order) {
+        return a.display_order - b.display_order;
+      }
+      // Si tienen el mismo display_order, por created_at (más antiguo primero)
+      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    });
+    setLocalBanners(sorted);
+    return sorted;
+  }, [realtimeBanners]);
 
   const handleDelete = async (bannerId: string, bannerTitle: string) => {
     if (!confirm(`¿Estás seguro de eliminar el banner "${bannerTitle}"?`)) {
@@ -82,6 +98,52 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
     } finally {
       setDeletingId(null);
     }
+  };
+
+  // Drag and drop handlers
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newBanners = [...localBanners];
+    const draggedItem = newBanners[draggedIndex];
+    newBanners.splice(draggedIndex, 1);
+    newBanners.splice(index, 0, draggedItem);
+    setLocalBanners(newBanners);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = async () => {
+    if (draggedIndex === null) return;
+
+    // Actualizar display_order en el servidor
+    const reorderedBanners = localBanners.map((banner, index) => ({
+      id: banner.id,
+      display_order: index,
+    }));
+
+    try {
+      const res = await fetch('/api/admin/banners/reorder', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ banners: reorderedBanners }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Error al reordenar banners');
+      }
+    } catch (error) {
+      console.error('Error reordering banners:', error);
+      alert('Error al guardar el nuevo orden');
+    }
+
+    setDraggedIndex(null);
   };
 
   const formatDate = (dateString: string | null) => {
@@ -126,9 +188,6 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
                 Auto Asociado
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Orden
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Estado
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -140,10 +199,24 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {banners.map((banner) => (
-              <tr key={banner.id} className="hover:bg-gray-50">
+            {localBanners.map((banner, index) => (
+              <tr
+                key={banner.id}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+                className={`hover:bg-gray-50 cursor-move transition-all ${
+                  draggedIndex === index
+                    ? 'opacity-50 scale-95'
+                    : ''
+                }`}
+              >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
+                    <div className="flex items-center text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing">
+                      <GripVertical className="h-5 w-5" />
+                    </div>
                     {banner.image_url ? (
                       <div className="relative h-16 w-28 flex-shrink-0 rounded overflow-hidden bg-gray-100">
                         <Image
@@ -181,11 +254,6 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
                       Sin auto
                     </span>
                   )}
-                </td>
-                <td className="px-6 py-4">
-                  <span className="text-sm text-gray-900">
-                    {banner.display_order}
-                  </span>
                 </td>
                 <td className="px-6 py-4">
                   {banner.is_active ? (
@@ -238,7 +306,7 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
 
       {/* Mobile cards */}
       <div className="lg:hidden divide-y divide-gray-200">
-        {banners.map((banner) => (
+        {localBanners.map((banner, index) => (
           <div key={banner.id} className="p-4">
             <div className="flex items-start gap-3 mb-3">
               {banner.image_url ? (
@@ -285,10 +353,6 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
                 <span className="text-gray-900 font-medium">
                   {banner.cars?.name || "Sin auto"}
                 </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Orden:</span>
-                <span className="text-gray-900">{banner.display_order}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Vigencia:</span>
