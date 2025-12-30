@@ -27,6 +27,30 @@ export async function POST(request: Request) {
       );
     }
 
+    // Verificar si el usuario está activo
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("is_active")
+      .eq("id", data.user.id)
+      .single();
+
+    if (userError) {
+      console.error("Error al verificar estado del usuario:", userError);
+      return NextResponse.json(
+        { error: "Error al verificar estado del usuario" },
+        { status: 500 }
+      );
+    }
+
+    if (!userData.is_active) {
+      // Cerrar la sesión que se acaba de crear
+      await supabase.auth.signOut();
+      return NextResponse.json(
+        { error: "Usuario desactivado" },
+        { status: 403 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       user: data.user

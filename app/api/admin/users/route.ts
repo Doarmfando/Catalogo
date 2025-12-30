@@ -46,6 +46,28 @@ export async function POST(request: Request) {
     // Usar cliente admin para operaciones de Auth Admin API
     const supabaseAdmin = createAdminClient();
 
+    // Verificar si el email ya está registrado
+    const { data: existingUser, error: checkError } = await supabaseAdmin
+      .from("users")
+      .select("id")
+      .eq("email", email.toLowerCase())
+      .maybeSingle();
+
+    if (checkError) {
+      console.error("Error checking existing user:", checkError);
+      return NextResponse.json(
+        { error: "Error al verificar email" },
+        { status: 500 }
+      );
+    }
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "El correo electrónico ya está registrado" },
+        { status: 400 }
+      );
+    }
+
     // 1. Crear usuario en auth.users usando la Admin API
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
