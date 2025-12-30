@@ -41,7 +41,7 @@ const menuItems = [
     label: "Usuarios",
     href: "/admin/usuarios",
     icon: Users,
-    adminOnly: true, // Solo visible para administradores
+    adminOnly: true,
   },
 ];
 
@@ -56,10 +56,8 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { isAdmin } = useUser();
 
-  // Escuchar eventos de logout en otras pestañas
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      // Si otra pestaña cerró sesión, redirigir esta también
       if (e.key === 'logout-event') {
         router.push('/');
         router.refresh();
@@ -73,7 +71,6 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
     };
   }, [router]);
 
-  // Cerrar sidebar al hacer clic en un link (solo en móvil)
   const handleLinkClick = () => {
     if (onClose) {
       onClose();
@@ -88,9 +85,7 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
       });
 
       if (res.ok) {
-        // Notificar a otras pestañas que se cerró sesión
         localStorage.setItem('logout-event', Date.now().toString());
-        // Limpiar el evento inmediatamente
         localStorage.removeItem('logout-event');
 
         router.push('/');
@@ -119,7 +114,7 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       ].join(" ")}>
         {/* Logo/Header */}
-        <div className="p-4 lg:p-6 border-b border-white/10">
+        <div className="p-4 lg:p-6 border-b border-white/10 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <LayoutDashboard className="h-6 lg:h-8 w-6 lg:w-8" />
@@ -139,11 +134,11 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
           </div>
         </div>
 
-        {/* Menu Items */}
-        <nav className="flex-1 p-3 lg:p-4 overflow-y-auto">
+        {/* Menu Items - Con scroll independiente */}
+        <nav className="flex-1 p-3 lg:p-4 overflow-y-auto min-h-0">
           <ul className="space-y-1 lg:space-y-2">
             {menuItems
-              .filter((item) => !item.adminOnly || isAdmin) // Filtrar items solo para admin
+              .filter((item) => !item.adminOnly || isAdmin)
               .map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname?.startsWith(item.href);
@@ -169,8 +164,8 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
           </ul>
         </nav>
 
-        {/* Logout */}
-        <div className="p-3 lg:p-4 border-t border-white/10">
+        {/* Logout - Siempre visible */}
+        <div className="p-3 lg:p-4 border-t border-white/10 flex-shrink-0">
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}

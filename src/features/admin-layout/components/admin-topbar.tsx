@@ -44,12 +44,18 @@ export function AdminTopbar({
 
           {/* User */}
           <div className="flex items-center gap-2 lg:gap-3 px-2 lg:px-4 py-1.5 lg:py-2 rounded-lg bg-gray-50">
-            <div className="h-7 w-7 lg:h-8 lg:w-8 rounded-full bg-[#002C5F] flex items-center justify-center">
+            <div className="h-7 w-7 lg:h-8 lg:w-8 rounded-full bg-[#002C5F] flex items-center justify-center flex-shrink-0">
               <User className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
             </div>
-            <div className="text-left hidden sm:block">
-              <p className="text-sm font-semibold text-gray-900">{userName}</p>
-              <p className="text-xs text-gray-500">{userEmail}</p>
+            <div className="text-left min-w-0">
+              <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                {userName}
+              </p>
+              {userEmail && (
+                <p className="text-[10px] sm:text-xs text-gray-500 truncate hidden xs:block">
+                  {userEmail}
+                </p>
+              )}
             </div>
           </div>
         </div>
