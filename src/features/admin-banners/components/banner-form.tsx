@@ -16,7 +16,7 @@ function dateInputToUTC(dateString: string): string | null {
 }
 
 // Helper para extraer solo la fecha de un ISO string sin conversión de zona horaria
-function utcToDateInput(isoString: string | null): string {
+function utcToDateInput(isoString: string | null | undefined): string {
   if (!isoString) return "";
   // Extraer solo la parte de fecha del ISO string (YYYY-MM-DD)
   return isoString.split('T')[0];
