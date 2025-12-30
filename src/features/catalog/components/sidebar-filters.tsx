@@ -80,10 +80,10 @@ export function SidebarFilters({
 
   return (
 
-    <div className="w-full bg-white rounded-lg border p-6 lg:sticky lg:top-24">
+    <div className="w-full bg-white rounded-lg border p-4 lg:p-6 lg:sticky lg:top-24">
       {/* Search Input */}
-      <div className="mb-6">
-        <label htmlFor="searchFilter" className="text-lg font-semibold text-[#002C5F] mb-2 block">
+      <div className="mb-4 lg:mb-6">
+        <label htmlFor="searchFilter" className="text-base lg:text-lg font-semibold text-[#002C5F] mb-2 block">
           Buscar modelo
         </label>
         <div className="relative">
@@ -98,11 +98,11 @@ export function SidebarFilters({
           />
         </div>
       </div>
-      
-      <h2 className="text-lg font-semibold mb-6 text-[#002C5F]">Filtros</h2>
+
+      <h2 className="text-base lg:text-lg font-semibold mb-4 lg:mb-6 text-[#002C5F]">Filtros</h2>
       <Accordion type="multiple" defaultValue={["fuel", "price", "year"]} className="w-full">
         <AccordionItem value="fuel" className="border-b border-gray-200">
-          <AccordionTrigger className="text-base font-semibold hover:no-underline text-[#002C5F] py-4">
+          <AccordionTrigger className="text-sm lg:text-base font-semibold hover:no-underline text-[#002C5F] py-3 lg:py-4">
             Tipo de combustible
           </AccordionTrigger>
           <AccordionContent>
@@ -130,7 +130,7 @@ export function SidebarFilters({
         </AccordionItem>
 
         <AccordionItem value="price" className="border-b border-gray-200">
-          <AccordionTrigger className="text-base font-semibold hover:no-underline text-[#002C5F] py-4">
+          <AccordionTrigger className="text-sm lg:text-base font-semibold hover:no-underline text-[#002C5F] py-3 lg:py-4">
             Rango de precios
           </AccordionTrigger>
           <AccordionContent>
@@ -155,7 +155,7 @@ export function SidebarFilters({
         </AccordionItem>
 
         <AccordionItem value="year" className="border-b-0">
-          <AccordionTrigger className="text-base font-semibold hover:no-underline text-[#002C5F] py-4">
+          <AccordionTrigger className="text-sm lg:text-base font-semibold hover:no-underline text-[#002C5F] py-3 lg:py-4">
             Año
           </AccordionTrigger>
           <AccordionContent>
@@ -181,7 +181,7 @@ export function SidebarFilters({
       </Accordion>
 
       <button
-        className="w-full mt-6 text-sm text-gray-600 hover:text-[#002C5F] underline transition-colors"
+        className="w-full mt-4 lg:mt-6 text-sm text-gray-600 hover:text-[#002C5F] underline transition-colors"
         onClick={onClearFilters}
       >
         Limpiar filtros

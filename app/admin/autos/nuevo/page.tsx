@@ -1,4 +1,4 @@
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { CarForm } from "@/features/admin-cars/components";
 import {
   getAllBrands,
@@ -15,9 +15,9 @@ export default async function NewCarPage() {
 
   return (
     <>
-      <AdminTopbarWrapper title="Crear Nuevo Auto" />
+      <AdminTopbarClient title="Crear Nuevo Auto" />
 
-      <div className="p-6">
+      <div className="p-4 lg:p-6">
         <CarForm
           mode="create"
           brands={brands}

@@ -63,7 +63,8 @@ export function CategoriesTable({ categories: initialCategories }: CategoriesTab
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <div className="overflow-x-auto">
+      {/* Desktop Table */}
+      <div className="hidden lg:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
@@ -136,6 +137,57 @@ export function CategoriesTable({ categories: initialCategories }: CategoriesTab
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="lg:hidden divide-y divide-gray-200">
+        {categories.map((category) => {
+          const carCount = category.cars?.[0]?.count || 0;
+
+          return (
+            <div key={category.id} className="p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                    {category.name}
+                  </h3>
+                  <p className="text-xs text-gray-600 font-mono">
+                    {category.slug}
+                  </p>
+                </div>
+                <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-900 text-xs font-medium rounded">
+                  {carCount} autos
+                </span>
+              </div>
+
+              {category.description && (
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                  {category.description}
+                </p>
+              )}
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                <Link
+                  href={`/admin/categorias/${category.id}/editar`}
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                >
+                  <Pencil className="h-4 w-4" />
+                  <span>Editar</span>
+                </Link>
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDelete(category.id, category.name, carCount)}
+                    disabled={deleting === category.id}
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span>Eliminar</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

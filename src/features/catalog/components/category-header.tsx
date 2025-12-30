@@ -31,9 +31,9 @@ export function CategoryHeader({ category, categories }: CategoryHeaderProps) {
       };
 
   return (
-    <div className="mb-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">{info.title}</h1>
-      <p className="text-base text-gray-600 leading-relaxed max-w-4xl">
+    <div className="mb-6 lg:mb-8">
+      <h1 className="text-2xl sm:text-3xl lg:text-3xl font-bold text-gray-900 mb-2">{info.title}</h1>
+      <p className="text-sm sm:text-base text-gray-600 leading-relaxed max-w-4xl">
         {info.description}
       </p>
     </div>

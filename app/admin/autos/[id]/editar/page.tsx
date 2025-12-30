@@ -1,4 +1,4 @@
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { CarForm } from "@/features/admin-cars/components";
 import { notFound } from "next/navigation";
 import { getCarByIdAdmin } from "@/lib/supabase/queries/admin-cars";
@@ -28,9 +28,9 @@ export default async function EditCarPage({
 
   return (
     <>
-      <AdminTopbarWrapper title={`Editar: ${car.name}`} />
+      <AdminTopbarClient title={`Editar: ${car.name}`} />
 
-      <div className="p-6">
+      <div className="p-4 lg:p-6">
         <CarForm
           mode="edit"
           initialData={car}

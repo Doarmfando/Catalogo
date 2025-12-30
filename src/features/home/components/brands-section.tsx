@@ -46,9 +46,9 @@ export function BrandsSection({ brands: initialBrands }: BrandsSectionProps) {
   }
 
   return (
-    <section className="py-10 scroll-mt-24 lg:scroll-mt-15" id="marcas">
+    <section className="py-8 lg:py-10 scroll-mt-24 lg:scroll-mt-15" id="marcas">
       <div className="container-custom">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4 mb-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-3 lg:gap-4 mb-5 lg:mb-6">
           <div>
             <h2 className="text-2xl lg:text-3xl font-bold text-[#002C5F] mb-2">
               Nuestras Marcas
@@ -59,7 +59,7 @@ export function BrandsSection({ brands: initialBrands }: BrandsSectionProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 lg:gap-4">
           {brands.map((brand) => {
             const hasError = imageErrors[brand.id];
             const logoUrl = brand.logo_url || "";
@@ -80,19 +80,19 @@ export function BrandsSection({ brands: initialBrands }: BrandsSectionProps) {
                 "
               >
                 {/* Logo */}
-                <div className="relative aspect-square bg-gradient-to-br from-[#f9fafb] to-[#e5e7eb] flex items-center justify-center p-6">
+                <div className="relative aspect-square bg-gradient-to-br from-[#f9fafb] to-[#e5e7eb] flex items-center justify-center p-4 lg:p-6">
                   {logoUrl && !hasError ? (
                     <Image
                       src={logoUrl}
                       alt={brand.name}
                       fill
-                      className="object-contain p-4"
+                      className="object-contain p-3 lg:p-4"
                       sizes="(min-width:1280px) 16vw, (min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
                       onError={() => handleImageError(brand.id)}
                     />
                   ) : (
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-[#002C5F]">
+                      <p className="text-xl lg:text-2xl font-bold text-[#002C5F]">
                         {brand.name.charAt(0)}
                       </p>
                     </div>
@@ -100,7 +100,7 @@ export function BrandsSection({ brands: initialBrands }: BrandsSectionProps) {
                 </div>
 
                 {/* Nombre */}
-                <div className="p-3 text-center border-t border-gray-100">
+                <div className="p-2.5 lg:p-3 text-center border-t border-gray-100">
                   <h3 className="text-sm font-semibold text-[#002C5F] leading-snug">
                     {brand.name}
                   </h3>

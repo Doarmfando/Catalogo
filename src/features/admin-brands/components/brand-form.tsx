@@ -149,12 +149,12 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 lg:mb-4">
         {mode === "edit" ? "Editar Marca" : "Nueva Marca"}
       </h3>
 
-      <div className="space-y-4">
+      <div className="space-y-3 lg:space-y-4">
         {/* Logo */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -197,7 +197,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
             Nombre de la Marca *
           </label>
           <input
@@ -205,14 +205,14 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
             required
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
+            className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
             placeholder="Ej: Hyundai"
           />
         </div>
 
         {/* Slug */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
             Etiqueta *
           </label>
           <input
@@ -220,7 +220,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
             required
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono text-sm"
+            className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none font-mono"
             placeholder="ej: hyundai"
           />
           <p className="mt-1 text-xs text-gray-500">
@@ -230,7 +230,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
             Descripción
           </label>
           <textarea
@@ -242,12 +242,12 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
             }}
             rows={3}
             maxLength={MAX_DESCRIPTION_LENGTH}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none resize-none"
+            className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none resize-none"
             placeholder="Descripción breve de la marca (opcional)"
           />
-          <div className="mt-1 flex items-center justify-between">
+          <div className="mt-1 flex items-center justify-between gap-2">
             <p className="text-xs text-gray-500">
-              Opcional - Información adicional sobre la marca
+              Opcional
             </p>
             <p className={`text-xs ${description.length >= MAX_DESCRIPTION_LENGTH ? 'text-red-600 font-semibold' : 'text-gray-500'}`}>
               {description.length}/{MAX_DESCRIPTION_LENGTH}
@@ -259,7 +259,7 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full px-4 py-2 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full px-4 py-2.5 text-sm sm:text-base bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
         >
           {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
           {submitting

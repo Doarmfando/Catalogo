@@ -55,7 +55,8 @@ export function ColorsTable({ colors: initialColors }: ColorsTableProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <div className="overflow-x-auto">
+      {/* Desktop Table */}
+      <div className="hidden lg:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
@@ -123,6 +124,53 @@ export function ColorsTable({ colors: initialColors }: ColorsTableProps) {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="lg:hidden divide-y divide-gray-200">
+        {colors.map((color) => (
+          <div key={color.id} className="p-4">
+            <div className="flex items-start gap-3 mb-3">
+              <div
+                className="h-12 w-12 rounded-lg border border-gray-300 flex-shrink-0"
+                style={{ backgroundColor: color.hex_code }}
+              />
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                  {color.name}
+                </h3>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {color.color_code && (
+                    <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">
+                      {color.color_code}
+                    </span>
+                  )}
+                  <span className="font-mono text-gray-600">
+                    {color.hex_code}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+              <Link
+                href={`/admin/colores/${color.id}/editar`}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+              >
+                <Pencil className="h-4 w-4" />
+                <span>Editar</span>
+              </Link>
+              <button
+                onClick={() => handleDelete(color.id, color.name)}
+                disabled={deleting === color.id}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+              >
+                <Trash2 className="h-4 w-4" />
+                <span>Eliminar</span>
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
