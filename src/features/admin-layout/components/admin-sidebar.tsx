@@ -110,7 +110,8 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
 
       {/* Sidebar */}
       <aside className={[
-        "fixed lg:sticky top-0 left-0 w-64 bg-[#002C5F] text-white flex flex-col h-screen z-50 transition-transform duration-300",
+        "fixed lg:sticky top-0 left-0 w-64 bg-[#002C5F] text-white flex flex-col z-50 transition-transform duration-300",
+        "h-[100dvh] lg:h-screen",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       ].join(" ")}>
         {/* Logo/Header */}
@@ -128,6 +129,7 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
             <button
               onClick={onClose}
               className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+              aria-label="Cerrar menú"
             >
               <X className="h-5 w-5" />
             </button>
@@ -135,7 +137,7 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
         </div>
 
         {/* Menu Items - Con scroll independiente */}
-        <nav className="flex-1 p-3 lg:p-4 overflow-y-auto min-h-0">
+        <nav className="flex-1 overflow-y-auto min-h-0 p-3 lg:p-4">
           <ul className="space-y-1 lg:space-y-2">
             {menuItems
               .filter((item) => !item.adminOnly || isAdmin)
@@ -164,8 +166,8 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
           </ul>
         </nav>
 
-        {/* Logout - Siempre visible */}
-        <div className="p-3 lg:p-4 border-t border-white/10 flex-shrink-0">
+        {/* Logout - Siempre visible en la parte inferior */}
+        <div className="p-3 lg:p-4 border-t border-white/10 flex-shrink-0 bg-[#002C5F]">
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
