@@ -14,6 +14,7 @@ interface UseRealtimeTableOptions<T> {
     column: string;
     value: any;
   };
+  adapter?: (data: any) => T;
 }
 
 export function useRealtimeTable<T extends { id: string }>({
@@ -21,6 +22,7 @@ export function useRealtimeTable<T extends { id: string }>({
   initialData,
   select = '*',
   filter,
+  adapter,
 }: UseRealtimeTableOptions<T>) {
   const [data, setData] = useState<T[]>(initialData);
   const [loading, setLoading] = useState(false);
@@ -28,6 +30,10 @@ export function useRealtimeTable<T extends { id: string }>({
   useEffect(() => {
     const supabase = createClient();
     let channel: RealtimeChannel;
+
+    // Normalizar el select quitando espacios y saltos de línea para comparación
+    const normalizedSelect = select.replace(/\s+/g, ' ').trim();
+    const needsFullFetch = normalizedSelect !== '*';
 
     const setupRealtimeSubscription = () => {
       // Configurar canal de Realtime
@@ -45,7 +51,7 @@ export function useRealtimeTable<T extends { id: string }>({
             console.log(`[Realtime] INSERT en ${table}:`, payload.new);
 
             // Si necesitamos más datos que los que vienen en el payload
-            if (select !== '*') {
+            if (needsFullFetch) {
               setLoading(true);
               const { data: newRecord } = await supabase
                 .from(table)
@@ -54,11 +60,13 @@ export function useRealtimeTable<T extends { id: string }>({
                 .single();
 
               if (newRecord) {
-                setData((current) => [...current, newRecord as unknown as T]);
+                const adaptedRecord = adapter ? adapter(newRecord) : (newRecord as unknown as T);
+                setData((current) => [...current, adaptedRecord]);
               }
               setLoading(false);
             } else {
-              setData((current) => [...current, payload.new as T]);
+              const adaptedPayload = adapter ? adapter(payload.new) : (payload.new as T);
+              setData((current) => [...current, adaptedPayload]);
             }
           }
         )
@@ -74,7 +82,7 @@ export function useRealtimeTable<T extends { id: string }>({
             console.log(`[Realtime] UPDATE en ${table}:`, payload.new);
 
             // Si necesitamos más datos que los que vienen en el payload
-            if (select !== '*') {
+            if (needsFullFetch) {
               setLoading(true);
               const { data: updatedRecord } = await supabase
                 .from(table)
@@ -83,17 +91,19 @@ export function useRealtimeTable<T extends { id: string }>({
                 .single();
 
               if (updatedRecord) {
+                const adaptedRecord = adapter ? adapter(updatedRecord) : (updatedRecord as unknown as T);
                 setData((current) =>
                   current.map((item) =>
-                    item.id === (payload.new as any).id ? (updatedRecord as unknown as T) : item
+                    item.id === (payload.new as any).id ? adaptedRecord : item
                   )
                 );
               }
               setLoading(false);
             } else {
+              const adaptedPayload = adapter ? adapter(payload.new) : (payload.new as T);
               setData((current) =>
                 current.map((item) =>
-                  item.id === (payload.new as any).id ? (payload.new as T) : item
+                  item.id === (payload.new as any).id ? adaptedPayload : item
                 )
               );
             }
@@ -128,7 +138,7 @@ export function useRealtimeTable<T extends { id: string }>({
         supabase.removeChannel(channel);
       }
     };
-  }, [table, select, filter?.column, filter?.value]);
+  }, [table, select, filter?.column, filter?.value, adapter]);
 
   return { data, loading };
 }

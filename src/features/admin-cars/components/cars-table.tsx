@@ -112,7 +112,7 @@ export function CarsTable({ cars }: CarsTableProps) {
                 </td>
                 <td className="px-6 py-4">
                   <span className="text-sm font-semibold text-gray-900">
-                    ${car.priceUSD.toLocaleString("en-US")}
+                    ${car.priceUSD?.toLocaleString("en-US") || "N/A"}
                   </span>
                 </td>
                 <td className="px-6 py-4">

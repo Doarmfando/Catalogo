@@ -8,6 +8,7 @@ import { CarsTable } from "./cars-table";
 import { CarsSearchFilter, type FilterState } from "./cars-search-filter";
 import type { Car } from "@/shared/types/car";
 import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { adaptSupabaseCar } from "@/lib/supabase/adapters/cars";
 
 interface CarsManagementProps {
   initialCars: Car[];
@@ -21,9 +22,29 @@ export function CarsManagement({ initialCars }: CarsManagementProps) {
   });
 
   // Realtime subscription for cars
+  // IMPORTANTE: El select debe coincidir con el usado en getAllCarsAdmin
   const { data: cars } = useRealtimeTable({
     table: 'cars',
     initialData: initialCars,
+    select: `
+      *,
+      brands (
+        id,
+        name,
+        slug
+      ),
+      categories (
+        id,
+        name,
+        slug
+      ),
+      fuel_types (
+        id,
+        name,
+        slug
+      )
+    `,
+    adapter: adaptSupabaseCar, // Transformar datos de Supabase al formato Car
   });
 
   // Extract unique brands and categories from cars
