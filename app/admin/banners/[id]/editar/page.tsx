@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { BannerForm } from "@/features/admin-banners/components";
 import { getBannerByIdAdmin } from "@/lib/supabase/queries/admin-banners";
 import { createClient } from "@/lib/supabase/server";
@@ -28,7 +28,7 @@ export default async function EditarBannerPage({
 
   return (
     <>
-      <AdminTopbarWrapper title={`Editar: ${banner.title}`} />
+      <AdminTopbarClient title={`Editar: ${banner.title}`} />
 
       <div className="p-6 max-w-4xl mx-auto">
         {/* Header */}

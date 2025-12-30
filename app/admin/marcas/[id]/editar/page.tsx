@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { BrandForm } from "@/features/admin-brands/components/brand-form";
 import { getBrandByIdAdmin } from "@/lib/supabase/queries/admin-brands";
 
@@ -19,7 +19,7 @@ export default async function EditarMarcaPage({
 
   return (
     <>
-      <AdminTopbarWrapper title={`Editar: ${brand.name}`} />
+      <AdminTopbarClient title={`Editar: ${brand.name}`} />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

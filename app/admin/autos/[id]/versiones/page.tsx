@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { VersionsTable } from "@/features/admin-versions/components/versions-table";
 import { getCarByIdAdmin } from "@/lib/supabase/queries/admin-cars";
 import { getVersionsByCar } from "@/lib/supabase/queries/admin-versions";
@@ -24,7 +24,7 @@ export default async function VersionsPage({
 
   return (
     <>
-      <AdminTopbarWrapper title={`Versiones: ${car.name}`} />
+      <AdminTopbarClient title={`Versiones: ${car.name}`} />
 
       <div className="p-6">
         {/* Header */}

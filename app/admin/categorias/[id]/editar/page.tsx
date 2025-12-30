@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { CategoryForm } from "@/features/admin-categories/components";
 import { getCategoryByIdAdmin } from "@/lib/supabase/queries/admin-categories";
 
@@ -19,7 +19,7 @@ export default async function EditarCategoriaPage({
 
   return (
     <>
-      <AdminTopbarWrapper title={`Editar: ${category.name}`} />
+      <AdminTopbarClient title={`Editar: ${category.name}`} />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

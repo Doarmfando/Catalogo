@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { BannersTable } from "@/features/admin-banners/components";
 import { getAllBannersAdmin } from "@/lib/supabase/queries/admin-banners";
 
@@ -9,7 +9,7 @@ export default async function BannersPage() {
 
   return (
     <>
-      <AdminTopbarWrapper title="Banners del Hero" />
+      <AdminTopbarClient title="Banners del Hero" />
 
       <div className="p-6">
         {/* Header */}

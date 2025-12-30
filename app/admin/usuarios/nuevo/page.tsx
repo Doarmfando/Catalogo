@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { UserForm } from "@/features/admin-users/components";
 
 export default function NuevoUsuarioPage() {
   return (
     <>
-      <AdminTopbarWrapper title="Nuevo Usuario" />
+      <AdminTopbarClient title="Nuevo Usuario" />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

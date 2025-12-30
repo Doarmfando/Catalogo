@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { ColorForm } from "@/features/admin-colors/components";
 
 export default function NuevoColorPage() {
   return (
     <>
-      <AdminTopbarWrapper title="Nuevo Color" />
+      <AdminTopbarClient title="Nuevo Color" />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

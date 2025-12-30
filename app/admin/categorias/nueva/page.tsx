@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { CategoryForm } from "@/features/admin-categories/components";
 
 export default function NuevaCategoriaPage() {
   return (
     <>
-      <AdminTopbarWrapper title="Nueva Categoría" />
+      <AdminTopbarClient title="Nueva Categoría" />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

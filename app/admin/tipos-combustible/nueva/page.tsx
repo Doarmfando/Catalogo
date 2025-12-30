@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { FuelTypeForm } from "@/features/admin-fuel-types/components";
 
 export default function NuevoTipoCombustiblePage() {
   return (
     <>
-      <AdminTopbarWrapper title="Nuevo Tipo de Combustible" />
+      <AdminTopbarClient title="Nuevo Tipo de Combustible" />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

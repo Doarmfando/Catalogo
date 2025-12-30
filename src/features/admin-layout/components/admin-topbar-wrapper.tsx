@@ -1,11 +1,11 @@
 import { getCurrentUser } from "@/lib/supabase/queries/auth";
 import { AdminTopbar } from "./admin-topbar";
 
-interface AdminTopbarWrapperProps {
+interface AdminTopbarClientProps {
   title: string;
 }
 
-export async function AdminTopbarWrapper({ title }: AdminTopbarWrapperProps) {
+export async function AdminTopbarClient({ title }: AdminTopbarClientProps) {
   const user = await getCurrentUser();
 
   return (

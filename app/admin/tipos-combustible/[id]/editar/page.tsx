@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { FuelTypeForm } from "@/features/admin-fuel-types/components";
 import { getFuelTypeByIdAdmin } from "@/lib/supabase/queries/admin-fuel-types";
 
@@ -19,7 +19,7 @@ export default async function EditarTipoCombustiblePage({
 
   return (
     <>
-      <AdminTopbarWrapper title={`Editar: ${fuelType.name}`} />
+      <AdminTopbarClient title={`Editar: ${fuelType.name}`} />
 
       <div className="p-6 max-w-2xl mx-auto">
         {/* Header */}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { AdminTopbarWrapper } from "@/features/admin-layout/components";
+import { AdminTopbarClient } from "@/features/admin-layout/components";
 import { FuelTypesTable } from "@/features/admin-fuel-types/components";
 import { getAllFuelTypesAdmin } from "@/lib/supabase/queries/admin-fuel-types";
 
@@ -9,7 +9,7 @@ export default async function TiposCombustiblePage() {
 
   return (
     <>
-      <AdminTopbarWrapper title="Tipos de Combustible" />
+      <AdminTopbarClient title="Tipos de Combustible" />
 
       <div className="p-6">
         {/* Header */}
