@@ -38,6 +38,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Si está autenticado, verificar que el usuario esté activo
+  if (request.nextUrl.pathname.startsWith('/admin') && user) {
+    const { data: userData } = await supabase
+      .from('users')
+      .select('is_active')
+      .eq('id', user.id)
+      .single()
+
+    // Si el usuario está inactivo, cerrar sesión y redirigir al login
+    if (userData && !userData.is_active) {
+      await supabase.auth.signOut()
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
+
   return response
 }
 

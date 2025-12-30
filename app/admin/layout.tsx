@@ -23,7 +23,7 @@ export default async function AdminLayout({
     .eq('id', authUser.id)
     .single();
 
-  if (!userData) {
+  if (!userData || !userData.is_active) {
     redirect("/login");
   }
 

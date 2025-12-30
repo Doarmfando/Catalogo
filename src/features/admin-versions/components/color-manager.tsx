@@ -72,8 +72,34 @@ export function ColorManager({
     }
   };
 
-  const handleRemoveExistingImage = (index: number) => {
-    setExistingImageUrls((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveExistingImage = async (index: number) => {
+    const imageUrl = existingImageUrls[index];
+
+    // Confirmar eliminación
+    if (!confirm('¿Estás seguro de eliminar esta imagen? Esta acción no se puede deshacer y la imagen se eliminará permanentemente del servidor.')) {
+      return;
+    }
+
+    try {
+      // Eliminar del bucket de Supabase
+      const response = await fetch('/api/admin/delete-image', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar la imagen del servidor');
+      }
+
+      // Si se eliminó correctamente del bucket, eliminar del estado
+      setExistingImageUrls((prev) => prev.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      alert('Error al eliminar la imagen. Por favor intenta de nuevo.');
+    }
   };
 
   const handleRemoveNewImage = (index: number) => {

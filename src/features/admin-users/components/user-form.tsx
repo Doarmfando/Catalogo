@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 interface UserData {
   id?: string;
@@ -20,6 +21,8 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -195,17 +198,30 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Contraseña {mode === "create" ? "*" : "(opcional)"}
           </label>
-          <input
-            type="password"
-            required={mode === "create"}
-            disabled={loading}
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
-            placeholder={mode === "edit" ? "Dejar vacío para mantener actual" : ""}
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              required={mode === "create"}
+              disabled={loading}
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
+              placeholder={mode === "edit" ? "Dejar vacío para mantener actual" : ""}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Confirm Password */}
@@ -213,16 +229,29 @@ export function UserForm({ initialData, mode = "create" }: UserFormProps) {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Confirmar Contraseña {mode === "create" ? "*" : "(opcional)"}
           </label>
-          <input
-            type="password"
-            required={mode === "create"}
-            disabled={loading}
-            value={formData.confirmPassword}
-            onChange={(e) =>
-              setFormData({ ...formData, confirmPassword: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
-          />
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              required={mode === "create"}
+              disabled={loading}
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none disabled:opacity-50"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Submit */}

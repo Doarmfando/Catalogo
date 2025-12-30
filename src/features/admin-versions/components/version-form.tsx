@@ -130,9 +130,45 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
     setEditingColor(null);
   };
 
-  const handleDeleteColor = (colorId: string) => {
-    if (confirm("¿Estás seguro de eliminar este color de la versión?")) {
+  const handleDeleteColor = async (colorId: string) => {
+    const colorToDelete = colors.find((c) => c.id === colorId);
+
+    if (!colorToDelete) return;
+
+    if (!confirm(`¿Estás seguro de eliminar el color "${colorToDelete.name}"? Se eliminarán también todas sus imágenes del servidor. Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    try {
+      // Eliminar todas las imágenes existentes del bucket
+      if (colorToDelete.imageUrls.length > 0) {
+        const deletePromises = colorToDelete.imageUrls.map(async (imageUrl) => {
+          try {
+            const response = await fetch('/api/admin/delete-image', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ imageUrl }),
+            });
+
+            if (!response.ok) {
+              console.error(`Error al eliminar imagen: ${imageUrl}`);
+            }
+          } catch (error) {
+            console.error(`Error deleting image ${imageUrl}:`, error);
+          }
+        });
+
+        // Esperar a que todas las eliminaciones terminen
+        await Promise.all(deletePromises);
+      }
+
+      // Eliminar el color del estado
       setColors(colors.filter((c) => c.id !== colorId));
+    } catch (error) {
+      console.error('Error deleting color:', error);
+      alert('Error al eliminar el color. Algunas imágenes pueden no haberse eliminado.');
     }
   };
 
@@ -234,9 +270,16 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    // Prevenir que Enter envíe el formulario
+    if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">
           {mode === "edit" ? "Editar Versión" : "Nueva Versión"}
         </h3>

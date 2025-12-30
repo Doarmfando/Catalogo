@@ -55,6 +55,24 @@ export async function PUT(
       );
     }
 
+    // 3. Si el usuario fue marcado como inactivo, cerrar todas sus sesiones
+    if (is_active === false) {
+      try {
+        // Revocar todos los refresh tokens del usuario para cerrar todas sus sesiones
+        // Requiere ejecutar la función SQL en supabase-functions.sql primero
+        const { error: revokeError } = await supabaseAdmin.rpc('revoke_user_tokens', {
+          target_user_id: id
+        });
+
+        if (revokeError) {
+          console.error("Error revoking user tokens:", revokeError);
+          console.log("NOTA: Asegúrate de haber ejecutado el SQL actualizado en supabase-functions.sql");
+        }
+      } catch (error) {
+        console.error("Error closing user sessions:", error);
+      }
+    }
+
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("Error in PUT /api/admin/users/[id]:", error);
