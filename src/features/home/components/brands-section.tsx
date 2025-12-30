@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
 
 interface Brand {
   id: string;
@@ -19,8 +20,22 @@ interface BrandsSectionProps {
   brands: Brand[];
 }
 
-export function BrandsSection({ brands }: BrandsSectionProps) {
+export function BrandsSection({ brands: initialBrands }: BrandsSectionProps) {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+
+  // Realtime subscription
+  const { data: allBrands } = useRealtimeTable({
+    table: 'brands',
+    initialData: initialBrands,
+    select: '*',
+  });
+
+  // Filter only active brands
+  const brands = useMemo(() => {
+    return allBrands
+      .filter(brand => brand.is_active)
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  }, [allBrands]);
 
   const handleImageError = (brandId: string) => {
     setImageErrors((prev) => ({ ...prev, [brandId]: true }));
