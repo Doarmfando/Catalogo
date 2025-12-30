@@ -47,8 +47,16 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
 
   // Realtime subscription
   const { data: banners } = useRealtimeTable({
-    table: 'banners',
+    table: 'hero_banners',
     initialData: initialBanners,
+    select: `
+      *,
+      cars (
+        id,
+        name,
+        slug
+      )
+    `,
   });
 
   const handleDelete = async (bannerId: string, bannerTitle: string) => {
@@ -78,10 +86,15 @@ export function BannersTable({ banners: initialBanners }: BannersTableProps) {
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "-";
-    return new Date(dateString).toLocaleDateString("es-ES", {
+    // Extraer solo la parte de fecha sin conversión de zona horaria
+    const [year, month, day] = dateString.split('T')[0].split('-');
+    // Crear fecha en UTC para evitar problemas de zona horaria
+    const date = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
+    return date.toLocaleDateString("es-ES", {
       year: "numeric",
       month: "short",
       day: "numeric",
+      timeZone: "UTC", // Importante: forzar UTC para evitar conversión
     });
   };
 

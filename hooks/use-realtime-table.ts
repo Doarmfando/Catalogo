@@ -45,11 +45,9 @@ export function useRealtimeTable<T extends { id: string }>({
             event: 'INSERT',
             schema: 'public',
             table: table,
-            filter: filter ? `${filter.column}=eq.${filter.value}` : undefined,
+            ...(filter && { filter: `${filter.column}=eq.${filter.value}` }),
           },
           async (payload) => {
-            console.log(`[Realtime] INSERT en ${table}:`, payload.new);
-
             // Si necesitamos más datos que los que vienen en el payload
             if (needsFullFetch) {
               setLoading(true);
@@ -76,11 +74,9 @@ export function useRealtimeTable<T extends { id: string }>({
             event: 'UPDATE',
             schema: 'public',
             table: table,
-            filter: filter ? `${filter.column}=eq.${filter.value}` : undefined,
+            ...(filter && { filter: `${filter.column}=eq.${filter.value}` }),
           },
           async (payload) => {
-            console.log(`[Realtime] UPDATE en ${table}:`, payload.new);
-
             // Si necesitamos más datos que los que vienen en el payload
             if (needsFullFetch) {
               setLoading(true);
@@ -115,18 +111,15 @@ export function useRealtimeTable<T extends { id: string }>({
             event: 'DELETE',
             schema: 'public',
             table: table,
-            filter: filter ? `${filter.column}=eq.${filter.value}` : undefined,
+            ...(filter && { filter: `${filter.column}=eq.${filter.value}` }),
           },
           (payload) => {
-            console.log(`[Realtime] DELETE en ${table}:`, payload.old);
             setData((current) =>
               current.filter((item) => item.id !== (payload.old as any).id)
             );
           }
         )
-        .subscribe((status) => {
-          console.log(`[Realtime] Status para ${table}:`, status);
-        });
+        .subscribe();
     };
 
     setupRealtimeSubscription();
@@ -134,7 +127,6 @@ export function useRealtimeTable<T extends { id: string }>({
     // Cleanup al desmontar
     return () => {
       if (channel) {
-        console.log(`[Realtime] Limpiando suscripción de ${table}`);
         supabase.removeChannel(channel);
       }
     };

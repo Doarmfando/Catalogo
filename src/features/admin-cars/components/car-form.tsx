@@ -36,7 +36,6 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
     category_id: initialData?.category_id || categories[0]?.id || "",
     fuel_type_id: initialData?.fuel_type_id || fuelTypes[0]?.id || "",
     price_usd: initialData?.price_usd || "",
-    price_pen: initialData?.price_pen || "",
     image_url: initialData?.image_url || "",
     image_frontal_url: initialData?.image_frontal_url || "",
     is_active: initialData?.is_active ?? true,
@@ -109,7 +108,7 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
         image_url: imageUrl,
         image_frontal_url: frontalUrl,
         price_usd: parseFloat(formData.price_usd as any),
-        price_pen: parseFloat(formData.price_pen as any),
+        price_pen: null, // Ya no se usa, pero la columna aún existe en la BD
       };
 
       const url = mode === "create"
@@ -272,10 +271,10 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
           {/* Prices */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Precios
+              Precio
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
               {/* Price USD */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -294,29 +293,6 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                       setFormData({ ...formData, price_usd: e.target.value })
                     }
                     className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
-                    placeholder="0.00"
-                  />
-                </div>
-              </div>
-
-              {/* Price PEN */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Precio PEN *
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                    S/
-                  </span>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    value={formData.price_pen}
-                    onChange={(e) =>
-                      setFormData({ ...formData, price_pen: e.target.value })
-                    }
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                     placeholder="0.00"
                   />
                 </div>

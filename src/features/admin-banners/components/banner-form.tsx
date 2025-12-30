@@ -6,6 +6,22 @@ import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react";
 import { uploadImage } from "@/lib/utils/image-upload";
 import Image from "next/image";
 
+// Helper para convertir fecha de input a formato ISO en UTC medianoche
+function dateInputToUTC(dateString: string): string | null {
+  if (!dateString) return null;
+  // Crear fecha en UTC directamente sin conversión de zona horaria
+  const [year, month, day] = dateString.split('-').map(Number);
+  const utcDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+  return utcDate.toISOString();
+}
+
+// Helper para extraer solo la fecha de un ISO string sin conversión de zona horaria
+function utcToDateInput(isoString: string | null): string {
+  if (!isoString) return "";
+  // Extraer solo la parte de fecha del ISO string (YYYY-MM-DD)
+  return isoString.split('T')[0];
+}
+
 interface Car {
   id: string;
   name: string;
@@ -76,6 +92,22 @@ export function BannerForm({
     null
   );
 
+  // Verificar si el banner será visible según las fechas
+  const isVisibleByDates = () => {
+    const now = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+    // Si no hay fechas, siempre es visible
+    if (!formData.start_date && !formData.end_date) return true;
+
+    // Si hay fecha de inicio y aún no llegó
+    if (formData.start_date && formData.start_date > now) return false;
+
+    // Si hay fecha de fin y ya pasó
+    if (formData.end_date && formData.end_date < now) return false;
+
+    return true;
+  };
+
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -91,12 +123,8 @@ export function BannerForm({
         cta_secondary_link: initialData.cta_secondary_link || "#contacto",
         display_order: initialData.display_order || 0,
         is_active: initialData.is_active !== undefined ? initialData.is_active : true,
-        start_date: initialData.start_date
-          ? new Date(initialData.start_date).toISOString().split("T")[0]
-          : "",
-        end_date: initialData.end_date
-          ? new Date(initialData.end_date).toISOString().split("T")[0]
-          : "",
+        start_date: utcToDateInput(initialData.start_date),
+        end_date: utcToDateInput(initialData.end_date),
       });
 
       if (initialData.image_url) {
@@ -186,8 +214,8 @@ export function BannerForm({
         cta_secondary_link: formData.cta_secondary_link || null,
         display_order: formData.display_order,
         is_active: formData.is_active,
-        start_date: formData.start_date || null,
-        end_date: formData.end_date || null,
+        start_date: dateInputToUTC(formData.start_date),
+        end_date: dateInputToUTC(formData.end_date),
       };
 
       const url =
@@ -587,6 +615,44 @@ export function BannerForm({
               </select>
             </div>
           </div>
+
+          {/* Visibility Status Warning */}
+          {formData.is_active && (
+            <div className="mt-4">
+              {isVisibleByDates() ? (
+                <div className="flex items-start gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-lg">
+                  <span className="text-green-600 text-lg">✓</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-green-800">
+                      Banner visible en el home
+                    </p>
+                    <p className="text-xs text-green-700 mt-1">
+                      Este banner se está mostrando actualmente en el carrusel del home.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <span className="text-amber-600 text-lg">⚠</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-amber-800">
+                      Banner activo pero no visible
+                    </p>
+                    {formData.start_date && formData.start_date > new Date().toISOString().split('T')[0] && (
+                      <p className="text-xs text-amber-700 mt-1">
+                        Este banner no se mostrará hasta el {new Date(formData.start_date + 'T00:00:00').toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}.
+                      </p>
+                    )}
+                    {formData.end_date && formData.end_date < new Date().toISOString().split('T')[0] && (
+                      <p className="text-xs text-amber-700 mt-1">
+                        Este banner dejó de mostrarse el {new Date(formData.end_date + 'T00:00:00').toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

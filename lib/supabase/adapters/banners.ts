@@ -16,6 +16,9 @@ export interface HeroBanner {
   ctaSecondaryText: string;
   ctaSecondaryLink: string;
   displayOrder: number;
+  isActive: boolean;
+  startDate: string | null;
+  endDate: string | null;
   car: {
     id: string;
     name: string;
@@ -44,6 +47,9 @@ export function adaptSupabaseHeroBanner(supabaseBanner: any): HeroBanner {
     ctaSecondaryText: supabaseBanner.cta_secondary_text || 'Quiero cotizar',
     ctaSecondaryLink: supabaseBanner.cta_secondary_link || '#contacto',
     displayOrder: supabaseBanner.display_order,
+    isActive: supabaseBanner.is_active,
+    startDate: supabaseBanner.start_date,
+    endDate: supabaseBanner.end_date,
     car: supabaseBanner.cars ? {
       id: supabaseBanner.cars.id,
       name: supabaseBanner.cars.name,

@@ -94,9 +94,6 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
           <div className="text-base font-semibold text-[#002C5F]">
             ${car.priceUSD.toLocaleString("en-US")}
           </div>
-          <span className="text-[0.7rem] text-[#6b7280]">
-            ó S/ {car.pricePEN.toLocaleString("en-US")}
-          </span>
         </div>
         <Link
           href={`/modelos/${car.id}`}

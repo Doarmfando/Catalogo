@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import type { HeroBanner } from "@/lib/supabase/adapters/banners";
+import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { adaptSupabaseHeroBanner } from "@/lib/supabase/adapters/banners";
 
 const SLIDE_DURATION = 4500; // ms
 const TICK = 50; // ms
@@ -11,16 +13,67 @@ interface HeroSectionClientProps {
   banners: HeroBanner[];
 }
 
-export function HeroSectionClient({ banners }: HeroSectionClientProps) {
+export function HeroSectionClient({ banners: initialBanners }: HeroSectionClientProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0); // 0–1
+
+  // Realtime subscription para banners del hero
+  const { data: allBanners } = useRealtimeTable({
+    table: 'hero_banners',
+    initialData: initialBanners,
+    select: `
+      *,
+      cars (
+        id,
+        name,
+        slug,
+        image_url,
+        price_usd,
+        price_pen
+      )
+    `,
+    adapter: adaptSupabaseHeroBanner,
+  });
+
+  // Filtrar solo banners activos y vigentes (misma lógica que getActiveHeroBanners)
+  const banners = useMemo(() => {
+    const now = new Date().toISOString();
+
+    return allBanners.filter((banner) => {
+      // Debe estar activo
+      if (!banner.isActive) return false;
+
+      // Verificar fecha de inicio (null o ya comenzó)
+      if (banner.startDate && banner.startDate > now) return false;
+
+      // Verificar fecha de fin (null o aún vigente)
+      if (banner.endDate && banner.endDate < now) return false;
+
+      return true;
+    });
+  }, [allBanners]);
+
+  // Resetear índice si el banner actual desaparece del array filtrado
+  useEffect(() => {
+    if (currentIndex >= banners.length && banners.length > 0) {
+      setCurrentIndex(0);
+      setProgress(0);
+    }
+  }, [banners.length, currentIndex]);
 
   if (banners.length === 0) {
     return null;
   }
 
-  const currentBanner = banners[currentIndex];
+  // Asegurar que currentIndex está dentro del rango
+  const safeIndex = Math.min(currentIndex, banners.length - 1);
+  const currentBanner = banners[safeIndex];
+
+  // Validar que el banner existe antes de renderizar
+  if (!currentBanner) {
+    return null;
+  }
 
   // Autoplay con progreso lineal
   useEffect(() => {

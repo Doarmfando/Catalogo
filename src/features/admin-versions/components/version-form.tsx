@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { X, Plus, Loader2, GripVertical } from "lucide-react";
 import { ColorManager } from "./color-manager";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface VersionColor {
   id: string;
@@ -23,6 +24,7 @@ interface VersionFormProps {
 
 export function VersionForm({ carId, initialData, mode = "create" }: VersionFormProps) {
   const router = useRouter();
+  const { isAdmin } = useCurrentUser();
   const [name, setName] = useState("");
   const [priceUSD, setPriceUSD] = useState("");
   const [highlights, setHighlights] = useState<string[]>([""]);
@@ -419,13 +421,15 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
                       >
                         Editar
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteColor(color.id)}
-                        className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteColor(color.id)}
+                          className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
