@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { User, Lock, Eye, EyeOff } from 'lucide-react'
 import {
   CirclesBackground,
@@ -201,12 +202,12 @@ export default function LoginPage() {
 
                 {/* Link de recuperación de contraseña */}
                 <div className="text-center">
-                  <a
-                    href="#"
+                  <Link
+                    href="/recuperar-contrasena"
                     className="text-sm text-[#002C5F] hover:text-[#0957a5] hover:underline transition-colors"
                   >
                     ¿Olvidaste tu contraseña?
-                  </a>
+                  </Link>
                 </div>
               </form>
             </div>
