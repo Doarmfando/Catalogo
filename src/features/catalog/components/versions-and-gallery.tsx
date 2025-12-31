@@ -54,12 +54,10 @@ export function VersionsAndGallery({
   modelName,
   versions,
   basePriceUSD,
-  basePricePEN,
 }: {
   modelName: string;
   versions: CarVersion[];
   basePriceUSD: number;
-  basePricePEN: number;
 }) {
   const defaultVersionId =
     versions.length > 1 ? ALL_VERSIONS_ID : (versions?.[0]?.id ?? "");
@@ -78,13 +76,10 @@ export function VersionsAndGallery({
 
   const priceStats = useMemo(() => {
     const usds = versions.map((v) => Number(v.priceUSD ?? basePriceUSD));
-    const pens = versions.map((v) => Number(v.pricePEN ?? basePricePEN));
     const minUSD = usds.length ? Math.min(...usds) : basePriceUSD;
     const maxUSD = usds.length ? Math.max(...usds) : basePriceUSD;
-    const minPEN = pens.length ? Math.min(...pens) : basePricePEN;
-    const maxPEN = pens.length ? Math.max(...pens) : basePricePEN;
-    return { minUSD, maxUSD, minPEN, maxPEN };
-  }, [versions, basePriceUSD, basePricePEN]);
+    return { minUSD, maxUSD };
+  }, [versions, basePriceUSD]);
 
   const pickVersion = (id: string) => {
     setSelectedVersionId(id);
@@ -105,7 +100,6 @@ export function VersionsAndGallery({
   }
 
   const priceUSD = Number(selectedVersion?.priceUSD ?? basePriceUSD);
-  const pricePEN = Number(selectedVersion?.pricePEN ?? basePricePEN);
 
   return (
     <>
@@ -236,12 +230,6 @@ export function VersionsAndGallery({
                     {isAll
                       ? `$${money(priceStats.minUSD)} – $${money(priceStats.maxUSD)}`
                       : `$${money(priceUSD)}`}
-                  </p>
-
-                  <p className="text-sm text-[#6b7280]">
-                    {isAll
-                      ? `S/ ${money(priceStats.minPEN)} – S/ ${money(priceStats.maxPEN)}`
-                      : `S/ ${money(pricePEN)}`}
                   </p>
                 </div>
               </div>

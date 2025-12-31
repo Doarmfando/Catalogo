@@ -15,7 +15,6 @@ export default async function TiposCombustiblePage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Tipos de Combustible</h1>
             <p className="text-gray-600 mt-1">
               Administra los tipos de combustible de vehículos
             </p>

@@ -22,7 +22,14 @@ export async function POST(request: Request) {
 
     // Generar nombre único para el archivo
     const timestamp = Date.now();
-    const fileName = `${folder || "cars"}/${timestamp}-${file.name}`;
+    // Limpiar el nombre del archivo: eliminar espacios, caracteres especiales y normalizar
+    const cleanName = file.name
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos
+      .replace(/\s+/g, "-") // Reemplazar espacios con guiones
+      .replace(/[^\w\-\.]/g, "") // Eliminar caracteres especiales excepto guiones, puntos y letras
+      .toLowerCase();
+    const fileName = `${folder || "cars"}/${timestamp}-${cleanName}`;
 
     // Convertir File a ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();

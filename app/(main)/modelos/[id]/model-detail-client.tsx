@@ -199,9 +199,6 @@ export function ModelDetailClient({ initialCar, carId }: ModelDetailClientProps)
               <div className="text-3xl font-extrabold tracking-tight mt-1">
                 ${money(car.priceUSD)}
               </div>
-              <p className="text-sm text-white/70 mt-1">
-                ó S/ {money(car.pricePEN)}
-              </p>
             </div>
           </div>
 
@@ -267,7 +264,6 @@ export function ModelDetailClient({ initialCar, carId }: ModelDetailClientProps)
             modelName={car.name}
             versions={versions}
             basePriceUSD={car.priceUSD}
-            basePricePEN={car.pricePEN}
           />
         </div>
         {/* CTA FINAL */}
