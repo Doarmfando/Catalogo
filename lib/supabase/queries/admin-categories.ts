@@ -9,7 +9,7 @@ export async function getAllCategoriesAdmin() {
       *,
       cars (count)
     `)
-    .order("name", { ascending: true });
+    .order("created_at", { ascending: true });
 
   if (error) {
     console.error("Error fetching categories:", error);

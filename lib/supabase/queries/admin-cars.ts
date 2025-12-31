@@ -30,7 +30,7 @@ export async function getAllCarsAdmin() {
         slug
       )
     `)
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: true })
 
   if (error) {
     console.error('Error fetching all cars for admin:', error)

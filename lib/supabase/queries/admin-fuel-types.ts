@@ -9,7 +9,7 @@ export async function getAllFuelTypesAdmin() {
       *,
       cars (count)
     `)
-    .order("name", { ascending: true });
+    .order("created_at", { ascending: true });
 
   if (error) {
     console.error("Error fetching fuel types:", error);

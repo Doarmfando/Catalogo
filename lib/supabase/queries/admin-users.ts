@@ -6,7 +6,7 @@ export async function getAllUsers() {
   const { data, error } = await supabase
     .from("users")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: true });
 
   if (error) {
     console.error("Error fetching users:", error);

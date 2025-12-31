@@ -13,7 +13,7 @@ export async function getAllColors() {
   const { data, error } = await supabase
     .from('colors')
     .select('*')
-    .order('name', { ascending: true })
+    .order('created_at', { ascending: true })
 
   if (error) {
     console.error('Error fetching colors:', error)
