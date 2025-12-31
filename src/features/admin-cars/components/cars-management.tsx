@@ -98,19 +98,22 @@ export function CarsManagement({ initialCars }: CarsManagementProps) {
   return (
     <>
       {/* Header with filters and action button */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 lg:gap-4 mb-4 lg:mb-6">
-        <CarsSearchFilter
-          onFilterChange={handleFilterChange}
-          brands={brands}
-          categories={categories}
-        />
-        <Link
-          href="/admin/autos/nuevo"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium text-sm whitespace-nowrap"
-        >
-          <Plus className="h-4 w-4 lg:h-5 lg:w-5" />
-          Nuevo Auto
-        </Link>
+      <div className="flex flex-col gap-3 mb-4 lg:mb-6">
+        {/* Search filters row */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <CarsSearchFilter
+            onFilterChange={handleFilterChange}
+            brands={brands}
+            categories={categories}
+          />
+          <Link
+            href="/admin/autos/nuevo"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#002C5F] text-white rounded-lg hover:bg-[#0957a5] transition-colors font-medium text-sm whitespace-nowrap sm:shrink-0"
+          >
+            <Plus className="h-4 w-4 lg:h-5 lg:w-5" />
+            Nuevo Auto
+          </Link>
+        </div>
       </div>
 
       {/* Table with filtered cars */}

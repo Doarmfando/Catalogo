@@ -161,9 +161,9 @@ export function CarsTable({ cars }: CarsTableProps) {
       {/* Mobile Cards */}
       <div className="lg:hidden divide-y divide-gray-200">
         {cars.map((car) => (
-          <div key={car.id} className="p-4">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="h-20 w-28 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+          <div key={car.id} className="p-3 sm:p-4">
+            <div className="flex items-start gap-2 sm:gap-3 mb-3">
+              <div className="h-16 w-24 sm:h-20 sm:w-28 rounded-lg overflow-hidden bg-gray-100 shrink-0">
                 {car.image && (
                   <img
                     src={car.image}
@@ -173,59 +173,61 @@ export function CarsTable({ cars }: CarsTableProps) {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-0.5 sm:mb-1 leading-tight">
                   {car.name}
                 </h3>
-                <p className="text-xs text-gray-500 mb-2">{car.fuelType}</p>
-                <div className="flex flex-wrap gap-2 text-xs">
+                <p className="text-xs text-gray-500 mb-1.5 sm:mb-2">{car.fuelType}</p>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 text-xs">
                   <span className="text-gray-600">{car.brand}</span>
                   <span className="text-gray-400">•</span>
                   <span className="text-gray-600">{car.year}</span>
                   <span className="text-gray-400">•</span>
-                  <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-medium">
+                  <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-medium">
                     {car.category}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="mb-3">
-              <div className="text-lg font-bold text-gray-900">
+            <div className="mb-2 sm:mb-3">
+              <div className="text-base sm:text-lg font-bold text-gray-900">
                 ${car.priceUSD?.toLocaleString("en-US") || "N/A"}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 pt-3 border-t border-gray-100">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-2 pt-2 sm:pt-3 border-t border-gray-100">
               <Link
                 href={`/modelos/${car.id}`}
                 target="_blank"
-                className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               >
-                <Eye className="h-4 w-4" />
+                <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 <span>Ver</span>
               </Link>
               <Link
                 href={`/admin/autos/${car.id}/versiones`}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
               >
-                <Palette className="h-4 w-4" />
-                <span>Versiones</span>
+                <Palette className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Versiones</span>
+                <span className="xs:hidden">Vers.</span>
               </Link>
               <Link
                 href={`/admin/autos/${car.id}/editar`}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-green-600 hover:bg-green-50 rounded-lg transition-colors"
               >
-                <Pencil className="h-4 w-4" />
+                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 <span>Editar</span>
               </Link>
               {isAdmin && (
                 <button
                   onClick={() => handleDelete(car.id, car.name)}
                   disabled={deleting === car.id}
-                  className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                 >
-                  <Trash2 className="h-4 w-4" />
-                  <span>Eliminar</span>
+                  <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span className="hidden xs:inline">Eliminar</span>
+                  <span className="xs:hidden">Borrar</span>
                 </button>
               )}
             </div>
