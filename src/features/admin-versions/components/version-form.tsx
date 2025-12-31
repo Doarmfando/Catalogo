@@ -177,15 +177,61 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validar precio USD > 0
+    const price = parseFloat(priceUSD);
+    if (isNaN(price) || price <= 0) {
+      alert("❌ El precio USD debe ser mayor a 0");
+      return;
+    }
+
+    // Verificar si el nombre ya existe
+    try {
+      const checkNameRes = await fetch("/api/admin/versions/check-name", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          carId,
+          name,
+          excludeId: mode === "edit" ? initialData.id : undefined,
+        }),
+      });
+
+      if (!checkNameRes.ok) {
+        alert("Error al verificar el nombre de la versión");
+        return;
+      }
+
+      const { exists } = await checkNameRes.json();
+      if (exists) {
+        alert("❌ Ya existe una versión con este nombre para este auto. Por favor usa un nombre diferente.");
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking version name:", error);
+      alert("Error al verificar el nombre de la versión");
+      return;
+    }
+
     const validHighlights = highlights.filter((h) => h.trim() !== "");
 
     if (validHighlights.length === 0) {
-      alert("Debe agregar al menos una característica destacada");
+      alert("❌ Debe agregar al menos una característica destacada");
       return;
     }
 
     if (colors.length === 0) {
-      alert("Debe agregar al menos un color a la versión");
+      alert("❌ Debe agregar al menos un color a la versión");
+      return;
+    }
+
+    // Validar que cada color tenga al menos 1 imagen
+    const colorsWithoutImages = colors.filter(
+      (color) => color.images.length === 0 && color.imageUrls.length === 0
+    );
+
+    if (colorsWithoutImages.length > 0) {
+      const colorNames = colorsWithoutImages.map((c) => c.name).join(", ");
+      alert(`❌ Los siguientes colores no tienen imágenes: ${colorNames}. Cada color debe tener al menos una imagen.`);
       return;
     }
 
@@ -309,6 +355,8 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
               </label>
               <input
                 type="number"
+                step="0.01"
+                min="0.01"
                 required
                 value={priceUSD}
                 onChange={(e) => setPriceUSD(e.target.value)}

@@ -58,6 +58,14 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
   ) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validar formato de imagen
+      const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        alert("❌ Formato de imagen no válido. Solo se permiten: JPG, PNG, WEBP");
+        e.target.value = "";
+        return;
+      }
+
       // Guardar el archivo para subirlo después
       if (type === "main") {
         setImageFile(file);
@@ -83,6 +91,31 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
     setLoading(true);
 
     try {
+      // Validar precio USD > 0
+      const priceUSD = parseFloat(formData.price_usd as any);
+      if (isNaN(priceUSD) || priceUSD <= 0) {
+        throw new Error("❌ El precio USD debe ser mayor a 0");
+      }
+
+      // Verificar si el nombre ya existe
+      const checkNameRes = await fetch("/api/admin/cars/check-name", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          excludeId: mode === "edit" ? initialData.id : undefined,
+        }),
+      });
+
+      if (!checkNameRes.ok) {
+        throw new Error("Error al verificar el nombre del auto");
+      }
+
+      const { exists } = await checkNameRes.json();
+      if (exists) {
+        throw new Error("❌ Ya existe un auto con este nombre. Por favor usa un nombre diferente.");
+      }
+
       const slug = generateSlug(formData.name);
 
       // Subir imágenes nuevas si existen
@@ -99,7 +132,7 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
 
       // Validar que haya imagen principal
       if (!imageUrl) {
-        throw new Error("La imagen principal es requerida");
+        throw new Error("❌ La imagen principal es obligatoria");
       }
 
       const payload = {
@@ -107,7 +140,7 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
         slug,
         image_url: imageUrl,
         image_frontal_url: frontalUrl,
-        price_usd: parseFloat(formData.price_usd as any),
+        price_usd: priceUSD,
         price_pen: null, // Ya no se usa, pero la columna aún existe en la BD
       };
 
@@ -219,8 +252,8 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                     setFormData({ ...formData, year: parseInt(e.target.value) })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
-                  min="2020"
-                  max="2030"
+                  min="2000"
+                  max={new Date().getFullYear() + 2}
                 />
               </div>
 
@@ -287,6 +320,7 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                   <input
                     type="number"
                     step="0.01"
+                    min="0.01"
                     required
                     value={formData.price_usd}
                     onChange={(e) =>
@@ -336,11 +370,11 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                     Click o arrastra una imagen
                   </span>
                   <span className="text-xs text-gray-400 mt-1">
-                    PNG, JPG hasta 5MB
+                    Formatos: JPG, PNG, WEBP
                   </span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                     onChange={(e) => handleImageChange(e, "main")}
                     className="hidden"
                   />
@@ -382,11 +416,11 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                     Click o arrastra una imagen
                   </span>
                   <span className="text-xs text-gray-400 mt-1">
-                    PNG, JPG hasta 5MB
+                    Formatos: JPG, PNG, WEBP
                   </span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                     onChange={(e) => handleImageChange(e, "frontal")}
                     className="hidden"
                   />

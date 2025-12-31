@@ -113,3 +113,29 @@ export async function deleteFuelType(fuelTypeId: string) {
 
   return { error: null };
 }
+
+/**
+ * Verifica si existe un tipo de combustible con el mismo nombre
+ */
+export async function checkFuelTypeNameExists(name: string, excludeId?: string) {
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("fuel_types")
+    .select("id, name")
+    .ilike("name", name);
+
+  // Si estamos editando, excluir el ID actual
+  if (excludeId) {
+    query = query.neq("id", excludeId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error checking fuel type name:", error);
+    return { exists: false, error: error.message };
+  }
+
+  return { exists: data && data.length > 0, error: null };
+}

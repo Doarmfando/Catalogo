@@ -39,17 +39,44 @@ export function ColorForm({ initialData, mode = "create" }: ColorFormProps) {
     e.preventDefault();
 
     if (!name.trim()) {
-      alert("El nombre es requerido");
+      alert("❌ El nombre es requerido");
       return;
     }
 
     if (!colorCode.trim()) {
-      alert("El código del color es requerido");
+      alert("❌ El código del color es requerido");
       return;
     }
 
     if (!hexCode.match(/^#[0-9A-F]{6}$/i)) {
-      alert("El código hexadecimal debe tener el formato #RRGGBB");
+      alert("❌ El código hexadecimal debe tener el formato #RRGGBB");
+      return;
+    }
+
+    // Verificar si el código de color ya existe
+    try {
+      const checkCodeRes = await fetch("/api/admin/colors/check-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          colorCode: colorCode.trim().toUpperCase(),
+          excludeId: mode === "edit" ? initialData?.id : undefined,
+        }),
+      });
+
+      if (!checkCodeRes.ok) {
+        alert("Error al verificar el código del color");
+        return;
+      }
+
+      const { exists } = await checkCodeRes.json();
+      if (exists) {
+        alert("❌ Ya existe un color con este código. Por favor usa un código diferente.");
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking color code:", error);
+      alert("Error al verificar el código del color");
       return;
     }
 

@@ -110,3 +110,29 @@ export async function deleteColor(colorId: string) {
 
   return { error: null }
 }
+
+/**
+ * Verifica si existe un color con el mismo código
+ */
+export async function checkColorCodeExists(colorCode: string, excludeId?: string) {
+  const supabase = await createClient()
+
+  let query = supabase
+    .from('colors')
+    .select('id, color_code')
+    .ilike('color_code', colorCode)
+
+  // Si estamos editando, excluir el ID actual
+  if (excludeId) {
+    query = query.neq('id', excludeId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error checking color code:', error)
+    return { exists: false, error: error.message }
+  }
+
+  return { exists: data && data.length > 0, error: null }
+}

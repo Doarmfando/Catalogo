@@ -157,3 +157,29 @@ export async function toggleCarStatus(carId: string, isActive: boolean) {
 
   return { data, error: null }
 }
+
+/**
+ * Verifica si existe un auto con el mismo nombre
+ */
+export async function checkCarNameExists(name: string, excludeId?: string) {
+  const supabase = await createClient()
+
+  let query = supabase
+    .from('cars')
+    .select('id, name')
+    .ilike('name', name)
+
+  // Si estamos editando, excluir el ID actual
+  if (excludeId) {
+    query = query.neq('id', excludeId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error checking car name:', error)
+    return { exists: false, error: error.message }
+  }
+
+  return { exists: data && data.length > 0, error: null }
+}

@@ -85,12 +85,39 @@ export function BrandForm({ initialData, mode = "create" }: BrandFormProps) {
     e.preventDefault();
 
     if (!name.trim()) {
-      alert("El nombre es requerido");
+      alert("❌ El nombre es requerido");
       return;
     }
 
     if (!slug.trim()) {
-      alert("La etiqueta es requerida");
+      alert("❌ La etiqueta es requerida");
+      return;
+    }
+
+    // Verificar si el nombre ya existe
+    try {
+      const checkNameRes = await fetch("/api/admin/brands/check-name", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          excludeId: mode === "edit" ? initialData?.id : undefined,
+        }),
+      });
+
+      if (!checkNameRes.ok) {
+        alert("Error al verificar el nombre de la marca");
+        return;
+      }
+
+      const { exists } = await checkNameRes.json();
+      if (exists) {
+        alert("❌ Ya existe una marca con este nombre. Por favor usa un nombre diferente.");
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking brand name:", error);
+      alert("Error al verificar el nombre de la marca");
       return;
     }
 

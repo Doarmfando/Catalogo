@@ -145,3 +145,29 @@ export function generateSlug(name: string): string {
     .replace(/\s+/g, '-') // Replace spaces with -
     .replace(/-+/g, '-') // Replace multiple - with single -
 }
+
+/**
+ * Verifica si existe una marca con el mismo nombre
+ */
+export async function checkBrandNameExists(name: string, excludeId?: string) {
+  const supabase = await createClient()
+
+  let query = supabase
+    .from('brands')
+    .select('id, name')
+    .ilike('name', name)
+
+  // Si estamos editando, excluir el ID actual
+  if (excludeId) {
+    query = query.neq('id', excludeId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error checking brand name:', error)
+    return { exists: false, error: error.message }
+  }
+
+  return { exists: data && data.length > 0, error: null }
+}

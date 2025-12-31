@@ -276,3 +276,30 @@ export async function updateColorImagesOrder(
 
   return { error: null }
 }
+
+/**
+ * Verifica si existe una versión con el mismo nombre para un auto
+ */
+export async function checkVersionNameExists(carId: string, name: string, excludeId?: string) {
+  const supabase = await createClient()
+
+  let query = supabase
+    .from('versions')
+    .select('id, name')
+    .eq('car_id', carId)
+    .ilike('name', name)
+
+  // Si estamos editando, excluir el ID actual
+  if (excludeId) {
+    query = query.neq('id', excludeId)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error checking version name:', error)
+    return { exists: false, error: error.message }
+  }
+
+  return { exists: data && data.length > 0, error: null }
+}
