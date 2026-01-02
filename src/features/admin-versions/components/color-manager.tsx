@@ -218,10 +218,8 @@ export function ColorManager({
       return;
     }
 
-    if (existingImageUrls.length === 0 && newImages.length === 0) {
-      alert("Debes agregar al menos una imagen para este color");
-      return;
-    }
+    // Nota: Se permite guardar colores sin imágenes
+    // Los colores pueden existir sin imágenes asociadas
 
     onSave({
       id: versionColor?.id || Date.now().toString(),
@@ -311,7 +309,7 @@ export function ColorManager({
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Galería de Imágenes *
+                Galería de Imágenes (Opcional)
               </label>
               <span className="text-xs text-gray-500 italic">
                 Arrastra las imágenes para reordenarlas

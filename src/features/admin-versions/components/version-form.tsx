@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { X, Plus, Loader2, GripVertical } from "lucide-react";
 import { ColorManager } from "./color-manager";
-import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface VersionColor {
   id: string;
@@ -24,7 +23,6 @@ interface VersionFormProps {
 
 export function VersionForm({ carId, initialData, mode = "create" }: VersionFormProps) {
   const router = useRouter();
-  const { isAdmin } = useCurrentUser();
   const [name, setName] = useState("");
   const [priceUSD, setPriceUSD] = useState("");
   const [highlights, setHighlights] = useState<string[]>([""]);
@@ -35,6 +33,37 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [draggedHighlightIndex, setDraggedHighlightIndex] = useState<number | null>(null);
+
+  // Formatear precio con comas
+  const formatPrice = (value: string) => {
+    // Remover todo excepto números y punto decimal
+    const numericValue = value.replace(/[^\d.]/g, '');
+
+    // Si está vacío, retornar vacío
+    if (!numericValue) return '';
+
+    // Separar parte entera y decimal
+    const parts = numericValue.split('.');
+    const integerPart = parts[0];
+
+    // Manejar parte decimal: solo limitar a 2 dígitos, SIN auto-completar
+    let decimalPart = '';
+    if (parts[1] !== undefined) {
+      // Limitar a 2 decimales máximo, mostrar tal cual lo escribió el usuario
+      decimalPart = parts[1].length > 0 ? `.${parts[1].slice(0, 2)}` : '.';
+    }
+
+    // Agregar comas a la parte entera
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    return formattedInteger + decimalPart;
+  };
+
+  const handlePriceChange = (value: string) => {
+    // Guardar solo números y punto (sin comas) en el estado
+    const numericValue = value.replace(/[^\d.]/g, '');
+    setPriceUSD(numericValue);
+  };
 
   useEffect(() => {
     loadColors();
@@ -219,21 +248,8 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
       return;
     }
 
-    if (colors.length === 0) {
-      alert("❌ Debe agregar al menos un color a la versión");
-      return;
-    }
-
-    // Validar que cada color tenga al menos 1 imagen
-    const colorsWithoutImages = colors.filter(
-      (color) => color.images.length === 0 && color.imageUrls.length === 0
-    );
-
-    if (colorsWithoutImages.length > 0) {
-      const colorNames = colorsWithoutImages.map((c) => c.name).join(", ");
-      alert(`❌ Los siguientes colores no tienen imágenes: ${colorNames}. Cada color debe tener al menos una imagen.`);
-      return;
-    }
+    // Nota: Ya no se requiere que las versiones tengan colores
+    // Las versiones pueden existir sin colores ni imágenes
 
     setSubmitting(true);
 
@@ -354,14 +370,13 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
                 Precio USD *
               </label>
               <input
-                type="number"
-                step="0.01"
-                min="0.01"
+                type="text"
+                inputMode="decimal"
                 required
-                value={priceUSD}
-                onChange={(e) => setPriceUSD(e.target.value)}
+                value={formatPrice(priceUSD)}
+                onChange={(e) => handlePriceChange(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
-                placeholder="19990"
+                placeholder="19,990"
               />
             </div>
           </div>
@@ -471,15 +486,13 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
                       >
                         Editar
                       </button>
-                      {isAdmin && (
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteColor(color.id)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteColor(color.id)}
+                        className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
                   </div>
                 ))}

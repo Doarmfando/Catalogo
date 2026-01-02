@@ -35,11 +35,34 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
     year: initialData?.year || new Date().getFullYear(),
     category_id: initialData?.category_id || categories[0]?.id || "",
     fuel_type_id: initialData?.fuel_type_id || fuelTypes[0]?.id || "",
-    price_usd: initialData?.price_usd || "",
+    price_usd: initialData?.price_usd?.toString() || "",
     image_url: initialData?.image_url || "",
     image_frontal_url: initialData?.image_frontal_url || "",
     is_active: initialData?.is_active ?? true,
   });
+
+  // Formatear precio con comas
+  const formatPrice = (value: string) => {
+    const numericValue = value.replace(/[^\d.]/g, '');
+    if (!numericValue) return '';
+    const parts = numericValue.split('.');
+    const integerPart = parts[0];
+
+    // Manejar parte decimal: solo limitar a 2 dígitos, SIN auto-completar
+    let decimalPart = '';
+    if (parts[1] !== undefined) {
+      // Limitar a 2 decimales máximo, mostrar tal cual lo escribió el usuario
+      decimalPart = parts[1].length > 0 ? `.${parts[1].slice(0, 2)}` : '.';
+    }
+
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return formattedInteger + decimalPart;
+  };
+
+  const handlePriceChange = (value: string) => {
+    const numericValue = value.replace(/[^\d.]/g, '');
+    setFormData({ ...formData, price_usd: numericValue });
+  };
 
   // Estados separados para los archivos nuevos
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -253,7 +276,6 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
                   min="2000"
-                  max={new Date().getFullYear() + 2}
                 />
               </div>
 
@@ -318,16 +340,13 @@ export function CarForm({ mode, initialData, brands, categories, fuelTypes }: Ca
                     $
                   </span>
                   <input
-                    type="number"
-                    step="0.01"
-                    min="0.01"
+                    type="text"
+                    inputMode="decimal"
                     required
-                    value={formData.price_usd}
-                    onChange={(e) =>
-                      setFormData({ ...formData, price_usd: e.target.value })
-                    }
+                    value={formatPrice(formData.price_usd)}
+                    onChange={(e) => handlePriceChange(e.target.value)}
                     className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#002C5F] focus:border-transparent outline-none"
-                    placeholder="0.00"
+                    placeholder="19,990"
                   />
                 </div>
               </div>

@@ -8,7 +8,10 @@ import type { CarVersion } from "@/shared/types/car";
 const ALL_VERSIONS_ID = "__ALL__";
 
 function money(n: number) {
-  return n.toLocaleString("en-US");
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: n % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(n);
 }
 
 function VersionSwitch({

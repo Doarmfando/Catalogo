@@ -113,7 +113,12 @@ export function CarsTable({ cars }: CarsTableProps) {
                 </td>
                 <td className="px-6 py-4">
                   <span className="text-sm font-semibold text-gray-900">
-                    ${car.priceUSD?.toLocaleString("en-US") || "N/A"}
+                    ${car.priceUSD
+                      ? new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: car.priceUSD % 1 === 0 ? 0 : 2,
+                          maximumFractionDigits: 2,
+                        }).format(car.priceUSD)
+                      : "N/A"}
                   </span>
                 </td>
                 <td className="px-6 py-4">
@@ -191,7 +196,12 @@ export function CarsTable({ cars }: CarsTableProps) {
 
             <div className="mb-2 sm:mb-3">
               <div className="text-base sm:text-lg font-bold text-gray-900">
-                ${car.priceUSD?.toLocaleString("en-US") || "N/A"}
+                ${car.priceUSD
+                  ? new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: car.priceUSD % 1 === 0 ? 0 : 2,
+                      maximumFractionDigits: 2,
+                    }).format(car.priceUSD)
+                  : "N/A"}
               </div>
             </div>
 

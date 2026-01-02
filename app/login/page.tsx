@@ -23,25 +23,50 @@ export default function LoginPage() {
 
   // Verificar si ya hay sesión activa
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let isCompleted = false;
+
     const checkSession = async () => {
       try {
         const res = await fetch('/api/auth/session')
         const data = await res.json()
 
-        if (data.user) {
-          // Ya hay sesión activa, redirigir al admin
-          router.push('/admin/autos')
-          router.refresh()
-        } else {
-          setCheckingSession(false)
+        if (!isCompleted) {
+          clearTimeout(timeoutId)
+          isCompleted = true
+
+          if (data.user) {
+            // Ya hay sesión activa, redirigir al admin
+            router.push('/admin/autos')
+            router.refresh()
+          } else {
+            setCheckingSession(false)
+          }
         }
       } catch (error) {
-        console.error('Error checking session:', error)
-        setCheckingSession(false)
+        if (!isCompleted) {
+          clearTimeout(timeoutId)
+          isCompleted = true
+          console.error('Error checking session:', error)
+          setCheckingSession(false)
+        }
       }
     }
 
+    // Timeout de 10 segundos - si tarda demasiado, mostrar el login
+    timeoutId = setTimeout(() => {
+      isCompleted = true
+      console.warn('Session check timeout - showing login form')
+      setCheckingSession(false)
+    }, 10000)
+
     checkSession()
+
+    // Cleanup
+    return () => {
+      isCompleted = true
+      if (timeoutId) clearTimeout(timeoutId)
+    }
   }, [router])
 
   // Detectar si es dispositivo móvil

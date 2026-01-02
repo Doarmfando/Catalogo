@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Trash2, Pencil } from "lucide-react";
 import { useRealtimeTable } from "@/hooks/use-realtime-table";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface ColorsTableProps {
   colors: any[];
@@ -12,6 +13,7 @@ interface ColorsTableProps {
 
 export function ColorsTable({ colors: initialColors }: ColorsTableProps) {
   const router = useRouter();
+  const { isAdmin } = useCurrentUser();
   const [deleting, setDeleting] = useState<string | null>(null);
 
   // Realtime subscription
@@ -110,14 +112,16 @@ export function ColorsTable({ colors: initialColors }: ColorsTableProps) {
                     >
                       <Pencil className="h-4 w-4" />
                     </Link>
-                    <button
-                      onClick={() => handleDelete(color.id, color.name)}
-                      disabled={deleting === color.id}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
-                      title="Eliminar"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(color.id, color.name)}
+                        disabled={deleting === color.id}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                        title="Eliminar"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -160,14 +164,16 @@ export function ColorsTable({ colors: initialColors }: ColorsTableProps) {
                 <Pencil className="h-4 w-4" />
                 <span>Editar</span>
               </Link>
-              <button
-                onClick={() => handleDelete(color.id, color.name)}
-                disabled={deleting === color.id}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span>Eliminar</span>
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => handleDelete(color.id, color.name)}
+                  disabled={deleting === color.id}
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span>Eliminar</span>
+                </button>
+              )}
             </div>
           </div>
         ))}

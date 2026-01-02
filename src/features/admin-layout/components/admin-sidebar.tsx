@@ -8,12 +8,6 @@ import { useUser } from "@/contexts/user-context";
 
 const menuItems = [
   {
-    label: "Ver Catálogo",
-    href: "/",
-    icon: ExternalLink,
-    external: true,
-  },
-  {
     label: "Autos",
     href: "/admin/autos",
     icon: Car,
@@ -48,6 +42,12 @@ const menuItems = [
     href: "/admin/usuarios",
     icon: Users,
     adminOnly: true,
+  },
+  {
+    label: "Ver Catálogo",
+    href: "/",
+    icon: ExternalLink,
+    external: true,
   },
 ];
 

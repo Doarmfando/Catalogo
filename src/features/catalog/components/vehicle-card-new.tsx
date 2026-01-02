@@ -92,7 +92,10 @@ export function VehicleCardNew({ car }: VehicleCardProps) {
         <div className="flex flex-col">
           <span className="text-[0.7rem] text-[#6b7280]">DESDE:</span>
           <div className="text-base font-semibold text-[#002C5F]">
-            ${car.priceUSD.toLocaleString("en-US")}
+            ${new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: car.priceUSD % 1 === 0 ? 0 : 2,
+              maximumFractionDigits: 2,
+            }).format(car.priceUSD)}
           </div>
         </div>
         <Link

@@ -81,24 +81,24 @@ export async function PUT(
         }
 
         // Update images for this color (optimized: only update what changed)
-        if (color.imageUrls && color.imageUrls.length > 0) {
-          const existingImages = existingAssignment?.color_images || [];
-          const existingUrls = existingImages.map((img: any) => img.image_url);
-          const newUrls = color.imageUrls;
+        const existingImages = existingAssignment?.color_images || [];
+        const existingUrls = existingImages.map((img: any) => img.image_url);
+        const newUrls = color.imageUrls || [];
 
-          // Find images to delete (existed before but not anymore)
-          const urlsToDelete = existingUrls.filter((url: string) => !newUrls.includes(url));
-          for (const urlToDelete of urlsToDelete) {
-            const imgToDelete = existingImages.find((img: any) => img.image_url === urlToDelete);
-            if (imgToDelete) {
-              const { error: deleteError } = await deleteColorImage(imgToDelete.id);
-              if (deleteError) {
-                console.error("Error deleting color image:", deleteError);
-              }
+        // Find images to delete (existed before but not anymore)
+        const urlsToDelete = existingUrls.filter((url: string) => !newUrls.includes(url));
+        for (const urlToDelete of urlsToDelete) {
+          const imgToDelete = existingImages.find((img: any) => img.image_url === urlToDelete);
+          if (imgToDelete) {
+            const { error: deleteError } = await deleteColorImage(imgToDelete.id);
+            if (deleteError) {
+              console.error("Error deleting color image:", deleteError);
             }
           }
+        }
 
-          // Find images to add (new ones that didn't exist)
+        // Find images to add (new ones that didn't exist)
+        if (newUrls.length > 0) {
           const urlsToAdd = newUrls.filter((url: string) => !existingUrls.includes(url));
           for (const urlToAdd of urlsToAdd) {
             const displayOrder = newUrls.indexOf(urlToAdd);
