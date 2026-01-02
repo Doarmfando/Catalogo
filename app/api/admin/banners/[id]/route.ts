@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 import { validateAuth, validateDelete } from "@/lib/auth/api-auth";
 
@@ -32,7 +32,7 @@ export async function PUT(
       end_date,
     } = body;
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const updateData: any = {};
     if (car_id !== undefined) updateData.car_id = car_id || null;
@@ -93,7 +93,7 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { error } = await supabase.from("hero_banners").delete().eq("id", id);
 

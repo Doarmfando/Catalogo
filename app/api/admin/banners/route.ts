@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 import { validateAuth } from "@/lib/auth/api-auth";
 
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   if ('error' in authResult) return authResult.error;
 
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data, error } = await supabase
       .from("hero_banners")
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Obtener el máximo display_order actual
     const { data: maxOrderData } = await supabase

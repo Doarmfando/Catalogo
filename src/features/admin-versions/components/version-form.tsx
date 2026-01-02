@@ -433,6 +433,8 @@ export function VersionForm({ carId, initialData, mode = "create" }: VersionForm
                 <Plus className="h-4 w-4" />
                 Agregar Color
               </button>
+              
+              
             </div>
 
             {colors.length > 0 ? (
