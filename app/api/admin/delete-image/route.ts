@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 export async function DELETE(request: Request) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { imageUrl } = await request.json();
 

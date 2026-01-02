@@ -1,9 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
+import { validateAdmin } from "@/lib/auth/api-auth";
 
-// GET - Obtener todos los usuarios
+// GET - Obtener todos los usuarios (solo administradores)
 export async function GET(request: Request) {
+  const authResult = await validateAdmin();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const supabase = await createClient();
 
@@ -30,8 +34,11 @@ export async function GET(request: Request) {
   }
 }
 
-// POST - Crear nuevo usuario
+// POST - Crear nuevo usuario (solo administradores)
 export async function POST(request: Request) {
+  const authResult = await validateAdmin();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const body = await request.json();
     const { email, password, full_name, role, is_active } = body;

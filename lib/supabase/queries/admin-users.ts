@@ -1,7 +1,12 @@
-import { createClient } from "@/lib/supabase/server";
+/**
+ * Queries de administración para usuarios
+ * Usa service role para bypassar RLS
+ */
+
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function getAllUsers() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("users")
@@ -17,7 +22,7 @@ export async function getAllUsers() {
 }
 
 export async function getUserById(userId: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("users")

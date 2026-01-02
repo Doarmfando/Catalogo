@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 export async function POST(request: Request) {
-  // Autenticación deshabilitada temporalmente durante desarrollo
-  // Se habilitará al final
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
 
   try {
     const formData = await request.formData();

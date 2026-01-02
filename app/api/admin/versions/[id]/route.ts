@@ -9,11 +9,15 @@ import {
   removeColorFromVersion,
   getVersionById,
 } from "@/lib/supabase/queries/admin-versions";
+import { validateAuth, validateDelete } from "@/lib/auth/api-auth";
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { id } = await params;
     const body = await request.json();
@@ -140,8 +144,8 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // Autenticación deshabilitada temporalmente durante desarrollo
-  // Se habilitará al final
+  const authResult = await validateDelete();
+  if ('error' in authResult) return authResult.error;
 
   const { id } = await params;
 

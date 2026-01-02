@@ -1,14 +1,15 @@
 /**
  * Queries de administración para marcas
+ * Usa service role para bypassar RLS
  */
 
-import { createClient } from '../server'
+import { createAdminClient } from '../admin'
 
 /**
  * Obtiene todas las marcas con conteo de autos
  */
 export async function getAllBrandsAdmin() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('brands')
@@ -30,7 +31,7 @@ export async function getAllBrandsAdmin() {
  * Obtiene una marca por ID
  */
 export async function getBrandByIdAdmin(brandId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('brands')
@@ -58,7 +59,7 @@ export async function createBrand(brandData: {
   logo_url?: string
   description?: string
 }) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('brands')
@@ -86,7 +87,7 @@ export async function updateBrand(
     description?: string
   }
 ) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('brands')
@@ -108,7 +109,7 @@ export async function updateBrand(
  * Solo si no tiene autos asociados
  */
 export async function deleteBrand(brandId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Primero verificar si tiene autos asociados
   const { count } = await supabase
@@ -150,7 +151,7 @@ export function generateSlug(name: string): string {
  * Verifica si existe una marca con el mismo nombre
  */
 export async function checkBrandNameExists(name: string, excludeId?: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   let query = supabase
     .from('brands')

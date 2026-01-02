@@ -1,8 +1,9 @@
 /**
  * Queries de administración para versiones de autos
+ * Usa service role para bypassar RLS
  */
 
-import { createClient } from '../server'
+import { createAdminClient } from '../admin'
 
 /**
  * Genera un slug a partir del nombre
@@ -22,7 +23,7 @@ function generateSlug(name: string): string {
  * Obtiene todas las versiones de un auto específico
  */
 export async function getVersionsByCar(carId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('versions')
@@ -58,7 +59,7 @@ export async function getVersionsByCar(carId: string) {
  * Obtiene una versión específica por ID
  */
 export async function getVersionById(versionId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('versions')
@@ -96,7 +97,7 @@ export async function getVersionById(versionId: string) {
  * Crea una nueva versión
  */
 export async function createVersion(versionData: any) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Generar slug automáticamente si no se proporciona
   const dataWithSlug = {
@@ -122,7 +123,7 @@ export async function createVersion(versionData: any) {
  * Actualiza una versión existente
  */
 export async function updateVersion(versionId: string, versionData: any) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Regenerar slug si se cambió el nombre
   const dataWithSlug = versionData.name
@@ -151,7 +152,7 @@ export async function updateVersion(versionId: string, versionData: any) {
  * Elimina una versión
  */
 export async function deleteVersion(versionId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase
     .from('versions')
@@ -170,7 +171,7 @@ export async function deleteVersion(versionId: string) {
  * Asigna un color a una versión
  */
 export async function assignColorToVersion(versionId: string, colorId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('version_colors')
@@ -190,7 +191,7 @@ export async function assignColorToVersion(versionId: string, colorId: string) {
  * Remueve un color de una versión
  */
 export async function removeColorFromVersion(versionColorId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase
     .from('version_colors')
@@ -209,7 +210,7 @@ export async function removeColorFromVersion(versionColorId: string) {
  * Añade una imagen a un color de versión
  */
 export async function addColorImage(versionColorId: string, imageUrl: string, displayOrder: number = 0) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('color_images')
@@ -233,7 +234,7 @@ export async function addColorImage(versionColorId: string, imageUrl: string, di
  * Elimina una imagen de color
  */
 export async function deleteColorImage(imageId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase
     .from('color_images')
@@ -255,7 +256,7 @@ export async function deleteColorImage(imageId: string) {
 export async function updateColorImagesOrder(
   imageUpdates: { imageUrl: string; displayOrder: number }[]
 ) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Actualizar cada imagen individualmente (Supabase no soporta CASE en el cliente)
   const promises = imageUpdates.map(({ imageUrl, displayOrder }) =>
@@ -281,7 +282,7 @@ export async function updateColorImagesOrder(
  * Verifica si existe una versión con el mismo nombre para un auto
  */
 export async function checkVersionNameExists(carId: string, name: string, excludeId?: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   let query = supabase
     .from('versions')

@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { getAllColors, createColor } from "@/lib/supabase/queries/admin-colors";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 export async function GET() {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const colors = await getAllColors();
     return NextResponse.json(colors);
@@ -15,6 +19,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const colorData = await request.json();
 

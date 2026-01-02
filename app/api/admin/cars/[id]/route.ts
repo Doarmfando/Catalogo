@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import { deleteCar, updateCar } from "@/lib/supabase/queries/admin-cars";
+import { validateAuth, validateDelete } from "@/lib/auth/api-auth";
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // Autenticación deshabilitada temporalmente durante desarrollo
-  // Se habilitará al final
+  // Validar autenticación (cualquier usuario autenticado puede editar)
+  const authResult = await validateAuth();
+  if ('error' in authResult) {
+    return authResult.error;
+  }
 
   try {
     const { id } = await params;
@@ -31,8 +35,11 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // Autenticación deshabilitada temporalmente durante desarrollo
-  // Se habilitará al final
+  // Validar permisos de eliminación (solo administradores)
+  const authResult = await validateDelete();
+  if ('error' in authResult) {
+    return authResult.error;
+  }
 
   const { id } = await params;
 

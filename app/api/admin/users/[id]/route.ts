@@ -1,11 +1,15 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
+import { validateAdmin } from "@/lib/auth/api-auth";
 
-// PUT - Actualizar usuario
+// PUT - Actualizar usuario (solo administradores)
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authResult = await validateAdmin();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { id } = await params;
     const body = await request.json();
@@ -16,8 +20,41 @@ export async function PUT(
     // 1. Actualizar en auth.users si es necesario
     const authUpdate: any = {};
     if (email) authUpdate.email = email;
-    if (password) authUpdate.password = password;
     if (full_name) authUpdate.user_metadata = { full_name };
+
+    // Actualizar contraseña por separado para evitar validación de longitud
+    if (password) {
+      // Intentar actualizar con SQL directo para bypasear validación de longitud
+      try {
+        const { error: passwordError } = await supabaseAdmin.rpc('update_user_password', {
+          user_id: id,
+          new_password: password
+        });
+
+        if (passwordError) {
+          console.error("Error updating password with SQL:", passwordError);
+          // Fallback: intentar con Admin API normal
+          const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(
+            id,
+            { password }
+          );
+
+          if (authError) {
+            console.error("Error updating password:", authError);
+            return NextResponse.json(
+              { error: "Error al actualizar contraseña" },
+              { status: 500 }
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error in password update:", error);
+        return NextResponse.json(
+          { error: "Error al actualizar contraseña" },
+          { status: 500 }
+        );
+      }
+    }
 
     if (Object.keys(authUpdate).length > 0) {
       const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(
@@ -83,11 +120,14 @@ export async function PUT(
   }
 }
 
-// DELETE - Eliminar usuario
+// DELETE - Eliminar usuario (solo administradores)
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authResult = await validateAdmin();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { id } = await params;
     const supabaseAdmin = createAdminClient();

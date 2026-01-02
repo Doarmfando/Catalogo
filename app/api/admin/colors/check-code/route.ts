@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { checkColorCodeExists } from "@/lib/supabase/queries/admin-colors";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 export async function POST(request: Request) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { colorCode, excludeId } = await request.json();
 

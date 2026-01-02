@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { createCar } from "@/lib/supabase/queries/admin-cars";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 export async function POST(request: Request) {
-  // Autenticación deshabilitada temporalmente durante desarrollo
-  // Se habilitará al final
+  // Validar autenticación
+  const authResult = await validateAuth();
+  if ('error' in authResult) {
+    return authResult.error;
+  }
 
   try {
     const carData = await request.json();

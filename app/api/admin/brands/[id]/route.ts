@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import { updateBrand, deleteBrand } from "@/lib/supabase/queries/admin-brands";
+import { validateAuth, validateDelete } from "@/lib/auth/api-auth";
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { id } = await params;
     const brandData = await request.json();
@@ -28,6 +32,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authResult = await validateDelete();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { id } = await params;
 

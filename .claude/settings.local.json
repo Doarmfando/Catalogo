@@ -3,7 +3,8 @@
     "allow": [
       "Bash(xargs:*)",
       "Bash(ls:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(cat:*)"
     ]
   }
 }

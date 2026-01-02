@@ -1,14 +1,15 @@
 /**
  * Queries de administración para banners del hero
+ * Usa service role para bypassar RLS
  */
 
-import { createClient } from '../server'
+import { createAdminClient } from '../admin'
 
 /**
  * Obtiene todos los banners del hero (sin filtro de fecha)
  */
 export async function getAllBannersAdmin() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('hero_banners')
@@ -34,7 +35,7 @@ export async function getAllBannersAdmin() {
  * Obtiene un banner por ID
  */
 export async function getBannerByIdAdmin(bannerId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('hero_banners')
@@ -78,7 +79,7 @@ export async function createBanner(bannerData: {
   start_date?: string | null
   end_date?: string | null
 }) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('hero_banners')
@@ -118,7 +119,7 @@ export async function updateBanner(
     end_date?: string | null
   }
 ) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('hero_banners')
@@ -139,7 +140,7 @@ export async function updateBanner(
  * Elimina un banner
  */
 export async function deleteBanner(bannerId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase.from('hero_banners').delete().eq('id', bannerId)
 

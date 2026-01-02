@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { checkCategoryNameExists } from "@/lib/supabase/queries/admin-categories";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 export async function POST(request: Request) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const { name, excludeId } = await request.json();
 

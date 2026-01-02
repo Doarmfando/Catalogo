@@ -3,10 +3,16 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Car, Tag, Users, Layers, LogOut, LayoutDashboard, Fuel, Palette, Image, X } from "lucide-react";
+import { Car, Tag, Users, Layers, LogOut, LayoutDashboard, Fuel, Palette, Image, X, ExternalLink } from "lucide-react";
 import { useUser } from "@/contexts/user-context";
 
 const menuItems = [
+  {
+    label: "Ver Catálogo",
+    href: "/",
+    icon: ExternalLink,
+    external: true,
+  },
   {
     label: "Autos",
     href: "/admin/autos",
@@ -143,23 +149,38 @@ export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
               .filter((item) => !item.adminOnly || isAdmin)
               .map((item) => {
                 const Icon = item.icon;
-                const isActive = pathname?.startsWith(item.href);
+                const isActive = pathname?.startsWith(item.href) && !item.external;
+
+                const linkClassName = [
+                  "flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg transition-colors text-sm lg:text-base",
+                  isActive
+                    ? "bg-white/10 text-white font-semibold"
+                    : "text-white/70 hover:bg-white/5 hover:text-white",
+                ].join(" ");
 
                 return (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={handleLinkClick}
-                      className={[
-                        "flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-lg transition-colors text-sm lg:text-base",
-                        isActive
-                          ? "bg-white/10 text-white font-semibold"
-                          : "text-white/70 hover:bg-white/5 hover:text-white",
-                      ].join(" ")}
-                    >
-                      <Icon className="h-4 lg:h-5 w-4 lg:w-5" />
-                      <span>{item.label}</span>
-                    </Link>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={handleLinkClick}
+                        className={linkClassName}
+                      >
+                        <Icon className="h-4 lg:h-5 w-4 lg:w-5" />
+                        <span>{item.label}</span>
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={handleLinkClick}
+                        className={linkClassName}
+                      >
+                        <Icon className="h-4 lg:h-5 w-4 lg:w-5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    )}
                   </li>
                 );
               })}

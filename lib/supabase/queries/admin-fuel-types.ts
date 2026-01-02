@@ -1,7 +1,12 @@
-import { createClient } from "@/lib/supabase/server";
+/**
+ * Queries de administración para tipos de combustible
+ * Usa service role para bypassar RLS
+ */
+
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function getAllFuelTypesAdmin() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("fuel_types")
@@ -20,7 +25,7 @@ export async function getAllFuelTypesAdmin() {
 }
 
 export async function getFuelTypeByIdAdmin(fuelTypeId: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("fuel_types")
@@ -40,7 +45,7 @@ export async function createFuelType(fuelTypeData: {
   name: string;
   slug: string;
 }) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("fuel_types")
@@ -63,7 +68,7 @@ export async function updateFuelType(
     slug?: string;
   }
 ) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("fuel_types")
@@ -81,7 +86,7 @@ export async function updateFuelType(
 }
 
 export async function deleteFuelType(fuelTypeId: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // First check if there are any cars associated with this fuel type
   const { count, error: countError } = await supabase
@@ -118,7 +123,7 @@ export async function deleteFuelType(fuelTypeId: string) {
  * Verifica si existe un tipo de combustible con el mismo nombre
  */
 export async function checkFuelTypeNameExists(name: string, excludeId?: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   let query = supabase
     .from("fuel_types")

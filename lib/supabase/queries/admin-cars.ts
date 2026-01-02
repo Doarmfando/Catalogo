@@ -1,14 +1,15 @@
 /**
  * Queries de administración para autos
+ * Usa service role para bypassar RLS
  */
 
-import { createClient } from '../server'
+import { createAdminClient } from '../admin'
 
 /**
  * Obtiene todos los autos (activos e inactivos) para el panel admin
  */
 export async function getAllCarsAdmin() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('cars')
@@ -44,7 +45,7 @@ export async function getAllCarsAdmin() {
  * Obtiene un auto por ID para edición en el panel admin
  */
 export async function getCarByIdAdmin(carId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('cars')
@@ -81,7 +82,7 @@ export async function getCarByIdAdmin(carId: string) {
  * Crea un nuevo auto
  */
 export async function createCar(carData: any) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('cars')
@@ -101,7 +102,7 @@ export async function createCar(carData: any) {
  * Actualiza un auto existente
  */
 export async function updateCar(carId: string, carData: any) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('cars')
@@ -122,7 +123,7 @@ export async function updateCar(carId: string, carData: any) {
  * Elimina un auto
  */
 export async function deleteCar(carId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase
     .from('cars')
@@ -141,7 +142,7 @@ export async function deleteCar(carId: string) {
  * Toggle estado activo/inactivo de un auto
  */
 export async function toggleCarStatus(carId: string, isActive: boolean) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('cars')
@@ -162,7 +163,7 @@ export async function toggleCarStatus(carId: string, isActive: boolean) {
  * Verifica si existe un auto con el mismo nombre
  */
 export async function checkCarNameExists(name: string, excludeId?: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   let query = supabase
     .from('cars')

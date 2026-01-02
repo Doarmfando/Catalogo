@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { createBrand } from "@/lib/supabase/queries/admin-brands";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 export async function POST(request: Request) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const brandData = await request.json();
 

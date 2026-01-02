@@ -1,14 +1,15 @@
 /**
  * Queries de administración para colores
+ * Usa service role para bypassar RLS
  */
 
-import { createClient } from '../server'
+import { createAdminClient } from '../admin'
 
 /**
  * Obtiene todos los colores del catálogo
  */
 export async function getAllColors() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('colors')
@@ -32,7 +33,7 @@ export async function createColor(colorData: {
   color_code: string;
   hex_code: string
 }) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('colors')
@@ -52,7 +53,7 @@ export async function createColor(colorData: {
  * Obtiene un color por ID
  */
 export async function getColorById(colorId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('colors')
@@ -75,7 +76,7 @@ export async function updateColor(
   colorId: string,
   colorData: { name?: string; slug?: string; color_code?: string; hex_code?: string }
 ) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('colors')
@@ -96,7 +97,7 @@ export async function updateColor(
  * Elimina un color
  */
 export async function deleteColor(colorId: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { error } = await supabase
     .from('colors')
@@ -115,7 +116,7 @@ export async function deleteColor(colorId: string) {
  * Verifica si existe un color con el mismo código
  */
 export async function checkColorCodeExists(colorCode: string, excludeId?: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   let query = supabase
     .from('colors')

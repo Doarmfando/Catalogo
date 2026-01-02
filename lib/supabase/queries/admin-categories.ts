@@ -1,7 +1,12 @@
-import { createClient } from "@/lib/supabase/server";
+/**
+ * Queries de administración para categorías
+ * Usa service role para bypassar RLS
+ */
+
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function getAllCategoriesAdmin() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("categories")
@@ -20,7 +25,7 @@ export async function getAllCategoriesAdmin() {
 }
 
 export async function getCategoryByIdAdmin(categoryId: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("categories")
@@ -42,7 +47,7 @@ export async function createCategory(categoryData: {
   description?: string | null;
   image_url?: string | null;
 }) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("categories")
@@ -67,7 +72,7 @@ export async function updateCategory(
     image_url?: string | null;
   }
 ) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("categories")
@@ -85,7 +90,7 @@ export async function updateCategory(
 }
 
 export async function deleteCategory(categoryId: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // First check if there are any cars associated with this category
   const { count, error: countError } = await supabase
@@ -122,7 +127,7 @@ export async function deleteCategory(categoryId: string) {
  * Verifica si existe una categoría con el mismo nombre
  */
 export async function checkCategoryNameExists(name: string, excludeId?: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   let query = supabase
     .from("categories")

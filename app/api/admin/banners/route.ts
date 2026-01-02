@@ -1,8 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { validateAuth } from "@/lib/auth/api-auth";
 
 // GET - Obtener todos los banners
 export async function GET(request: Request) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const supabase = await createClient();
 
@@ -38,6 +42,9 @@ export async function GET(request: Request) {
 
 // POST - Crear nuevo banner
 export async function POST(request: Request) {
+  const authResult = await validateAuth();
+  if ('error' in authResult) return authResult.error;
+
   try {
     const body = await request.json();
     const {
