@@ -207,14 +207,6 @@ export function VersionsTable({ carId, versions: initialVersions }: VersionsTabl
                                   {color.imageCount} {color.imageCount === 1 ? "imagen" : "imágenes"}
                                 </p>
                               </div>
-                              <div className="flex gap-1">
-                                <button className="p-1.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">
-                                  <Pencil className="h-3.5 w-3.5" />
-                                </button>
-                                <button className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors">
-                                  <Trash2 className="h-3.5 w-3.5" />
-                                </button>
-                              </div>
                             </div>
                           ))}
                         </div>
